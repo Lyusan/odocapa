@@ -1,0 +1,8 @@
+.ColorPickerButton {
+    width: 35px;
+    height: 35px;
+    border-radius: 35px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: green;
+}
