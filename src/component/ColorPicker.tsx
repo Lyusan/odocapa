@@ -1,14 +1,16 @@
+import { serialize } from "v8";
 import "./ColorPicker.css"
 
 interface ColorPickerProps {
-    color: string
+    color: string,
+    size: number
   }
 
-function ColorPicker({color}: ColorPickerProps) {
+function ColorPicker({color, size}: ColorPickerProps) {
 
   return (
     <div className="ColorPicker">
-        <div style={{ backgroundColor: color }} className="ColorPickerButton"/>
+        <div style={{ backgroundColor: color, width: size, height: size }} className="ColorPickerButton"/>
     </div>
   );
 }

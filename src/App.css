@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 100vh;
 }
 
 .App-logo {
@@ -36,7 +37,29 @@
     transform: rotate(360deg);
   }
 }
+
+.MapView {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.MapView {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.MapViewCategories {
+  display: flex;
+}
+
+.MapViewBody {
+  display: flex;
+  height: 100%;
+}
+
 .Map {
- height: 100vh;
- width: 80%;
+  height: 100%;
+  width: 80%;
 }

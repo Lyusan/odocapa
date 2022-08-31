@@ -11,12 +11,14 @@ function CategorieComponent({categorie}: ColorPickerProps) {
   return (
     <div className="Categorie">
         <h3>{categorie.name}</h3>
+        <div className="CategorieValues">
         {categorie.values.map((v) => 
-            <>
+            <div className='CategorieValue'>
             <p>{v.name}</p>
-            <ColorPicker color={v.color}/>
-            </>
+            <ColorPicker size={13} color={v.color}/>
+            </div>
         )} 
+        </div>
     </div>
   );
 }

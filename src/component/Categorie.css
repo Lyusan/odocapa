@@ -1,5 +1,21 @@
 .Categorie {
     display: flex;
-    width: 300px;
+    flex-direction: column;
     text-align: center;
+}
+
+.CategorieValues {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.CategorieValue {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.Break {
+    width: 100%;
+    height: 1px;
 }
