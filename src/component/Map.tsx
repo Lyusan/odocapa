@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Arrondissements from './arrondissements.json';
 import Streets from './streets.json';
 import "../../node_modules/leaflet/dist/leaflet.css"
+import {initializeApp} from 'firebase/app'
+import {getFirestore, doc, setDoc} from 'firebase/firestore'
 
 const highwaysTypes = ["motorway", "trunk", "primary", "secondary", "tertiary", "residential", "unclassified"];
 interface IProps {
@@ -79,6 +81,7 @@ function Map({ onStreetClick }: IProps) {
     map.addLayer(Stamen_Toner);
 
 
+
     const arrondissements: L.Polygon[] = [];
     for (let arrondissement of Arrondissements.features.filter(a => a.properties.type === "boundary")) {
       var polygon = L.polygon((arrondissement as any).geometry.coordinates[0].map((l: any) => [l[1], l[0]])).addTo(map);
@@ -122,6 +125,18 @@ function Map({ onStreetClick }: IProps) {
       streets.forEach((e) => e.addTo(map as L.Map));
     }
   });
+
+
+  const firebase = initializeApp({
+    authDomain: 'odocapa-4a31f.firebaseapp.com',
+    projectId: 'odocapa-4a31f'
+  });
+
+  const firestore = getFirestore();
+  // Create a new client
+  const specialOfferOfTheDay = doc(firestore, 'dayly/1');
+  setDoc(specialOfferOfTheDay, {desc: "toto"});
+
 
   return (
     <>
