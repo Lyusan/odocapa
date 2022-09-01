@@ -1,11 +1,11 @@
 import '../App.css';
-import L, { LatLngTuple } from 'leaflet';
-import React, { useEffect, useRef, useState } from 'react';
-import OverPassData from './DataFull.json';
+import L from 'leaflet';
+import { useEffect, useState } from 'react';
 import Arrondissements from './arrondissements.json';
+import Streets from './streets.json';
 import "../../node_modules/leaflet/dist/leaflet.css"
 
-
+const highwaysTypes = ["motorway", "trunk", "primary", "secondary", "tertiary", "residential", "unclassified"];
 interface IProps {
   onStreetClick: (streetName: string) => void;
 }
@@ -13,6 +13,29 @@ interface IProps {
 interface IState {
   map?: L.Map;
 }
+// Ray Casting algorithm from Ray Casting
+// https://stackoverflow.com/questions/31790344/determine-if-a-point-reside-inside-a-leaflet-polygon
+function isCoordInPolygon(coord: [number, number], poly: L.Polygon) {
+  var polyPoints = poly.getLatLngs()[0] as L.LatLng[];
+  var x = coord[1], y = coord[0];
+  var inside = false;
+  for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+    var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+    var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+    var intersect = ((yi > y) != (yj > y))
+      && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+
+  return inside;
+};
+
+function isAtLeastOneCoordInPolygons(coords: [number, number][], polys: L.Polygon[]) {
+  for (let coord of coords)
+      for (let poly of polys)
+        if (isCoordInPolygon(coord, poly)) return true;
+  return false;
+};
 
 function Map({ onStreetClick }: IProps) {
 
@@ -20,7 +43,7 @@ function Map({ onStreetClick }: IProps) {
   const [zoom, setZoom] = useState<number>(12);
   const [streets, setStreets] = useState<L.Polyline[]>([]);
   const [arrondissements, setArrondissements] = useState<L.Polygon[]>([]);
-  const [mode, setMode] = useState<"polyline" | "polygon">("polygon"); 
+  const [mode, setMode] = useState<"polyline" | "polygon">("polygon");
 
   useEffect(() => {
     var container: any = L.DomUtil.get("map");
@@ -28,15 +51,6 @@ function Map({ onStreetClick }: IProps) {
     if (container?._leaflet_id === null) return;
     if (container != null) {
       container._leaflet_id = null;
-    }
-
-    const data: any = OverPassData;
-    const nodes: Record<number, LatLngTuple> = {};
-    const ways: Record<string, { name: string, parts: LatLngTuple[] }> = {};
-    for (let el of data.elements) {
-      if (el.type === "node") nodes[el.id] = [el.lat as number, el.lon as number];
-      else if (ways[el.tags?.name as string]) ways[el.tags?.name as string].parts.push(el.nodes as LatLngTuple);
-      else ways[el.tags?.name as string] = { name: el.tags?.name as string, parts: [el.nodes as LatLngTuple] };
     }
 
     var map = L.map("map", {
@@ -64,18 +78,7 @@ function Map({ onStreetClick }: IProps) {
     );
     map.addLayer(Stamen_Toner);
 
-    const streets: L.Polyline[] = [];
-    for (let way of Object.values(ways)) {
-      console.log(way.name);
-      const color = Math.random() > 0.8 ? "red" : "blue";
-      for (let part of way.parts) {
-        var latlngs = part.map((id) => nodes[id]);
-        var polyline = L.polyline(latlngs, { color });
-        polyline.on("click", () => onStreetClick(way.name))
-        streets.push(polyline);
-      }
-    }
-    setStreets(streets);
+
     const arrondissements: L.Polygon[] = [];
     for (let arrondissement of Arrondissements.features.filter(a => a.properties.type === "boundary")) {
       var polygon = L.polygon((arrondissement as any).geometry.coordinates[0].map((l: any) => [l[1], l[0]])).addTo(map);
@@ -84,11 +87,26 @@ function Map({ onStreetClick }: IProps) {
     }
     setArrondissements(arrondissements);
 
+
+    let filteredStreets = (Streets as any).features.filter((s: any) => highwaysTypes.includes(s.properties.highway || ""))
+      .filter((s: any) => (s.properties.noname || "") !== "yes")
+      // .filter((s: any, n: number) => n < 100)
+      .filter((street: any) => isAtLeastOneCoordInPolygons(street.geometry.coordinates as [number, number][], arrondissements));
+    const streets: L.Polyline[] = [];
+
+    for (let street of filteredStreets) {
+      const color = Math.random() > 0.8 ? "red" : "blue";
+      var polyline = L.polyline((street.geometry.coordinates as [number, number][]).map(a => [a[1], a[0]]), { color });
+      polyline.on("click", () => onStreetClick(street.properties.name || ""))
+      streets.push(polyline);
+    }
+    setStreets(streets);
+
     map.on("zoom", (e) => {
       setZoom(map.getZoom());
     })
 
-    
+
   }, []);
 
   useEffect(() => {
@@ -101,13 +119,13 @@ function Map({ onStreetClick }: IProps) {
     }
     else {
       arrondissements.forEach((e) => e.remove());
-      streets.forEach((e) => e.addTo(map as L.Map)); 
+      streets.forEach((e) => e.addTo(map as L.Map));
     }
   });
 
   return (
     <>
-    <div id="map" className='Map'></div>
+      <div id="map" className='Map'></div>
     </>
   );
 
