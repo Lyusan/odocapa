@@ -58,7 +58,7 @@ function App() {
         <div className='MapViewHeader'>
           <div className='MapViewCategories'>
             {categories.map((c) =>
-              <Categorie categorie={c} />
+                    <Categorie categorie={c} key={c.name} />
             )}
             </div>
         </div>

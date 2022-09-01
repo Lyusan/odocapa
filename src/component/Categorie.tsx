@@ -13,7 +13,7 @@ function CategorieComponent({categorie}: ColorPickerProps) {
         <h3>{categorie.name}</h3>
         <div className="CategorieValues">
         {categorie.values.map((v) => 
-            <div className='CategorieValue'>
+            <div className='CategorieValue' key={v.name}>
             <p>{v.name}</p>
             <ColorPicker size={13} color={v.color}/>
             </div>
