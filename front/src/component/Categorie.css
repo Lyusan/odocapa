@@ -1,0 +1,18 @@
+.Categorie {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 0px 10px;
+}
+
+.CategorieName {
+    margin: 5px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.CategorieName:hover {
+    background-color: rgba(160, 160, 160, 0.175);
+    /* background: rgba(255, 0, 0, 0.925) !important; */
+}
