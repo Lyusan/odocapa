@@ -3,11 +3,8 @@ import Map from './component/Map';
 import { useEffect, useState } from 'react';
 import Categorie from './component/Categorie';
 import { Categorie as CategorieM, Categories } from './model/Categorie';
-import { render } from "react-dom"
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import axios from 'axios';
-import FormView from './view/FormView';
-import ColorPicker from './component/ColorPicker';
+import FormView from './view/Form.view';
 import Legend from './component/Legend';
 
 function App() {

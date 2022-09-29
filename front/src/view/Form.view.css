@@ -1,0 +1,39 @@
+.FormView {
+    display: flex;
+}
+
+.FormViewStreetList {
+    overflow: visible;
+    width: 20%;
+}
+
+.FormViewForm {
+    width: 50%;
+    display: "flex";
+    flex-direction: "column";
+}
+
+.FormViewWiki {
+    width: 50%;
+    height: 500px;
+    display: "flex";
+    flex-direction: "column";
+    background-color: #333;
+}
+
+.container > div {
+    border: solid 1px;
+}
+
+table,
+td {
+    border: 1px solid #333;
+}
+
+thead,
+tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+table { empty-cells: hide}

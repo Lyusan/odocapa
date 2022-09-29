@@ -57,7 +57,6 @@ const handleInfoboxData = (infoBox: Element) => {
 export const scrapeWikiPerson =
   functions.https.onRequest(async (request, response) => {
     const page = request.query.page as string;
-    console.log(page);
     const data = (await axios.get(page)).data;
     const doc = new JSDOM(data).window.document;
     const infoBox = doc.querySelector('div.infobox_v3');
