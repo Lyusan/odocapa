@@ -1,0 +1,23 @@
+{
+  "extends": ["airbnb", "airbnb-typescript"],
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
+      }
+    }
+  },
+  "ignorePatterns": ["tailwind.config.cjs", "vite.config.ts"],
+  "rules": {
+    "implicit-arrow-linebreak": "off",
+    "react/jsx-curly-newline": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "object-curly-newline": "off"
+  }
+}
