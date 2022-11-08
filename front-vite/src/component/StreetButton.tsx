@@ -12,7 +12,7 @@ function StreetButton({ name, selected, lastUpdateDate, onSelectStreet }: Street
   return (
     <div
       className={classNames(
-        ['border', 'min-h-10', 'p-1', 'rounded-md', 'border-gray-600'],
+        ['border', 'min-h-10', 'p-1', 'rounded-md', 'border-gray-600', 'cursor-pointer'],
         lastUpdateDate ? 'bg-blue-300' : 'bg-slate-300',
         {
           'bg-opacity-80': !selected,

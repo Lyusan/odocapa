@@ -2,8 +2,8 @@ import * as functions from "firebase-functions";
 const cors = require('cors')({origin: true});
 import axios from "axios";
 import { JSDOM } from "jsdom";
-import { database } from "firebase-admin";
-
+// regex to find [1] ... [2],[3] we should remove it from
+// \[[0-9a-zA-Z]+\](\,\[[0-9a-zA-Z]+\])*
 const infoboxMap = [
   {
     key: "birthday",
@@ -31,6 +31,10 @@ const infoboxMap = [
     type: "listSplitByComma"
   }
 ];
+
+function cleanUp(value: string) {
+  return value.replace(/\[[0-9a-zA-Z ]+\](\,\[[0-9a-zA-Z ]+\])*/g, "");
+}
 
 const handleInfoboxElementByType = (td: Element | null, infoboxData: any) => {
   console.log("handle")

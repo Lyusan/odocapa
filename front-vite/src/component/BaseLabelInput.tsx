@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 interface BaseLabelInputProps {
   label: string;
   inputId: string;
   children: any;
+  componentRightLabel?: any;
 }
 
-function BaseLabelInput({ label, children, inputId }: BaseLabelInputProps) {
+export default function BaseLabelInput({
+  label,
+  children,
+  inputId,
+  componentRightLabel,
+}: BaseLabelInputProps) {
   return (
     <div className="flex flex-col">
-      <label className="text-gray-600" htmlFor={inputId}>
-        {`${label}:`}
-      </label>
+      <div className="flex justify-between mb-1">
+        <label className="text-gray-600" htmlFor={inputId}>
+          {`${label}:`}
+        </label>
+        {componentRightLabel}
+      </div>
       {children}
     </div>
   );
 }
 
-export default BaseLabelInput;
+BaseLabelInput.defaultProps = { componentRightLabel: null };

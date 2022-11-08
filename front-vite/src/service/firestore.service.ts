@@ -37,12 +37,65 @@ async function digestMessage(message: string) {
   return hash;
 }
 
+export const DEFAULT_DATA_PROPERTY = {
+  value: '',
+  lastUpdate: null,
+  source: null,
+  type: null,
+};
+
+export enum DataPropertyType {
+  COPY = 'copy_from_source',
+  COPY_EDITED = 'edited_from_source',
+  CUSTOM = 'custom',
+}
+
+export interface DataProperty {
+  value: string;
+  lastUpdate: Date | null;
+  source: string | null;
+  type: DataPropertyType | null;
+}
+
+export const DEFAULT_SUB_ITEM = {
+  id: null,
+  lastUpdate: null,
+  name: DEFAULT_DATA_PROPERTY,
+  description: DEFAULT_DATA_PROPERTY,
+};
+
+export const DEFAULT_STREET_SUB_ITEM = {
+  ...DEFAULT_SUB_ITEM,
+  birthday: DEFAULT_DATA_PROPERTY,
+  deathday: DEFAULT_DATA_PROPERTY,
+  gender: DEFAULT_DATA_PROPERTY,
+};
+
 export interface StreetSubItemPerson {
+  id: string | null;
+  lastUpdate: Date | null;
+
+  name: DataProperty;
+  description: DataProperty;
+  birthday: DataProperty;
+  deathday: DataProperty;
+  gender: DataProperty;
+}
+export interface MinimalStreetSub {
   id: string;
   name: string;
-  birthday: string;
-  deathday: string;
-  gender: string;
+}
+
+/* eslint-disable class-methods-use-this */
+export class MinimalStreetSubConverter implements FirestoreDataConverter<MinimalStreetSub> {
+  toFirestore(): DocumentData {
+    throw new Error('This is not supported');
+  }
+
+  fromFirestore(snapshot: QueryDocumentSnapshot): MinimalStreetSub {
+    const data = snapshot.data()!;
+    return { name: data.name.value, id: snapshot.id } as MinimalStreetSub;
+  }
 }
 
 /* eslint-disable class-methods-use-this */
@@ -55,17 +108,31 @@ export class StreetSubItemPersonConverter implements FirestoreDataConverter<Stre
 
   fromFirestore(snapshot: QueryDocumentSnapshot): StreetSubItemPerson {
     const data = snapshot.data()!;
-    return { id: snapshot.id, ...data } as StreetSubItemPerson;
+    return { ...DEFAULT_STREET_SUB_ITEM, ...data, id: snapshot.id } as StreetSubItemPerson;
   }
 }
+
+export const DEFAULT_STREET = {
+  lastUpdate: null,
+  typeOfName: {
+    value: 'Personne',
+    lastUpdate: null,
+    source: null,
+    type: null,
+  },
+  nameOrigin: DEFAULT_DATA_PROPERTY,
+  nameDescription: DEFAULT_DATA_PROPERTY,
+};
 
 export interface Street {
   id: string;
   name: string;
-  lastUpdate: string;
-  typeOfName: string;
-  nameOrigin: string;
-  nameDescription: string;
+  lastUpdate: Date | null;
+  typeOfName: DataProperty;
+  nameOrigin: DataProperty;
+  nameDescription: DataProperty;
+  coords: string;
+  subId: string | null;
 }
 
 /* eslint-disable class-methods-use-this */
@@ -78,7 +145,7 @@ export class StreetConverter implements FirestoreDataConverter<Street> {
 
   fromFirestore(snapshot: QueryDocumentSnapshot): Street {
     const data = snapshot.data()!;
-    return { id: snapshot.id, ...data } as Street;
+    return { id: snapshot.id, ...DEFAULT_STREET, ...data } as Street;
   }
 }
 
@@ -140,13 +207,21 @@ export async function getStreetsDocs(): Promise<MinimalStreet[]> {
   return snapshot.docs.map((d) => d.data());
 }
 
-export async function getStreetSubItemsDocs(type: string): Promise<StreetSubItemPerson[]> {
+export async function getStreetSubItemsDocs(type: string): Promise<MinimalStreetSub[]> {
   const snapshot = await getDocs(
     query(collection(db, 'streetSubItems'), where('type', '==', type), limit(50)).withConverter(
-      new StreetSubItemPersonConverter(),
+      new MinimalStreetSubConverter(),
     ),
   );
+  console.log(snapshot.docs.map((d) => d.data()));
   return snapshot.docs.map((d) => d.data());
+}
+
+export async function getStreetSubItemDoc(id: string): Promise<StreetSubItemPerson> {
+  const snapshot = await getDoc(
+    doc(db, 'streetSubItems', id).withConverter(new StreetSubItemPersonConverter()),
+  );
+  return snapshot.data()!;
 }
 
 export async function getStreetDoc(id: string): Promise<Street> {

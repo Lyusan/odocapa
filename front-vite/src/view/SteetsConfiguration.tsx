@@ -35,7 +35,7 @@ export default function StreetsConfiguration() {
           {streets
             .filter((s) => s.name.includes(searchStreetString))
             .map((s) => (
-              <div className="py-1.5 ">
+              <div className="py-1.5" key={s.id}>
                 <StreetButton
                   name={s.name}
                   lastUpdateDate={s.lastUpdate}

@@ -1,62 +1,96 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
+import { DataProperty, DataPropertyType } from '../service/firestore.service';
 import { InputDesc, InputOnChange } from '../type/Input';
 import BaseLabelInput from './BaseLabelInput';
 import BaseSelect from './BaseSelect';
+import ButtonDataPropertyType from './ButtonDataPropertyType';
+import DateMomentAgo from './DateMomentAgo';
+import Link from './Link';
 import TextInput from './TextInput';
 
 interface SwitchInputProp {
   inputDesc: InputDesc;
-  value: any;
-  onChange: InputOnChange;
+  value: DataProperty;
+  onValueChange: InputOnChange;
+  onTypeChange: (name: string, type: DataPropertyType) => void;
 }
 
-function SwitchInput({ inputDesc, value, onChange }: SwitchInputProp) {
+function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchInputProp) {
+  let input: any = null;
   switch (inputDesc.type) {
     case 'select':
-      return (
-        <BaseLabelInput inputId={inputDesc.id} label={inputDesc.label}>
-          <BaseSelect
-            name={inputDesc.name}
-            value={value as string}
-            values={inputDesc.values!}
-            onChange={onChange}
-          />
-        </BaseLabelInput>
+      input = (
+        <BaseSelect
+          name={inputDesc.name}
+          value={value.value}
+          values={inputDesc.values!}
+          onChange={onValueChange}
+        />
       );
+      break;
     case 'text':
     case 'textarea':
-      return (
-        <BaseLabelInput inputId={inputDesc.id} label={inputDesc.label}>
-          <TextInput
-            id={inputDesc.id}
-            type={inputDesc.type}
-            name={inputDesc.name}
-            value={value}
-            onChange={onChange}
-          />
-        </BaseLabelInput>
+      input = (
+        <TextInput
+          id={inputDesc.id}
+          type={inputDesc.type}
+          name={inputDesc.name}
+          value={value.value}
+          onChange={onValueChange}
+        />
       );
+      break;
     default:
-      return <div>{`Type ${inputDesc.type} is not supported`}</div>;
+      input = <div>{`Type ${inputDesc.type} is not supported`}</div>;
+      break;
   }
+  return (
+    <BaseLabelInput
+      inputId={inputDesc.id}
+      label={inputDesc.label}
+      componentRightLabel={
+        value.type ? (
+          <ButtonDataPropertyType
+            type={value.type}
+            onClick={(type) => onTypeChange(inputDesc.name, type)}
+          />
+        ) : null
+      }
+    >
+      {input}
+      <div className="flex justify-between">
+        {value.source ? <Link link={value.source} /> : null}
+        <p className="text-gray-400">
+          {value.lastUpdate ? <DateMomentAgo date={value.lastUpdate} /> : <br />}
+        </p>
+      </div>
+    </BaseLabelInput>
+  );
 }
 
 interface FormBuilderProp {
   form: InputDesc[];
   values: any;
-  onChange: InputOnChange;
+  onValueChange: InputOnChange;
+  onTypeChange: (name: string, type: DataPropertyType) => void;
 }
 
-export default function FormBuilder({ form, values, onChange }: FormBuilderProp) {
+export default function FormBuilder({
+  form,
+  values,
+  onValueChange,
+  onTypeChange,
+}: FormBuilderProp) {
   return (
     <div className="flex flex-col">
       {form.map((element) => (
-        <div className="my-2">
+        <div className="my-2" key={element.id}>
           <SwitchInput
-            key={element.id}
             inputDesc={element}
             value={values[element.name]}
-            onChange={onChange}
+            onValueChange={onValueChange}
+            onTypeChange={onTypeChange}
           />
         </div>
       ))}

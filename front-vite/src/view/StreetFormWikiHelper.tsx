@@ -5,7 +5,13 @@ import Link from '../component/Link';
 import SelectScrapWiki from '../component/SelectScrapWiki';
 import { getWikiPersonInfo, getWikiSearch, getWikiStreetInfo } from '../service/wiki.service';
 
-export default function StreetFormWikiHelper({ streetName }: { streetName: string }) {
+export default function StreetFormWikiHelper({
+  streetName,
+  copyField,
+}: {
+  streetName: string;
+  copyField: (propName: string, value: string, source: string) => void;
+}) {
   const [wikiSearchResults, setWikiSearchResults] = useState<string[]>([]);
   const [wikiStreetName, setWikiStreetName] = useState<string>('');
   const [wikiPersonName, setWikiPersonName] = useState<string>('');
@@ -48,8 +54,26 @@ export default function StreetFormWikiHelper({ streetName }: { streetName: strin
         <>
           <Link link={`https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`} />
           <div className="[&>*]:py-2">
-            <CopyField value={wikiStreetResult.nameOrigin} onClick={(value) => value} />
-            <CopyField value={wikiStreetResult.history} onClick={(value) => value} />
+            <CopyField
+              value={wikiStreetResult.nameOrigin}
+              onClick={(value) =>
+                copyField(
+                  'nameOrigin',
+                  value,
+                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
+                )
+              }
+            />
+            <CopyField
+              value={wikiStreetResult.history}
+              onClick={(value) =>
+                copyField(
+                  'nameDescription',
+                  value,
+                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
+                )
+              }
+            />
           </div>
           <SelectScrapWiki
             values={wikiStreetResult.nameOriginLinks.map((e: any) => e.name)}
