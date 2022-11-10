@@ -2,6 +2,7 @@
 import React from 'react';
 import { DataProperty, DataPropertyType } from '../service/firestore.service';
 import { InputDesc, InputOnChange } from '../type/Input';
+import ActivitySelector from './ActivitySelector';
 import BaseLabelInput from './BaseLabelInput';
 import BaseSelect from './BaseSelect';
 import ButtonDataPropertyType from './ButtonDataPropertyType';
@@ -19,6 +20,14 @@ interface SwitchInputProp {
 function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchInputProp) {
   let input: any = null;
   switch (inputDesc.type) {
+    case 'activity':
+      input = (
+        <ActivitySelector
+          activities={value.value as any}
+          onChange={(activities) => onValueChange(inputDesc.name, activities)}
+        />
+      );
+      break;
     case 'select':
       input = (
         <BaseSelect

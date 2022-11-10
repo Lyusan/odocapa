@@ -1,6 +1,8 @@
-export type InputOnChange = (propertyName: string, newValue: string) => void;
+import { Activity } from './Activity';
 
-export type InputType = 'text' | 'textarea' | 'select';
+export type InputOnChange = (propertyName: string, newValue: string | Activity[]) => void;
+
+export type InputType = 'text' | 'textarea' | 'select' | 'activity';
 
 export interface InputDesc {
   id: string;

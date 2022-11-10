@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { TtTt } from '../helper/map';
+import { Activity, DEFAULT_ACTIVITIES } from '../type/Activity';
 
 const firebaseApp = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -53,7 +54,7 @@ export enum DataPropertyType {
 }
 
 export interface DataProperty {
-  value: string;
+  value: string | Activity[];
   lastUpdate: Timestamp | null;
   source: string | null;
   type: DataPropertyType | null;
@@ -72,6 +73,7 @@ export const DEFAULT_STREET_SUB_ITEM = {
   birthday: DEFAULT_DATA_PROPERTY,
   deathday: DEFAULT_DATA_PROPERTY,
   gender: DEFAULT_DATA_PROPERTY,
+  activity: { ...DEFAULT_DATA_PROPERTY, value: DEFAULT_ACTIVITIES },
 };
 
 export interface StreetSubItemPerson {
@@ -208,7 +210,6 @@ export async function getStreetSubItemsDocs(type: string): Promise<MinimalStreet
       new MinimalStreetSubConverter(),
     ),
   );
-  console.log(snapshot.docs.map((d) => d.data()));
   return snapshot.docs.map((d) => d.data());
 }
 

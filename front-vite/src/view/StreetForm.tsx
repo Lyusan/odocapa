@@ -86,6 +86,12 @@ const PERSON_FORM = [
     type: 'select',
     values: ['Inconnu', 'Homme', 'Femme'],
   },
+  {
+    id: 'personActivityInput',
+    name: 'activity',
+    label: 'Activité',
+    type: 'activity',
+  },
 ] as InputDesc[];
 
 const BATTLE_FORM = [
