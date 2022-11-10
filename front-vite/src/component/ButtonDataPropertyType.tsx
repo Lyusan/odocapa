@@ -1,18 +1,18 @@
 import React from 'react';
-import { DataPropertyType } from '../service/firestore.service';
+import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
 import Button from './Button';
 
 interface ButtonProp {
-  type: DataPropertyType;
-  onClick: (nextType: DataPropertyType) => void;
+  type: SourcedDataPropertyType;
+  onClick: (nextType: SourcedDataPropertyType) => void;
 }
 const config = {
-  [DataPropertyType.COPY]: { textColor: 'bg-blue-500' },
-  [DataPropertyType.COPY_EDITED]: { textColor: 'bg-green-500' },
-  [DataPropertyType.CUSTOM]: { textColor: 'bg-cyan-500' },
+  [SourcedDataPropertyType.COPY]: { textColor: 'bg-blue-500' },
+  [SourcedDataPropertyType.COPY_EDITED]: { textColor: 'bg-green-500' },
+  [SourcedDataPropertyType.CUSTOM]: { textColor: 'bg-cyan-500' },
 };
 
-const types = Object.values(DataPropertyType);
+const types = Object.values(SourcedDataPropertyType);
 
 export default function ButtonDataPropertyType({ type, onClick }: ButtonProp) {
   return (

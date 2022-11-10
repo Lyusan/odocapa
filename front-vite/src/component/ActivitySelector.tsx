@@ -47,7 +47,7 @@ const formatTableContent = (
                 if (a.subActivities) test(a, maxLevel);
               });
             };
-            test(lastEl, newLevel);
+            if (lastEl) test(lastEl, newLevel);
             lastEl = result.find((a) => a.value === newKeys[0]);
             // eslint-disable-next-line no-restricted-syntax
             for (const k of newKeys) {

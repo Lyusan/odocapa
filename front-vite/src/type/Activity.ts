@@ -3,6 +3,7 @@ export interface Activity {
   level: number;
   subActivities?: Activity[];
 }
+
 export const DEFAULT_ACTIVITIES: Activity[] = [
   {
     value: 'ecclésiastique',
@@ -58,9 +59,9 @@ export const DEFAULT_ACTIVITIES: Activity[] = [
     value: 'scientifique',
     level: 0,
     subActivities: [
-      { value: 'médecin', level: 3 },
-      { value: 'astronome', level: 2 },
-      { value: 'mathématicien', level: 1 },
+      { value: 'médecin', level: 0 },
+      { value: 'astronome', level: 0 },
+      { value: 'mathématicien', level: 0 },
     ],
   },
   {

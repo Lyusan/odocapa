@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { DataProperty, DataPropertyType } from '../service/firestore.service';
+import { Activity } from '../type/Activity';
 import { InputDesc, InputOnChange } from '../type/Input';
+import { SourcedDataProperty, SourcedDataPropertyType } from '../type/SourcedDataProperty';
 import ActivitySelector from './ActivitySelector';
 import BaseLabelInput from './BaseLabelInput';
 import BaseSelect from './BaseSelect';
@@ -12,9 +13,9 @@ import TextInput from './TextInput';
 
 interface SwitchInputProp {
   inputDesc: InputDesc;
-  value: DataProperty;
+  value: SourcedDataProperty<string> | SourcedDataProperty<Activity[]>;
   onValueChange: InputOnChange;
-  onTypeChange: (name: string, type: DataPropertyType) => void;
+  onTypeChange: (name: string, type: SourcedDataPropertyType) => void;
 }
 
 function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchInputProp) {
@@ -23,7 +24,7 @@ function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchIn
     case 'activity':
       input = (
         <ActivitySelector
-          activities={value.value as any}
+          activities={value.value as Activity[]}
           onChange={(activities) => onValueChange(inputDesc.name, activities)}
         />
       );
@@ -32,7 +33,7 @@ function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchIn
       input = (
         <BaseSelect
           name={inputDesc.name}
-          value={value.value}
+          value={value.value as string}
           values={inputDesc.values!}
           onChange={onValueChange}
         />
@@ -82,7 +83,7 @@ interface FormBuilderProp {
   form: InputDesc[];
   values: any;
   onValueChange: InputOnChange;
-  onTypeChange: (name: string, type: DataPropertyType) => void;
+  onTypeChange: (name: string, type: SourcedDataPropertyType) => void;
 }
 
 export default function FormBuilder({

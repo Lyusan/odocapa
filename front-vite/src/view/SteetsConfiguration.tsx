@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import StreetButton from '../component/StreetButton';
 import TextInput from '../component/TextInput';
-import { getStreetsDocs, MinimalStreet } from '../service/firestore.service';
+import { getStreetsDocs } from '../service/firestore.service';
+import { MinimalStreet } from '../type/Street';
 import StreetForm from './StreetForm';
 
 export default function StreetsConfiguration() {
@@ -30,7 +31,7 @@ export default function StreetsConfiguration() {
             id="searchStreetByNameInput"
             placeholder="Search street"
             value={searchStreetString}
-            onChange={(name, value) => setSearchStreetString(value)}
+            onChange={(name, value) => setSearchStreetString(value as string)}
           />
           {streets
             .filter((s) => s.name.includes(searchStreetString))

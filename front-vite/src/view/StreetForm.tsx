@@ -5,22 +5,18 @@ import Button from '../component/Button';
 import FormBuilder from '../component/FormBuilder';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
-  DataProperty,
-  DataPropertyType,
-  DEFAULT_STREET_SUB_ITEM,
   getStreetDoc,
   getStreetSubItemDoc,
   getStreetSubItemsDocs,
-  MinimalStreet,
-  MinimalStreetSub,
   setStreetDoc,
   setSubItemDoc,
-  Street,
-  StreetSubItemPerson,
 } from '../service/firestore.service';
 import { InputDesc } from '../type/Input';
 import StreetFormWikiHelper from './StreetFormWikiHelper';
 import MapStreetViewer from '../component/Map/MapStreetViewer';
+import { MinimalStreet, Street } from '../type/Street';
+import { DEFAULT_STREET_SUB_ITEM, MinimalStreetSub, StreetSubItemPerson } from '../type/SubItem';
+import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
 
 const GENERAL_FORM = [
   {
@@ -175,20 +171,23 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
     isCopy: boolean = false,
   ) => {
     if (street) {
-      const oldType = ((street as any)[name] as DataProperty).type;
-      const oldSource = ((street as any)[name] as DataProperty).source;
+      const oldType = (street as any)[name].type;
+      const oldSource = (street as any)[name].source;
       const computeType = () => {
-        if (isCopy) return DataPropertyType.COPY;
-        if (oldType === DataPropertyType.COPY || oldType === DataPropertyType.COPY_EDITED) {
-          return DataPropertyType.COPY_EDITED;
+        if (isCopy) return SourcedDataPropertyType.COPY;
+        if (
+          oldType === SourcedDataPropertyType.COPY ||
+          oldType === SourcedDataPropertyType.COPY_EDITED
+        ) {
+          return SourcedDataPropertyType.COPY_EDITED;
         }
-        return DataPropertyType.CUSTOM;
+        return SourcedDataPropertyType.CUSTOM;
       };
       const type = computeType();
       setStreet({
         ...street,
         [name]: {
-          ...((street as any)[name] as DataProperty),
+          ...(street as any)[name],
           value,
           source: source || oldSource,
           type,
@@ -198,12 +197,12 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
       });
     }
   };
-  const handleDataPropTypeFormChange = (name: string, type: DataPropertyType) => {
+  const handleDataPropTypeFormChange = (name: string, type: SourcedDataPropertyType) => {
     if (street) {
       setStreet({
         ...street,
         [name]: {
-          ...((street as any)[name] as DataProperty),
+          ...(street as any)[name],
           type,
           lastUpdate: Timestamp.fromDate(new Date()),
         },
@@ -217,21 +216,24 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
     source: string | null = null,
     isCopy: boolean = false,
   ) => {
-    const oldType = ((streetSubItem as any)[name] as DataProperty).type;
-    const oldSource = ((streetSubItem as any)[name] as DataProperty).source;
+    const oldType = (streetSubItem as any)[name].type;
+    const oldSource = (streetSubItem as any)[name].source;
     const computeType = () => {
-      if (isCopy) return DataPropertyType.COPY;
-      if (oldType === DataPropertyType.COPY || oldType === DataPropertyType.COPY_EDITED) {
-        return DataPropertyType.COPY_EDITED;
+      if (isCopy) return SourcedDataPropertyType.COPY;
+      if (
+        oldType === SourcedDataPropertyType.COPY ||
+        oldType === SourcedDataPropertyType.COPY_EDITED
+      ) {
+        return SourcedDataPropertyType.COPY_EDITED;
       }
-      return DataPropertyType.CUSTOM;
+      return SourcedDataPropertyType.CUSTOM;
     };
     const type = computeType();
     if (streetSubItem) {
       setStreetSubItem({
         ...streetSubItem,
         [name]: {
-          ...((streetSubItem as any)[name] as DataProperty),
+          ...(streetSubItem as any)[name],
           value,
           source: source || oldSource,
           type,
@@ -242,7 +244,6 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
     }
   };
   const specificFormParam = FORM_RECORD[street?.typeOfName?.value || ''] || DEFAULT_SUB_FORM;
-  console.log(streetSubItem);
   const specificForm = (
     <FormBuilder
       form={specificFormParam}
@@ -322,7 +323,7 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
                   onClick={() =>
                     setStreetSubItem({
                       ...DEFAULT_STREET_SUB_ITEM,
-                      type: street.typeOfName.value as DataPropertyType,
+                      type: street.typeOfName.value as SourcedDataPropertyType,
                     })
                   }
                 />

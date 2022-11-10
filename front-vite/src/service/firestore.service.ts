@@ -12,13 +12,13 @@ import {
   query,
   QueryDocumentSnapshot,
   setDoc,
-  Timestamp,
   where,
   writeBatch,
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { TtTt } from '../helper/map';
-import { Activity, DEFAULT_ACTIVITIES } from '../type/Activity';
+import { DEFAULT_STREET, MinimalStreet, Street } from '../type/Street';
+import { DEFAULT_STREET_SUB_ITEM, MinimalStreetSub, StreetSubItemPerson } from '../type/SubItem';
 
 const firebaseApp = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -30,67 +30,14 @@ const firebaseApp = initializeApp({
 });
 const db = getFirestore(firebaseApp);
 
-async function digestMessage(message: string) {
+async function hash(message: string) {
   const encoder = new TextEncoder();
   const data = encoder.encode(message);
   const encodedHash = await crypto.subtle.digest('SHA-256', data);
-  const hash = Array.from(new Uint8Array(encodedHash))
+  const hashValue = Array.from(new Uint8Array(encodedHash))
     .map((bytes) => bytes.toString(16).padStart(2, '0'))
     .join('');
-  return hash;
-}
-
-export const DEFAULT_DATA_PROPERTY = {
-  value: '',
-  lastUpdate: null,
-  source: null,
-  type: null,
-};
-
-export enum DataPropertyType {
-  COPY = 'copy_from_source',
-  COPY_EDITED = 'edited_from_source',
-  CUSTOM = 'custom',
-}
-
-export interface DataProperty {
-  value: string | Activity[];
-  lastUpdate: Timestamp | null;
-  source: string | null;
-  type: DataPropertyType | null;
-}
-
-export const DEFAULT_SUB_ITEM = {
-  id: null,
-  lastUpdate: null,
-  name: DEFAULT_DATA_PROPERTY,
-  description: DEFAULT_DATA_PROPERTY,
-};
-
-export const DEFAULT_STREET_SUB_ITEM = {
-  ...DEFAULT_SUB_ITEM,
-  nationality: DEFAULT_DATA_PROPERTY,
-  birthday: DEFAULT_DATA_PROPERTY,
-  deathday: DEFAULT_DATA_PROPERTY,
-  gender: DEFAULT_DATA_PROPERTY,
-  activity: { ...DEFAULT_DATA_PROPERTY, value: DEFAULT_ACTIVITIES },
-};
-
-export interface StreetSubItemPerson {
-  id: string | null;
-  lastUpdate: Timestamp | null;
-  type: DataPropertyType;
-
-  name: DataProperty;
-  description: DataProperty;
-  nationality: DataProperty;
-  birthday: DataProperty;
-  deathday: DataProperty;
-  gender: DataProperty;
-}
-export interface MinimalStreetSub {
-  id: string;
-  name: string;
+  return hashValue;
 }
 
 /* eslint-disable class-methods-use-this */
@@ -119,29 +66,6 @@ export class StreetSubItemPersonConverter implements FirestoreDataConverter<Stre
   }
 }
 
-export const DEFAULT_STREET = {
-  lastUpdate: null,
-  typeOfName: {
-    value: 'Personne',
-    lastUpdate: null,
-    source: null,
-    type: null,
-  },
-  nameOrigin: DEFAULT_DATA_PROPERTY,
-  nameDescription: DEFAULT_DATA_PROPERTY,
-};
-
-export interface Street {
-  id: string;
-  name: string;
-  lastUpdate: Timestamp | null;
-  typeOfName: DataProperty;
-  nameOrigin: DataProperty;
-  nameDescription: DataProperty;
-  coords: string;
-  subId: string | null;
-}
-
 /* eslint-disable class-methods-use-this */
 export class StreetConverter implements FirestoreDataConverter<Street> {
   toFirestore(street: Street): DocumentData {
@@ -156,12 +80,6 @@ export class StreetConverter implements FirestoreDataConverter<Street> {
   }
 }
 
-export interface MinimalStreet {
-  id: string;
-  name: string;
-  lastUpdate: Timestamp | null;
-}
-
 /* eslint-disable class-methods-use-this */
 export class MinimalStreetConverter implements FirestoreDataConverter<MinimalStreet> {
   toFirestore(street: MinimalStreet): DocumentData {
@@ -172,7 +90,7 @@ export class MinimalStreetConverter implements FirestoreDataConverter<MinimalStr
 
   fromFirestore(snapshot: QueryDocumentSnapshot): MinimalStreet {
     const data = snapshot.data()!;
-    return { id: snapshot.id, ...data } as Street;
+    return { id: snapshot.id, ...data } as MinimalStreet;
   }
 }
 
@@ -181,13 +99,13 @@ export async function batchSetStreets(streets: TtTt[]) {
   // eslint-disable-next-line guard-for-in, no-restricted-syntax
   for (const index in streets) {
     // eslint-disable-next-line no-await-in-loop
-    const hash = await digestMessage(streets[index].name);
+    const h = await hash(streets[index].name);
     const street = {
       name: streets[index].name,
       coords: JSON.stringify(streets[index].coords),
     };
     if (street.name !== undefined) {
-      batch.set(doc(db, 'streets', hash), street);
+      batch.set(doc(db, 'streets', h), street);
     }
     if (Number(index) % 300 === 0) {
       // eslint-disable-next-line no-await-in-loop
