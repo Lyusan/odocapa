@@ -49,7 +49,13 @@ export default function StreetsConfiguration() {
         </div>
       </div>
       {street ? (
-        <StreetForm minimalStreet={street} />
+        <StreetForm
+          minimalStreet={street}
+          onSaveStreet={(s) => {
+            const newStreet = { ...street, lastUpdate: s.lastUpdate };
+            setStreets(streets.map((cStreet) => (cStreet.id === street.id ? newStreet : cStreet)));
+          }}
+        />
       ) : (
         <div className="w-full h-full flex justify-center items-center">
           <h1 className="text-3xl font-bold text-center ">Select a street</h1>

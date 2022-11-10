@@ -61,7 +61,7 @@ function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchIn
       {input}
       <div className="flex justify-between">
         {value.source ? <Link link={value.source} /> : null}
-        <p className="text-gray-400">
+        <p className="text-gray-400 ml-auto">
           {value.lastUpdate ? <DateMomentAgo date={value.lastUpdate} /> : <br />}
         </p>
       </div>

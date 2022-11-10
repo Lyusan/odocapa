@@ -2,8 +2,7 @@ import * as functions from "firebase-functions";
 const cors = require('cors')({origin: true});
 import axios from "axios";
 import { JSDOM } from "jsdom";
-// regex to find [1] ... [2],[3] we should remove it from
-// \[[0-9a-zA-Z]+\](\,\[[0-9a-zA-Z]+\])*
+
 const infoboxMap = [
   {
     key: "birthday",
@@ -22,7 +21,7 @@ const infoboxMap = [
   },
   {
     key: "activity",
-    frPropNames: ["activité", "activités"],
+    frPropNames: ["activité", "activités", "profession", "professions"],
     type: "listSplitByComma"
   },
   {
@@ -92,7 +91,7 @@ export const scrapeWikiPerson =
         firstParagraphMatch = true;
       }
     }
-    res.descriptionParts = descriptionParts;
+    res.descriptionParts = cleanUp(descriptionParts?.join(''));
     if (res.descriptionParts.length === 0) {
       const content = doc.querySelectorAll('div.mw-parser-output')[1];
       const childrens = content?.children as HTMLCollectionBase;
@@ -109,7 +108,7 @@ export const scrapeWikiPerson =
           firstParagraphMatch = true;
         }
       }
-      res.descriptionParts = descriptionParts;
+      res.descriptionParts = cleanUp(descriptionParts?.join(''));
     }
     response.send(res);
   })
@@ -147,7 +146,7 @@ export const scrapeWikiStreet =
           mode = null;
       }
     }
-    response.send({history, nameOrigin, nameOriginLinks});
+    response.send({history: cleanUp(history.join('')), nameOrigin: cleanUp(nameOrigin.join('')) , nameOriginLinks});
   })
   });
 

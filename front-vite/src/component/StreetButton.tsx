@@ -1,10 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
+import { Timestamp } from 'firebase/firestore';
+import DateMomentAgo from './DateMomentAgo';
 
 interface StreetProps {
   name: string;
   selected: boolean;
-  lastUpdateDate: string;
+  lastUpdateDate: Timestamp | null;
   onSelectStreet: () => void;
 }
 
@@ -21,7 +23,11 @@ function StreetButton({ name, selected, lastUpdateDate, onSelectStreet }: Street
       onClick={onSelectStreet}
     >
       <b className="text-gray-800">{name}</b>
-      <p className="text-gray-600">{lastUpdateDate}</p>
+      {lastUpdateDate ? (
+        <p className="text-gray-600">
+          <DateMomentAgo date={lastUpdateDate} />
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import {
+  addDoc,
   collection,
   doc,
   DocumentData,
@@ -11,6 +12,7 @@ import {
   query,
   QueryDocumentSnapshot,
   setDoc,
+  Timestamp,
   where,
   writeBatch,
 } from 'firebase/firestore';
@@ -52,7 +54,7 @@ export enum DataPropertyType {
 
 export interface DataProperty {
   value: string;
-  lastUpdate: Date | null;
+  lastUpdate: Timestamp | null;
   source: string | null;
   type: DataPropertyType | null;
 }
@@ -66,6 +68,7 @@ export const DEFAULT_SUB_ITEM = {
 
 export const DEFAULT_STREET_SUB_ITEM = {
   ...DEFAULT_SUB_ITEM,
+  nationality: DEFAULT_DATA_PROPERTY,
   birthday: DEFAULT_DATA_PROPERTY,
   deathday: DEFAULT_DATA_PROPERTY,
   gender: DEFAULT_DATA_PROPERTY,
@@ -73,10 +76,12 @@ export const DEFAULT_STREET_SUB_ITEM = {
 
 export interface StreetSubItemPerson {
   id: string | null;
-  lastUpdate: Date | null;
+  lastUpdate: Timestamp | null;
+  type: DataPropertyType;
 
   name: DataProperty;
   description: DataProperty;
+  nationality: DataProperty;
   birthday: DataProperty;
   deathday: DataProperty;
   gender: DataProperty;
@@ -127,7 +132,7 @@ export const DEFAULT_STREET = {
 export interface Street {
   id: string;
   name: string;
-  lastUpdate: Date | null;
+  lastUpdate: Timestamp | null;
   typeOfName: DataProperty;
   nameOrigin: DataProperty;
   nameDescription: DataProperty;
@@ -149,33 +154,23 @@ export class StreetConverter implements FirestoreDataConverter<Street> {
   }
 }
 
-export class MinimalStreet {
+export interface MinimalStreet {
   id: string;
-
   name: string;
-
-  lastUpdate: string;
-
-  constructor(id: string, name: string, lastUpdate: string) {
-    this.id = id;
-    this.name = name;
-    this.lastUpdate = lastUpdate;
-  }
-
-  toString() {
-    return `MinimalStreet: ${this.id}, ${this.name}`;
-  }
+  lastUpdate: Timestamp | null;
 }
 
 /* eslint-disable class-methods-use-this */
 export class MinimalStreetConverter implements FirestoreDataConverter<MinimalStreet> {
   toFirestore(street: MinimalStreet): DocumentData {
-    return { id: street.id, name: street.name, lastUpdate: street.lastUpdate };
+    const data = { ...street } as any;
+    delete data.id;
+    return data;
   }
 
   fromFirestore(snapshot: QueryDocumentSnapshot): MinimalStreet {
     const data = snapshot.data()!;
-    return new MinimalStreet(snapshot.id, data.name, data.lastUpdate);
+    return { id: snapshot.id, ...data } as Street;
   }
 }
 
@@ -229,6 +224,28 @@ export async function getStreetDoc(id: string): Promise<Street> {
   return snapshot.data()!;
 }
 
+export async function getStreetSubDoc(id: string): Promise<StreetSubItemPerson> {
+  const snapshot = await getDoc(
+    doc(db, 'streetSubItems', id).withConverter(new StreetSubItemPersonConverter()),
+  );
+  return snapshot.data()!;
+}
 export async function setStreetDoc(street: Street): Promise<void> {
   await setDoc(doc(db, 'streets', street.id).withConverter(new StreetConverter()), street);
+}
+
+export async function setSubItemDoc(subItem: StreetSubItemPerson): Promise<string> {
+  if (subItem.id) {
+    await setDoc(
+      doc(db, 'streetSubItems', subItem.id).withConverter(new StreetSubItemPersonConverter()),
+      subItem,
+    );
+    return subItem.id;
+  }
+  return (
+    await addDoc(
+      collection(db, 'streetSubItems').withConverter(new StreetSubItemPersonConverter()),
+      subItem,
+    )
+  ).id;
 }

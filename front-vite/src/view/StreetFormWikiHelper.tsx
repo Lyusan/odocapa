@@ -10,7 +10,7 @@ export default function StreetFormWikiHelper({
   copyField,
 }: {
   streetName: string;
-  copyField: (propName: string, value: string, source: string) => void;
+  copyField: (type: 'main' | 'sub', propName: string, value: string, source: string) => void;
 }) {
   const [wikiSearchResults, setWikiSearchResults] = useState<string[]>([]);
   const [wikiStreetName, setWikiStreetName] = useState<string>('');
@@ -58,6 +58,7 @@ export default function StreetFormWikiHelper({
               value={wikiStreetResult.nameOrigin}
               onClick={(value) =>
                 copyField(
+                  'main',
                   'nameOrigin',
                   value,
                   `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
@@ -68,6 +69,7 @@ export default function StreetFormWikiHelper({
               value={wikiStreetResult.history}
               onClick={(value) =>
                 copyField(
+                  'main',
                   'nameDescription',
                   value,
                   `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
@@ -85,18 +87,49 @@ export default function StreetFormWikiHelper({
                 link={`https://fr.wikipedia.org/wiki/${wikiPersonName?.replaceAll(' ', '_')}`}
               />
               <div className="[&>*]:py-2">
-                <CopyField value={wikiPersonResult.descriptionParts} onClick={(value) => value} />
+                <CopyField
+                  value={wikiPersonResult.descriptionParts}
+                  onClick={(value) =>
+                    copyField(
+                      'sub',
+                      'description',
+                      value,
+                      `https://fr.wikipedia.org/wiki/${wikiPersonName?.replaceAll(' ', '_')}`,
+                    )
+                  }
+                />
                 <CopyField
                   value={wikiPersonResult.infoboxData?.birthday}
-                  onClick={(value) => value}
+                  onClick={(value) =>
+                    copyField(
+                      'sub',
+                      'birthday',
+                      value,
+                      `https://fr.wikipedia.org/wiki/${wikiPersonName?.replaceAll(' ', '_')}`,
+                    )
+                  }
                 />
                 <CopyField
                   value={wikiPersonResult.infoboxData?.deathday}
-                  onClick={(value) => value}
+                  onClick={(value) =>
+                    copyField(
+                      'sub',
+                      'deathday',
+                      value,
+                      `https://fr.wikipedia.org/wiki/${wikiPersonName?.replaceAll(' ', '_')}`,
+                    )
+                  }
                 />
                 <CopyField
                   value={wikiPersonResult.infoboxData?.nationality}
-                  onClick={(value) => value}
+                  onClick={(value) =>
+                    copyField(
+                      'sub',
+                      'nationality',
+                      value,
+                      `https://fr.wikipedia.org/wiki/${wikiPersonName?.replaceAll(' ', '_')}`,
+                    )
+                  }
                 />
                 <CopyField
                   value={wikiPersonResult.infoboxData?.school}
@@ -104,7 +137,14 @@ export default function StreetFormWikiHelper({
                 />
                 <CopyField
                   value={wikiPersonResult.infoboxData?.activity}
-                  onClick={(value) => value}
+                  onClick={(value) =>
+                    copyField(
+                      'sub',
+                      'activity',
+                      value,
+                      `https://fr.wikipedia.org/wiki/${wikiPersonName?.replaceAll(' ', '_')}`,
+                    )
+                  }
                 />
               </div>
             </>

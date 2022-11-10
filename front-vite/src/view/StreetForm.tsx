@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Timestamp } from 'firebase/firestore';
 import BaseSelect from '../component/BaseSelect';
 import Button from '../component/Button';
 import FormBuilder from '../component/FormBuilder';
@@ -12,6 +13,8 @@ import {
   getStreetSubItemsDocs,
   MinimalStreet,
   MinimalStreetSub,
+  setStreetDoc,
+  setSubItemDoc,
   Street,
   StreetSubItemPerson,
 } from '../service/firestore.service';
@@ -19,9 +22,6 @@ import { InputDesc } from '../type/Input';
 import StreetFormWikiHelper from './StreetFormWikiHelper';
 import MapStreetViewer from '../component/Map/MapStreetViewer';
 
-interface StreetFormProp {
-  minimalStreet: MinimalStreet;
-}
 const GENERAL_FORM = [
   {
     id: 'generalNameOriginInput',
@@ -62,6 +62,12 @@ const DEFAULT_SUB_FORM = [
 const PERSON_FORM = [
   ...DEFAULT_SUB_FORM,
   {
+    id: 'personNationlityInput',
+    name: 'nationality',
+    label: 'Nationalité',
+    type: 'text',
+  },
+  {
     id: 'personBirthdayInput',
     name: 'birthday',
     label: 'Date de naissance',
@@ -98,21 +104,35 @@ const BATTLE_FORM = [
   },
 ] as InputDesc[];
 
+interface StreetFormProp {
+  minimalStreet: MinimalStreet;
+  onSaveStreet: (street: Street) => void;
+}
+
 const FORM_RECORD = {
   Personne: PERSON_FORM,
   Bataille: BATTLE_FORM,
 } as Record<string, InputDesc[]>;
 
-export default function StreetForm({ minimalStreet }: StreetFormProp) {
+export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormProp) {
   const [street, setStreet] = useState<Street | null>(null);
   const [streetSubName, setStreetSubName] = useState<string>('');
   const [streetSubItem, setStreetSubItem] = useState<StreetSubItemPerson | null>(null);
   const [streetSubItems, setStreetSubItems] = useState<MinimalStreetSub[]>([]);
   useEffect(() => {
     (async () => {
+      setStreet(null);
+      setStreetSubName('');
+      setStreetSubItem(null);
+      setStreetSubItems([]);
       if (minimalStreet) {
         const newStreet = await getStreetDoc(minimalStreet.id);
         setStreet(newStreet);
+        if (newStreet.id) {
+          const newSubItem = await getStreetSubItemDoc(newStreet.id);
+          setStreetSubName(newSubItem.name.value);
+          setStreetSubItem(newSubItem);
+        }
       }
     })();
   }, [minimalStreet]);
@@ -129,6 +149,19 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
       }
     })();
   }, [street]);
+  const save = async () => {
+    if (!street) return;
+    const newStreet = { ...street };
+    if (streetSubItem) {
+      const id = await setSubItemDoc(streetSubItem);
+      newStreet.subId = id;
+    }
+    if (street) {
+      setStreetDoc(newStreet);
+      setStreet(newStreet);
+    }
+    onSaveStreet(newStreet);
+  };
   const handleFormChange = (
     name: string,
     value: any,
@@ -153,9 +186,9 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
           value,
           source: source || oldSource,
           type,
-          lastUpdate: new Date(),
+          lastUpdate: Timestamp.fromDate(new Date()),
         },
-        lastUpdate: new Date(),
+        lastUpdate: Timestamp.fromDate(new Date()),
       });
     }
   };
@@ -166,9 +199,9 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
         [name]: {
           ...((street as any)[name] as DataProperty),
           type,
-          lastUpdate: new Date(),
+          lastUpdate: Timestamp.fromDate(new Date()),
         },
-        lastUpdate: new Date(),
+        lastUpdate: Timestamp.fromDate(new Date()),
       });
     }
   };
@@ -196,9 +229,9 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
           value,
           source: source || oldSource,
           type,
-          lastUpdate: new Date(),
+          lastUpdate: Timestamp.fromDate(new Date()),
         },
-        lastUpdate: new Date(),
+        lastUpdate: Timestamp.fromDate(new Date()),
       });
     }
   };
@@ -215,7 +248,13 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
 
   const detachSubObject = () => {
     setStreetSubName('');
-    handleFormChange('subId', null);
+    if (street) {
+      setStreet({
+        ...street,
+        subId: null,
+        lastUpdate: Timestamp.fromDate(new Date()),
+      });
+    }
     setStreetSubItem(null);
   };
 
@@ -227,7 +266,7 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
         <>
           <div className="w-1/2 p-4 relative overflow-y-auto">
             <div className="absolute right-4">
-              <Button color="bg-blue-500" textColor="text-white" text="SAVE" onClick={() => null} />
+              <Button color="bg-blue-500" textColor="text-white" text="SAVE" onClick={save} />
             </div>
             <div className="flex items-center">
               <div className="w-72 h-72">
@@ -255,7 +294,7 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
                     setStreet({
                       ...street,
                       subId: streetSubItems.find((i) => i.name === value)?.id!,
-                      lastUpdate: new Date(),
+                      lastUpdate: Timestamp.fromDate(new Date()),
                     });
                     setStreetSubName(value);
                   }
@@ -274,7 +313,12 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
                   color="bg-blue-500"
                   textColor="text-white"
                   text="Créé un nouvel object"
-                  onClick={() => setStreetSubItem(DEFAULT_STREET_SUB_ITEM)}
+                  onClick={() =>
+                    setStreetSubItem({
+                      ...DEFAULT_STREET_SUB_ITEM,
+                      type: street.typeOfName.value as DataPropertyType,
+                    })
+                  }
                 />
               )}
             </div>
@@ -283,8 +327,9 @@ export default function StreetForm({ minimalStreet }: StreetFormProp) {
           <div className="w-1/2 p-4 overflow-y-auto">
             <StreetFormWikiHelper
               streetName={street.name}
-              copyField={(propName, value, source) => {
-                handleFormChange(propName, value, source, true);
+              copyField={(type, propName, value, source) => {
+                if (type === 'main') handleFormChange(propName, value, source, true);
+                handleSubFormChange(propName, value, source, true);
               }}
             />
           </div>
