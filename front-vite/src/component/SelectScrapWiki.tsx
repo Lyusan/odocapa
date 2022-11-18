@@ -28,7 +28,7 @@ export default function SelectScrapWiki({ values, onSearch }: SelectScrapWikiPro
           id="test"
           name="search"
           value={inputValue}
-          onChange={(name, value) => setInputValue(value)}
+          onChange={(name, value) => setInputValue(value as string)}
         />
         <Button text="search" onClick={() => onSearch(inputValue)} />
       </div>

@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import StreetButton from '../component/StreetButton';
+
 import TextInput from '../component/TextInput';
-import { getStreetsDocs } from '../service/firestore.service';
+import { getMinimalStreetsDocs } from '../service/firestore.service';
 import { MinimalStreet } from '../type/Street';
 import StreetForm from './StreetForm';
 
 export default function StreetsConfiguration() {
   const [streets, setStreets] = useState<MinimalStreet[]>([]);
-  const [street, setStreet] = useState<MinimalStreet | null>(null);
   const [searchStreetString, setSearchStreetString] = useState<string>('');
+  const { streetId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      setStreets(await getStreetsDocs());
+      setStreets(await getMinimalStreetsDocs());
     })();
   }, []);
-
-  const onSelectStreet = async (selectedStreet: MinimalStreet) => {
-    setStreet(selectedStreet);
-  };
 
   return (
     <div className="flex full-view">
@@ -40,21 +39,27 @@ export default function StreetsConfiguration() {
                 <StreetButton
                   name={s.name}
                   lastUpdateDate={s.lastUpdate}
-                  selected={s.id === street?.id}
+                  selected={s.id === streetId}
                   onSelectStreet={() => {
-                    onSelectStreet(s);
+                    navigate(`/config/${s.id}`);
                   }}
                 />
               </div>
             ))}
         </div>
       </div>
-      {street ? (
+      {streetId ? (
         <StreetForm
-          minimalStreet={street}
+          streetId={streetId || null}
           onSaveStreet={(s) => {
-            const newStreet = { ...street, lastUpdate: s.lastUpdate };
-            setStreets(streets.map((cStreet) => (cStreet.id === street.id ? newStreet : cStreet)));
+            setStreets(
+              streets.map((cStreet) => {
+                if (cStreet.id === streetId) {
+                  return { ...cStreet, lastUpdate: s.lastUpdate };
+                }
+                return cStreet;
+              }),
+            );
           }}
         />
       ) : (

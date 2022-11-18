@@ -1,7 +1,38 @@
 import React from 'react';
 import _ from 'lodash';
-import { Activity } from '../type/Activity';
+import { Activity, DEFAULT_ACTIVITIES } from '../type/Activity';
 import Button from './Button';
+
+// TODO: refactor activities with subActivitities -> Record<string, Activitities>
+// better perfomance no need to use find()
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getOnlyLeveledActivities(activities: Activity[]): Activity[] {
+  return activities.reduce((acc, curr) => {
+    if (curr.level === 0) return acc;
+    const newCurr: Activity = { ...curr };
+    if (newCurr.subActivities) {
+      newCurr.subActivities = getOnlyLeveledActivities(newCurr.subActivities);
+      if (!newCurr.subActivities?.length) delete newCurr.subActivities;
+    }
+    return [...acc, newCurr];
+  }, [] as Activity[]);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function mergeActivities(full: Activity[], partial: Activity[]): Activity[] {
+  return full.reduce((acc, curr) => {
+    const partialCurr = partial.find((p) => p.value === curr.value);
+    const newCurr: Activity = { ...curr };
+    if (partialCurr) {
+      newCurr.level = partialCurr.level;
+      if (newCurr.subActivities && partialCurr.subActivities) {
+        newCurr.subActivities = mergeActivities(newCurr.subActivities, partialCurr.subActivities);
+      }
+    }
+    return [...acc, newCurr];
+  }, [] as Activity[]);
+}
 
 const formatTableContent = (
   fullActivities: Activity[],
@@ -57,7 +88,7 @@ const formatTableContent = (
                 lastEl = el;
               }
             }
-            onChange(result);
+            onChange(getOnlyLeveledActivities(result));
           }}
         />
       </td>
@@ -84,6 +115,7 @@ export default function ActivitySelector({
   activities: Activity[];
   onChange: (activities: Activity[]) => void;
 }) {
+  const fullActivities = mergeActivities(DEFAULT_ACTIVITIES, activities);
   return (
     <table className="w-full">
       <thead>
@@ -95,7 +127,7 @@ export default function ActivitySelector({
         </tr>
       </thead>
       <tbody>
-        {formatTableContent(activities, activities, onChange).map((tr) => (
+        {formatTableContent(fullActivities, fullActivities, onChange).map((tr) => (
           <tr>{tr}</tr>
         ))}
       </tbody>

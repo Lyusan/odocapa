@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint --ext .js,.ts . --fix",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "npm run build && firebase emulators:start --only functions",
@@ -17,15 +17,17 @@
   "dependencies": {
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "eslint-config-airbnb": "^19.0.4",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
     "jsdom": "^20.0.0"
   },
   "devDependencies": {
     "@types/jsdom": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.43.0",
     "eslint": "^8.9.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.25.4",
     "firebase-functions-test": "^0.2.0",

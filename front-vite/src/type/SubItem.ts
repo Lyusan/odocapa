@@ -1,10 +1,64 @@
 import { Timestamp } from 'firebase/firestore';
-import { Activity, DEFAULT_ACTIVITIES } from './Activity';
+import { Activity } from './Activity';
+import { InputDesc } from './Input';
 import {
   DEFAULT_SOURCED_DATA_PROPERTY,
   SourcedDataProperty,
   SourcedDataPropertyType,
 } from './SourcedDataProperty';
+
+export const CAT_TYPE_OF_NAME_LIST = [
+  {
+    name: 'Personne',
+    color: '#BF3131',
+  },
+  {
+    name: 'Ville',
+    color: '#E08C2B',
+  },
+  {
+    name: 'Bataille',
+    color: '#31DCC8',
+  },
+  {
+    name: 'Monument',
+    color: '#2CCB13',
+  },
+  {
+    name: 'Autre',
+    color: '#805B90',
+  },
+] as const;
+export const TYPE_OF_NAME_LIST = CAT_TYPE_OF_NAME_LIST.map((e) => e.name);
+// export const TYPE_OF_NAME_LIST = ['Personne', 'Ville', 'Bataille', 'Monument', 'Autre'] as const;
+export type TypeOfName = typeof TYPE_OF_NAME_LIST[number];
+
+export interface SubItem {
+  id: string | null;
+  lastUpdate: Timestamp | null;
+
+  type: TypeOfName;
+
+  name: SourcedDataProperty<string>;
+  description: SourcedDataProperty<string>;
+}
+
+export interface SubItemPerson extends SubItem {
+  nationality: SourcedDataProperty<string>;
+  birthday: SourcedDataProperty<string>;
+  deathday: SourcedDataProperty<string>;
+  gender: SourcedDataProperty<string>;
+  activity: SourcedDataProperty<Activity[]>;
+}
+
+export interface SubItemBattle extends SubItem {
+  startDate: SourcedDataProperty<string>;
+  endDate: SourcedDataProperty<string>;
+}
+
+export interface SubMonumentItem extends SubItem {
+  endBuildingDate: SourcedDataProperty<string>;
+}
 
 export interface StreetSubItemPerson {
   id: string | null;
@@ -21,6 +75,7 @@ export interface StreetSubItemPerson {
   gender: SourcedDataProperty<string>;
   activity: SourcedDataProperty<Activity[]>;
 }
+
 export interface MinimalStreetSub {
   id: string;
   name: string;
@@ -33,11 +88,121 @@ export const DEFAULT_SUB_ITEM = {
   description: DEFAULT_SOURCED_DATA_PROPERTY,
 };
 
-export const DEFAULT_STREET_SUB_ITEM = {
+export const DEFAULT_BATTLE_SUB_ITEM = {
+  ...DEFAULT_SUB_ITEM,
+  startDate: DEFAULT_SOURCED_DATA_PROPERTY,
+  endDate: DEFAULT_SOURCED_DATA_PROPERTY,
+};
+
+export const DEFAULT_MONUMENT_SUB_ITEM = {
+  ...DEFAULT_SUB_ITEM,
+  endBuildingDate: DEFAULT_SOURCED_DATA_PROPERTY,
+};
+
+export const DEFAULT_PERSON_SUB_ITEM = {
   ...DEFAULT_SUB_ITEM,
   nationality: DEFAULT_SOURCED_DATA_PROPERTY,
   birthday: DEFAULT_SOURCED_DATA_PROPERTY,
   deathday: DEFAULT_SOURCED_DATA_PROPERTY,
   gender: DEFAULT_SOURCED_DATA_PROPERTY,
-  activity: { ...DEFAULT_SOURCED_DATA_PROPERTY, value: DEFAULT_ACTIVITIES },
+  activity: { ...DEFAULT_SOURCED_DATA_PROPERTY, value: [] },
 };
+
+export const GENERAL_SUB_ITEM_FORM_DESC = [
+  {
+    id: 'subNameInput',
+    name: 'name',
+    label: 'Nom complet',
+    type: 'text',
+  },
+  {
+    id: 'subDescInput',
+    name: 'description',
+    label: 'Description',
+    type: 'textarea',
+  },
+];
+
+export const PERSON_FORM_DESC = [
+  ...GENERAL_SUB_ITEM_FORM_DESC,
+  {
+    id: 'personNationlityInput',
+    name: 'nationality',
+    label: 'Nationalité',
+    type: 'text',
+  },
+  {
+    id: 'personBirthdayInput',
+    name: 'birthday',
+    label: 'Date de naissance',
+    type: 'text',
+  },
+  {
+    id: 'personDeathdayInput',
+    name: 'deathday',
+    label: 'Date du décès',
+    type: 'text',
+  },
+  {
+    id: 'personGenderInput',
+    name: 'gender',
+    label: 'Genre',
+    type: 'select',
+    values: ['Inconnu', 'Homme', 'Femme'],
+  },
+  {
+    id: 'personActivityInput',
+    name: 'activity',
+    label: 'Activité',
+    type: 'activity',
+  },
+] as InputDesc[];
+
+export const BATTLE_FORM_DESC = [
+  ...GENERAL_SUB_ITEM_FORM_DESC,
+  {
+    id: 'battleDateStartInput',
+    name: 'startDate',
+    label: 'Date de debut',
+    type: 'text',
+  },
+  {
+    id: 'battleDateStartInput',
+    name: 'endDate',
+    label: 'Date de fin',
+    type: 'text',
+  },
+] as InputDesc[];
+
+export const MONUMENT_FORM_DESC = [
+  ...GENERAL_SUB_ITEM_FORM_DESC,
+  {
+    id: 'monumentEndBuildingDate',
+    name: 'endBuildingDate',
+    label: 'Date de fin de construction',
+    type: 'text',
+  },
+] as InputDesc[];
+
+export const SUB_ITEM_MAP = {
+  Personne: {
+    form: PERSON_FORM_DESC,
+    default: DEFAULT_PERSON_SUB_ITEM,
+  },
+  Bataille: {
+    form: BATTLE_FORM_DESC,
+    default: DEFAULT_BATTLE_SUB_ITEM,
+  },
+  Ville: {
+    form: GENERAL_SUB_ITEM_FORM_DESC,
+    default: DEFAULT_SUB_ITEM,
+  },
+  Monument: {
+    form: MONUMENT_FORM_DESC,
+    default: DEFAULT_MONUMENT_SUB_ITEM,
+  },
+  Autre: {
+    form: GENERAL_SUB_ITEM_FORM_DESC,
+    default: DEFAULT_SUB_ITEM,
+  },
+} as Record<TypeOfName, { form: InputDesc[]; default: any }>;

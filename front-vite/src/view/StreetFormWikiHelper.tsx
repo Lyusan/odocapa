@@ -76,6 +76,50 @@ export default function StreetFormWikiHelper({
                 )
               }
             />
+            <CopyField
+              value={wikiStreetResult.infoBoxData.creationDate}
+              onClick={(value) =>
+                copyField(
+                  'main',
+                  'creationDate',
+                  value,
+                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
+                )
+              }
+            />
+            <CopyField
+              value={wikiStreetResult.infoBoxData.namingDate}
+              onClick={(value) =>
+                copyField(
+                  'main',
+                  'namingDate',
+                  value,
+                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
+                )
+              }
+            />
+            <CopyField
+              value={wikiStreetResult.infoBoxData.length}
+              onClick={(value) =>
+                copyField(
+                  'main',
+                  'length',
+                  value,
+                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
+                )
+              }
+            />
+            <CopyField
+              value={wikiStreetResult.infoBoxData.width}
+              onClick={(value) =>
+                copyField(
+                  'main',
+                  'width',
+                  value,
+                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
+                )
+              }
+            />
           </div>
           <SelectScrapWiki
             values={wikiStreetResult.nameOriginLinks.map((e: any) => e.name)}

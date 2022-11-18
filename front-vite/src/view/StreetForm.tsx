@@ -11,115 +11,21 @@ import {
   setStreetDoc,
   setSubItemDoc,
 } from '../service/firestore.service';
-import { InputDesc } from '../type/Input';
 import StreetFormWikiHelper from './StreetFormWikiHelper';
 import MapStreetViewer from '../component/Map/MapStreetViewer';
-import { MinimalStreet, Street } from '../type/Street';
-import { DEFAULT_STREET_SUB_ITEM, MinimalStreetSub, StreetSubItemPerson } from '../type/SubItem';
+import { Street, STREET_FORM_DESC } from '../type/Street';
+import { MinimalStreetSub, SubItem, SUB_ITEM_MAP } from '../type/SubItem';
 import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
 
-const GENERAL_FORM = [
-  {
-    id: 'generalNameOriginInput',
-    name: 'nameOrigin',
-    label: 'Origine du nom de la rue',
-    type: 'textarea',
-  },
-  {
-    id: 'generalNameDescriptionInput',
-    name: 'nameDescription',
-    label: 'Description du nom de la rue',
-    type: 'textarea',
-  },
-  {
-    id: 'generalTypeOfNameInput',
-    name: 'typeOfName',
-    label: 'Type de nom de la rue',
-    type: 'select',
-    values: ['Personne', 'Ville', 'Bataille', 'Autre'],
-  },
-] as InputDesc[];
-
-const DEFAULT_SUB_FORM = [
-  {
-    id: 'subNameInput',
-    name: 'name',
-    label: 'Nom complet',
-    type: 'text',
-  },
-  {
-    id: 'subDescInput',
-    name: 'description',
-    label: 'Description',
-    type: 'textarea',
-  },
-];
-
-const PERSON_FORM = [
-  ...DEFAULT_SUB_FORM,
-  {
-    id: 'personNationlityInput',
-    name: 'nationality',
-    label: 'Nationalité',
-    type: 'text',
-  },
-  {
-    id: 'personBirthdayInput',
-    name: 'birthday',
-    label: 'Date de naissance',
-    type: 'text',
-  },
-  {
-    id: 'personDeathdayInput',
-    name: 'deathday',
-    label: 'Date du décès',
-    type: 'text',
-  },
-  {
-    id: 'personGenderInput',
-    name: 'gender',
-    label: 'Genre',
-    type: 'select',
-    values: ['Inconnu', 'Homme', 'Femme'],
-  },
-  {
-    id: 'personActivityInput',
-    name: 'activity',
-    label: 'Activité',
-    type: 'activity',
-  },
-] as InputDesc[];
-
-const BATTLE_FORM = [
-  ...DEFAULT_SUB_FORM,
-  {
-    id: 'battleDateStartInput',
-    name: 'date',
-    label: 'Date de debut',
-    type: 'text',
-  },
-  {
-    id: 'battleDateStartInput',
-    name: 'end',
-    label: 'Date de fin',
-    type: 'text',
-  },
-] as InputDesc[];
-
 interface StreetFormProp {
-  minimalStreet: MinimalStreet;
+  streetId: string | null;
   onSaveStreet: (street: Street) => void;
 }
 
-const FORM_RECORD = {
-  Personne: PERSON_FORM,
-  Bataille: BATTLE_FORM,
-} as Record<string, InputDesc[]>;
-
-export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormProp) {
+export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
   const [street, setStreet] = useState<Street | null>(null);
   const [streetSubName, setStreetSubName] = useState<string>('');
-  const [streetSubItem, setStreetSubItem] = useState<StreetSubItemPerson | null>(null);
+  const [streetSubItem, setStreetSubItem] = useState<SubItem | null>(null);
   const [streetSubItems, setStreetSubItems] = useState<MinimalStreetSub[]>([]);
   useEffect(() => {
     (async () => {
@@ -127,8 +33,8 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
       setStreetSubName('');
       setStreetSubItem(null);
       setStreetSubItems([]);
-      if (minimalStreet) {
-        const newStreet = await getStreetDoc(minimalStreet.id);
+      if (streetId) {
+        const newStreet = await getStreetDoc(streetId);
         setStreet(newStreet);
         if (newStreet.id) {
           const newSubItem = await getStreetSubItemDoc(newStreet.id);
@@ -137,7 +43,7 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
         }
       }
     })();
-  }, [minimalStreet]);
+  }, [streetId]);
   useEffect(() => {
     // TOTO: improve perf by checking that only type change
     (async () => {
@@ -164,12 +70,24 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
     }
     onSaveStreet(newStreet);
   };
+  const detachSubObject = () => {
+    setStreetSubName('');
+    if (street) {
+      setStreet({
+        ...street,
+        subId: null,
+        lastUpdate: Timestamp.fromDate(new Date()),
+      });
+    }
+    setStreetSubItem(null);
+  };
   const handleFormChange = (
     name: string,
     value: any,
     source: string | null = null,
     isCopy: boolean = false,
   ) => {
+    if (name === 'typeOfName') detachSubObject();
     if (street) {
       const oldType = (street as any)[name].type;
       const oldSource = (street as any)[name].source;
@@ -243,7 +161,8 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
       });
     }
   };
-  const specificFormParam = FORM_RECORD[street?.typeOfName?.value || ''] || DEFAULT_SUB_FORM;
+  const specificFormParam = SUB_ITEM_MAP[street?.typeOfName?.value || 'Autre'].form;
+  if (!specificFormParam) throw new Error(`Can't find the form of ${street?.typeOfName?.value}`);
   const specificForm = (
     <FormBuilder
       form={specificFormParam}
@@ -252,18 +171,6 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
       onTypeChange={() => {}}
     />
   );
-
-  const detachSubObject = () => {
-    setStreetSubName('');
-    if (street) {
-      setStreet({
-        ...street,
-        subId: null,
-        lastUpdate: Timestamp.fromDate(new Date()),
-      });
-    }
-    setStreetSubItem(null);
-  };
 
   return (
     <div className="flex w-full">
@@ -283,7 +190,7 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
             </div>
             <div className="my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
             <FormBuilder
-              form={GENERAL_FORM}
+              form={STREET_FORM_DESC}
               values={street}
               onValueChange={handleFormChange}
               onTypeChange={handleDataPropTypeFormChange}
@@ -322,7 +229,7 @@ export default function StreetForm({ minimalStreet, onSaveStreet }: StreetFormPr
                   text="Créé un nouvel object"
                   onClick={() =>
                     setStreetSubItem({
-                      ...DEFAULT_STREET_SUB_ITEM,
+                      ...SUB_ITEM_MAP[street.typeOfName.value].default,
                       type: street.typeOfName.value as SourcedDataPropertyType,
                     })
                   }
