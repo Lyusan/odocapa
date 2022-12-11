@@ -2,7 +2,15 @@
 module.exports = {
   content: ['./src/**/*.{html,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        black: '#334155',
+      },
+      gridTemplateRows: {
+        layout: '80px repeat(5, minmax(0, 1fr))',
+        card: 'min-content min-content',
+      },
+    },
   },
   plugins: [],
-}
+};

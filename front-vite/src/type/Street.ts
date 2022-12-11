@@ -1,7 +1,11 @@
 import { Timestamp } from 'firebase/firestore';
 import { InputDesc } from './Input';
-import { DEFAULT_SOURCED_DATA_PROPERTY, SourcedDataProperty } from './SourcedDataProperty';
-import { SubItem, TypeOfName, TYPE_OF_NAME_LIST } from './SubItem';
+import {
+  DEFAULT_SOURCED_DATA_PROPERTY,
+  DEFAULT_SOURCED_DATA_PROPERTY_NULL,
+  SourcedDataProperty,
+} from './SourcedDataProperty';
+import { SubItem } from './SubItem';
 
 export interface MinimalStreet {
   id: string;
@@ -13,35 +17,31 @@ export interface Street {
   id: string;
   name: string;
   lastUpdate: Timestamp | null;
-  typeOfName: SourcedDataProperty<TypeOfName>;
   nameOrigin: SourcedDataProperty<string>;
   nameDescription: SourcedDataProperty<string>;
   creationDate: SourcedDataProperty<string>;
   namingDate: SourcedDataProperty<string>;
-  length: SourcedDataProperty<string>;
-  width: SourcedDataProperty<string>;
+  length: SourcedDataProperty<number | null>;
+  width: SourcedDataProperty<number | null>;
   coords: string;
-  subId: string | null;
-}
-
-export interface SuperStreet extends Street {
-  subItem: SubItem | null;
+  parisDataInfo: any;
+  subIds: string[];
+  subItems: SubItem[];
 }
 
 export const DEFAULT_STREET = {
   lastUpdate: null,
-  typeOfName: {
-    value: 'Personne',
-    lastUpdate: null,
-    source: null,
-    type: null,
-  },
+
   nameOrigin: DEFAULT_SOURCED_DATA_PROPERTY,
   nameDescription: DEFAULT_SOURCED_DATA_PROPERTY,
   creationDate: DEFAULT_SOURCED_DATA_PROPERTY,
   namingDate: DEFAULT_SOURCED_DATA_PROPERTY,
-  length: DEFAULT_SOURCED_DATA_PROPERTY,
-  width: DEFAULT_SOURCED_DATA_PROPERTY,
+
+  length: DEFAULT_SOURCED_DATA_PROPERTY_NULL,
+  width: DEFAULT_SOURCED_DATA_PROPERTY_NULL,
+
+  subIds: [],
+  subItems: [],
 };
 
 export const STREET_FORM_DESC = [
@@ -54,6 +54,7 @@ export const STREET_FORM_DESC = [
   {
     id: 'generalNameDescriptionInput',
     name: 'nameDescription',
+    wikiPropName: 'history',
     label: 'Description du nom de la rue',
     type: 'textarea',
   },
@@ -73,19 +74,12 @@ export const STREET_FORM_DESC = [
     id: 'generalLength',
     name: 'length',
     label: 'Longueur',
-    type: 'text',
+    type: 'number',
   },
   {
     id: 'generalWidth',
     name: 'width',
     label: 'Largeur',
-    type: 'text',
-  },
-  {
-    id: 'generalTypeOfNameInput',
-    name: 'typeOfName',
-    label: 'Type de nom de la rue',
-    type: 'select',
-    values: TYPE_OF_NAME_LIST,
+    type: 'number',
   },
 ] as InputDesc[];

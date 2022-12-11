@@ -1,12 +1,17 @@
 import { Timestamp } from 'firebase/firestore';
 import { Activity } from './Activity';
 import { InputDesc } from './Input';
+import { PoliticScale } from './PoliticScale';
 import {
   DEFAULT_SOURCED_DATA_PROPERTY,
+  DEFAULT_SOURCED_DATA_PROPERTY_NULL,
   SourcedDataProperty,
-  SourcedDataPropertyType,
 } from './SourcedDataProperty';
 
+export const CAT_TYPE_OTHER = {
+  name: 'Autre',
+  color: '#BFEDC1',
+};
 export const CAT_TYPE_OF_NAME_LIST = [
   {
     name: 'Personne',
@@ -21,16 +26,20 @@ export const CAT_TYPE_OF_NAME_LIST = [
     color: '#31DCC8',
   },
   {
+    name: 'Enseigne',
+    color: '#006CC8',
+  },
+  {
+    name: 'Profession',
+    color: '#985F99',
+  },
+  {
     name: 'Monument',
     color: '#2CCB13',
   },
-  {
-    name: 'Autre',
-    color: '#805B90',
-  },
+  CAT_TYPE_OTHER,
 ] as const;
 export const TYPE_OF_NAME_LIST = CAT_TYPE_OF_NAME_LIST.map((e) => e.name);
-// export const TYPE_OF_NAME_LIST = ['Personne', 'Ville', 'Bataille', 'Monument', 'Autre'] as const;
 export type TypeOfName = typeof TYPE_OF_NAME_LIST[number];
 
 export interface SubItem {
@@ -48,6 +57,8 @@ export interface SubItemPerson extends SubItem {
   birthday: SourcedDataProperty<string>;
   deathday: SourcedDataProperty<string>;
   gender: SourcedDataProperty<string>;
+  lifeCentury: SourcedDataProperty<number>;
+  politicScale: SourcedDataProperty<PoliticScale[]>;
   activity: SourcedDataProperty<Activity[]>;
 }
 
@@ -60,23 +71,7 @@ export interface SubMonumentItem extends SubItem {
   endBuildingDate: SourcedDataProperty<string>;
 }
 
-export interface StreetSubItemPerson {
-  id: string | null;
-  lastUpdate: Timestamp | null;
-
-  type: SourcedDataPropertyType;
-
-  name: SourcedDataProperty<string>;
-  description: SourcedDataProperty<string>;
-
-  nationality: SourcedDataProperty<string>;
-  birthday: SourcedDataProperty<string>;
-  deathday: SourcedDataProperty<string>;
-  gender: SourcedDataProperty<string>;
-  activity: SourcedDataProperty<Activity[]>;
-}
-
-export interface MinimalStreetSub {
+export interface MinimalSubItem {
   id: string;
   name: string;
 }
@@ -104,8 +99,10 @@ export const DEFAULT_PERSON_SUB_ITEM = {
   nationality: DEFAULT_SOURCED_DATA_PROPERTY,
   birthday: DEFAULT_SOURCED_DATA_PROPERTY,
   deathday: DEFAULT_SOURCED_DATA_PROPERTY,
+  lifeCentury: DEFAULT_SOURCED_DATA_PROPERTY_NULL,
   gender: DEFAULT_SOURCED_DATA_PROPERTY,
   activity: { ...DEFAULT_SOURCED_DATA_PROPERTY, value: [] },
+  politicScale: { ...DEFAULT_SOURCED_DATA_PROPERTY, value: [] },
 };
 
 export const GENERAL_SUB_ITEM_FORM_DESC = [
@@ -118,6 +115,7 @@ export const GENERAL_SUB_ITEM_FORM_DESC = [
   {
     id: 'subDescInput',
     name: 'description',
+    wikiPropName: 'descriptionParts',
     label: 'Description',
     type: 'textarea',
   },
@@ -138,6 +136,12 @@ export const PERSON_FORM_DESC = [
     type: 'text',
   },
   {
+    id: 'personLifeCenturyInput',
+    name: 'lifeCentury',
+    label: 'Siècle de vie',
+    type: 'number',
+  },
+  {
     id: 'personDeathdayInput',
     name: 'deathday',
     label: 'Date du décès',
@@ -149,6 +153,12 @@ export const PERSON_FORM_DESC = [
     label: 'Genre',
     type: 'select',
     values: ['Inconnu', 'Homme', 'Femme'],
+  },
+  {
+    id: 'personPoliticScaleInput',
+    name: 'politicScale',
+    label: 'Échelle Politique',
+    type: 'politicScale',
   },
   {
     id: 'personActivityInput',
@@ -200,6 +210,14 @@ export const SUB_ITEM_MAP = {
   Monument: {
     form: MONUMENT_FORM_DESC,
     default: DEFAULT_MONUMENT_SUB_ITEM,
+  },
+  Profession: {
+    form: GENERAL_SUB_ITEM_FORM_DESC,
+    default: DEFAULT_SUB_ITEM,
+  },
+  Enseigne: {
+    form: GENERAL_SUB_ITEM_FORM_DESC,
+    default: DEFAULT_SUB_ITEM,
   },
   Autre: {
     form: GENERAL_SUB_ITEM_FORM_DESC,

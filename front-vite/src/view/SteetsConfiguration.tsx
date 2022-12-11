@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import ProgressBar from '../component/ProgressBar';
 
 import StreetButton from '../component/StreetButton';
 
 import TextInput from '../component/TextInput';
-import { getMinimalStreetsDocs } from '../service/firestore.service';
+import { getStreetsDocs } from '../service/firestore.service';
 import { MinimalStreet } from '../type/Street';
 import StreetForm from './StreetForm';
 
@@ -16,15 +17,21 @@ export default function StreetsConfiguration() {
 
   useEffect(() => {
     (async () => {
-      setStreets(await getMinimalStreetsDocs());
+      setStreets(await getStreetsDocs());
     })();
   }, []);
 
   return (
-    <div className="flex full-view">
-      <div className="flex-col h-full w-80 overflow-y-auto">
-        <h1 className="text-3xl font-bold text-center p-1">Streets</h1>
-        <div className="flex flex-col p-1">
+    <div className="grid grid-cols-12 full-view">
+      <div className="grid full-view col-span-3 w-full">
+        <div className="flex flex-col p-1 w-full">
+          <h1 className="text-3xl font-bold text-center mb-1">Streets</h1>
+          <div className="my-2">
+            <ProgressBar
+              value={streets.filter((s) => !!s.lastUpdate).length}
+              max={streets.length}
+            />
+          </div>
           <TextInput
             name="searchStreetByName"
             id="searchStreetByNameInput"
@@ -32,6 +39,8 @@ export default function StreetsConfiguration() {
             value={searchStreetString}
             onChange={(name, value) => setSearchStreetString(value as string)}
           />
+        </div>
+        <div className="flex flex-col p-1 overflow-y-scroll">
           {streets
             .filter((s) => s.name.includes(searchStreetString))
             .map((s) => (
@@ -48,25 +57,27 @@ export default function StreetsConfiguration() {
             ))}
         </div>
       </div>
-      {streetId ? (
-        <StreetForm
-          streetId={streetId || null}
-          onSaveStreet={(s) => {
-            setStreets(
-              streets.map((cStreet) => {
-                if (cStreet.id === streetId) {
-                  return { ...cStreet, lastUpdate: s.lastUpdate };
-                }
-                return cStreet;
-              }),
-            );
-          }}
-        />
-      ) : (
-        <div className="w-full h-full flex justify-center items-center">
-          <h1 className="text-3xl font-bold text-center ">Select a street</h1>
-        </div>
-      )}
+      <div className="grid full-view col-span-9">
+        {streetId ? (
+          <StreetForm
+            streetId={streetId || null}
+            onSaveStreet={(s) => {
+              setStreets(
+                streets.map((cStreet) => {
+                  if (cStreet.id === streetId) {
+                    return { ...cStreet, lastUpdate: s.lastUpdate };
+                  }
+                  return cStreet;
+                }),
+              );
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex justify-center items-center">
+            <h1 className="text-3xl font-bold text-center ">Select a street</h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

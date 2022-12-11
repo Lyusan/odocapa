@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Categorie } from '../type/Categorie';
 
 interface ColorPickerProps {
@@ -14,19 +15,18 @@ export default function CategorieSelector({
 }: ColorPickerProps) {
   return (
     <div
+      className={classNames(
+        'px-3.5 py-1 m-2 rounded-full select-none transition-opacity duration-1000 border-2 border-black bg-white',
+        {
+          'font-normal opacity-60 cursor-pointer hover:opacity-100': !selected,
+        },
+        { 'font-semibold ': selected },
+      )}
       onClick={() => {
-        onCategorieClick(categorie);
+        if (!selected) onCategorieClick(categorie);
       }}
     >
-      <div
-        className="px-2.5 py-0.5 m-2 cursor-pointer bg-white rounded-full select-none"
-        style={{
-          background: selected ? 'orange' : 'white',
-          fontWeight: selected ? 600 : 400,
-        }}
-      >
-        {categorie.name}
-      </div>
+      {categorie.name}
     </div>
   );
 }

@@ -1,127 +1,70 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import Button from '../component/Button';
 import CopyField from '../component/CopyField';
 import Link from '../component/Link';
 import SelectScrapWiki from '../component/SelectScrapWiki';
-import { getWikiPersonInfo, getWikiSearch, getWikiStreetInfo } from '../service/wiki.service';
+import { InputDesc } from '../type/Input';
 
 export default function StreetFormWikiHelper({
-  streetName,
+  form,
+  listOfPage,
   copyField,
+  fetchData,
 }: {
-  streetName: string;
-  copyField: (type: 'main' | 'sub', propName: string, value: string, source: string) => void;
+  form: InputDesc[];
+  listOfPage: { key: string; displayName: string }[];
+  copyField: (propName: string, value: string, source: string) => void;
+  fetchData: (searchStr: string) => any;
 }) {
-  const [wikiSearchResults, setWikiSearchResults] = useState<string[]>([]);
-  const [wikiStreetName, setWikiStreetName] = useState<string>('');
-  const [wikiPersonName, setWikiPersonName] = useState<string>('');
-  const [wikiStreetResult, setWikiStreetResult] = useState<any>(null);
-  const [wikiPersonResult, setWikiPersonResult] = useState<any>(null);
-  useEffect(() => {
-    (async () => {
-      const data = await getWikiSearch(streetName);
-      setWikiSearchResults(data.query.search.map((e: any) => e.title));
-      setWikiStreetName('');
-      setWikiPersonName('');
-      setWikiStreetResult(null);
-      setWikiPersonResult(null);
-    })();
-  }, [streetName]);
+  const [wikiResult, setWikiResult] = useState<any>(null);
+  const [path, setPath] = useState<any>(null);
+  const [displayIframe, setDisplayIframe] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      if (!wikiStreetName || wikiStreetName === '') return;
-      const data = await getWikiStreetInfo(wikiStreetName);
-      setWikiStreetResult(data);
-      setWikiPersonName('');
-      setWikiPersonResult(null);
-    })();
-  }, [wikiStreetName]);
-
-  useEffect(() => {
-    (async () => {
-      if (!wikiPersonName || wikiPersonName === '') return;
-      const data = await getWikiPersonInfo(wikiPersonName);
-      setWikiPersonResult(data);
-    })();
-  }, [wikiPersonName]);
+  const onSearch = async (searchStr: string) => {
+    const data = await fetchData(searchStr);
+    setPath(searchStr);
+    setWikiResult(data);
+  };
 
   return (
     <div className="flex flex-col p-1">
-      <h1 className="text-3xl font-bold text-center p-1 mb-5">Wikipedia helper</h1>
-      <SelectScrapWiki values={wikiSearchResults} onSearch={setWikiStreetName} />
-      {wikiStreetResult ? (
+      <SelectScrapWiki values={listOfPage} onSearch={onSearch} />
+      {wikiResult ? (
         <>
-          <Link link={`https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`} />
-          <div className="[&>*]:py-2">
-            <CopyField
-              value={wikiStreetResult.nameOrigin}
-              onClick={(value) =>
-                copyField(
-                  'main',
-                  'nameOrigin',
-                  value,
-                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
-                )
-              }
-            />
-            <CopyField
-              value={wikiStreetResult.history}
-              onClick={(value) =>
-                copyField(
-                  'main',
-                  'nameDescription',
-                  value,
-                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
-                )
-              }
-            />
-            <CopyField
-              value={wikiStreetResult.infoBoxData.creationDate}
-              onClick={(value) =>
-                copyField(
-                  'main',
-                  'creationDate',
-                  value,
-                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
-                )
-              }
-            />
-            <CopyField
-              value={wikiStreetResult.infoBoxData.namingDate}
-              onClick={(value) =>
-                copyField(
-                  'main',
-                  'namingDate',
-                  value,
-                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
-                )
-              }
-            />
-            <CopyField
-              value={wikiStreetResult.infoBoxData.length}
-              onClick={(value) =>
-                copyField(
-                  'main',
-                  'length',
-                  value,
-                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
-                )
-              }
-            />
-            <CopyField
-              value={wikiStreetResult.infoBoxData.width}
-              onClick={(value) =>
-                copyField(
-                  'main',
-                  'width',
-                  value,
-                  `https://fr.wikipedia.org/wiki/${wikiStreetName?.replaceAll(' ', '_')}`,
-                )
-              }
-            />
+          <Link link={`https://fr.wikipedia.org/wiki/${path}`} />
+          <div className="border-slate-900 border-2">
+            <Button text="Hide/Show" onClick={() => setDisplayIframe(!displayIframe)} />
+            {displayIframe ? (
+              <iframe
+                name="viewport"
+                id="inlineFrameExample"
+                title="Inline Frame Example"
+                width="100%"
+                height="500px"
+                src={`https://fr.wikipedia.org/wiki/${path}`}
+              />
+            ) : null}
           </div>
-          <SelectScrapWiki
+
+          <div className="[&>*]:py-2">
+            {form.map((inputDesc) => (
+              <CopyField
+                value={wikiResult?.[inputDesc.wikiPropName || inputDesc.name]}
+                onClick={(value) =>
+                  copyField(inputDesc.name, value, `https://fr.wikipedia.org/wiki/${path}`)
+                }
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+// {
+/* <SelectScrapWiki
             values={wikiStreetResult.nameOriginLinks.map((e: any) => e.name)}
             onSearch={setWikiPersonName}
           />
@@ -194,7 +137,5 @@ export default function StreetFormWikiHelper({
             </>
           ) : null}
         </>
-      ) : null}
-    </div>
-  );
-}
+      ) : null} */
+// }

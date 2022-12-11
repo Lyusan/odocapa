@@ -6,6 +6,7 @@ interface ButtonProp {
   textColor?: string;
   size?: 's' | 'md' | 'lg';
   text: string;
+  available?: boolean;
   onClick: () => void;
 }
 
@@ -13,8 +14,9 @@ const defaultProps = {
   size: 'md',
   color: 'bg-slate-100',
   textColor: 'text-black',
+  available: true,
 };
-export default function Button({ color, text, textColor, size, onClick }: ButtonProp) {
+export default function Button({ color, text, textColor, size, available, onClick }: ButtonProp) {
   let sizeClass;
   switch (size) {
     case 's':
@@ -29,9 +31,14 @@ export default function Button({ color, text, textColor, size, onClick }: Button
   }
   return (
     <button
-      className={classNames('block rounded-md', sizeClass, color, textColor)}
+      className={classNames('block rounded-md', sizeClass, color, textColor, {
+        'opacity-70': !available,
+        'cursor-default': !available,
+      })}
       type="button"
-      onClick={onClick}
+      onClick={() => {
+        if (available) onClick();
+      }}
     >
       {text}
     </button>

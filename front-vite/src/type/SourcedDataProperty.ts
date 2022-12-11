@@ -19,3 +19,10 @@ export const DEFAULT_SOURCED_DATA_PROPERTY = {
   source: null,
   type: null,
 };
+
+export const DEFAULT_SOURCED_DATA_PROPERTY_NULL = {
+  value: null,
+  lastUpdate: null,
+  source: null,
+  type: null,
+};

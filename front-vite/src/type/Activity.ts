@@ -4,9 +4,14 @@ export interface Activity {
   subActivities?: Activity[];
 }
 
-export const DEFAULT_ACTIVITIES: Activity[] = [
+export interface CatActivity extends Activity {
+  color: string;
+}
+
+export const DEFAULT_ACTIVITIES: CatActivity[] = [
   {
     value: 'ecclésiastique',
+    color: '#EE6352',
     level: 0,
     subActivities: [
       {
@@ -50,17 +55,21 @@ export const DEFAULT_ACTIVITIES: Activity[] = [
   {
     value: 'soft scientifique',
     level: 0,
+    color: '#111111',
     subActivities: [
       { value: 'historien', level: 0 },
       { value: 'sociologie', level: 0 },
       { value: 'philosophe', level: 0 },
       { value: 'anthropologue', level: 0 },
       { value: 'archéologie', level: 0 },
+      { value: 'philologue', level: 0 },
+      { value: 'juriste', level: 0 },
     ],
   },
   {
     value: 'scientifique',
     level: 0,
+    color: '#111111',
     subActivities: [
       { value: 'médecin', level: 0 },
       { value: 'astronome', level: 0 },
@@ -72,29 +81,61 @@ export const DEFAULT_ACTIVITIES: Activity[] = [
       { value: 'inventeur', level: 0 },
       { value: 'ingénieur', level: 0 },
       { value: 'économiste', level: 0 },
+      { value: 'architecte', level: 0 },
+      { value: 'biologiste', level: 0 },
     ],
+  },
+  {
+    value: 'haut fonctionnaire',
+    level: 0,
+    color: '#02182B',
   },
   {
     value: 'industriel',
     level: 0,
+    color: '#02182B',
+  },
+  {
+    value: 'artisant',
+    level: 0,
+    color: '#02182B',
   },
   {
     value: 'journaliste',
     level: 0,
+    color: '#68C5DB',
+  },
+  {
+    value: 'police',
+    level: 0,
+    color: '#68C5DB',
   },
   {
     value: 'artiste',
+    color: '#D7263D',
     level: 0,
     subActivities: [
       { value: 'peintre', level: 0 },
       { value: 'architecte', level: 0 },
       { value: 'photographe', level: 0 },
       {
+        value: 'spectacle',
+        level: 0,
+        subActivities: [
+          { value: 'danse', level: 0 },
+          { value: 'chorégraphie', level: 0 },
+          { value: 'actrice', level: 0 },
+        ],
+      },
+      {
         value: 'musicien',
         level: 0,
         subActivities: [
           { value: 'compositeur', level: 0 },
           { value: 'pianiste', level: 0 },
+          { value: 'chanteuse', level: 0 },
+          { value: 'violoniste', level: 0 },
+          { value: 'chef d’orchestre', level: 0 },
         ],
       },
       { value: 'sculteur', level: 0 },
@@ -104,6 +145,8 @@ export const DEFAULT_ACTIVITIES: Activity[] = [
         subActivities: [
           { value: 'poète', level: 0 },
           { value: 'dramaturge', level: 0 },
+          { value: 'romancier', level: 0 },
+          { value: 'essayiste', level: 0 },
         ],
       },
       {
@@ -118,20 +161,40 @@ export const DEFAULT_ACTIVITIES: Activity[] = [
     ],
   },
   {
+    value: 'sportif',
+    color: '#DDCA7D',
+    level: 0,
+    subActivities: [{ value: 'escrimeur', level: 0 }],
+  },
+  {
     value: 'explorateur',
+    color: '#DDCA7D',
     level: 0,
   },
   {
+    value: 'noble',
+    color: '#A27035',
+    level: 0,
+    subActivities: [
+      { value: 'roi', level: 0 },
+      { value: 'duc', level: 0 },
+      { value: 'comte', level: 0 },
+    ],
+  },
+  {
     value: 'banquier',
+    color: '#242331',
     level: 0,
   },
   {
     value: 'politicien',
+    color: '#F76060',
     level: 0,
     subActivities: [{ value: 'syndicaliste', level: 0 }],
   },
   {
     value: 'militaire',
+    color: '#3B73D4',
     level: 0,
     subActivities: [
       { value: 'amiral', level: 0 },
@@ -145,15 +208,27 @@ export const DEFAULT_ACTIVITIES: Activity[] = [
   },
   {
     value: 'résistant',
+    color: '#4D5061',
     level: 0,
   },
   {
     value: 'justice',
+    color: '#FF8D8D',
     level: 0,
     subActivities: [{ value: 'avocat', level: 0 }],
   },
   {
-    value: 'propriétaire',
+    value: 'marchand',
+    color: '#FF8D8D',
     level: 0,
+  },
+  {
+    value: 'propriétaire',
+    color: '#E7E247',
+    level: 0,
+    subActivities: [
+      { value: 'proprio', level: 0 },
+      { value: 'habitant', level: 0 },
+    ],
   },
 ];

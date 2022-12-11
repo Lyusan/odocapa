@@ -4,14 +4,14 @@ import Button from './Button';
 import TextInput from './TextInput';
 
 interface SelectScrapWikiProp {
-  values: string[];
+  values: { key: string; displayName: string }[];
   onSearch: (value: string) => void;
 }
 
 export default function SelectScrapWiki({ values, onSearch }: SelectScrapWikiProp) {
-  const [selectValue, setSelectValue] = useState<string>('');
+  const [selectValue, setSelectValue] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
-  useEffect(() => setSelectValue(values[0]), [values]);
+  useEffect(() => setSelectValue(values[0]?.key), [values]);
   return (
     <div className="w-full gap-1" style={{ display: 'flex', flexDirection: 'row' }}>
       <div className="w-1/2 gap-1" style={{ display: 'flex', flexDirection: 'column' }}>
@@ -19,9 +19,9 @@ export default function SelectScrapWiki({ values, onSearch }: SelectScrapWikiPro
           name="wikitreetName"
           value={selectValue}
           values={values}
-          onChange={(name, value) => setSelectValue(value)}
+          onChange={(name, value) => setSelectValue(value as string)}
         />
-        <Button text="search" onClick={() => onSearch(selectValue)} />
+        <Button text="search" available={!!selectValue} onClick={() => onSearch(selectValue!)} />
       </div>
       <div className="w-1/2 gap-1" style={{ display: 'flex', flexDirection: 'column' }}>
         <TextInput

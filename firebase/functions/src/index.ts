@@ -102,8 +102,9 @@ export const scrapeWikiPerson =
       if (!infoBox) infoBox = doc.querySelector('table.infobox_v2');
       console.log(infoBox);
       const res: any = {};
+      let infoBoxData: any = {},
       if (infoBox) {
-        res.infoboxData = handleInfoboxData(infoBox, personInfoboxMap);
+        infoBoxData = handleInfoboxData(infoBox, personInfoboxMap);
       }
       const content = doc.querySelector('div.mw-parser-output');
       const childrens = content?.children as HTMLCollectionBase;
@@ -139,9 +140,9 @@ export const scrapeWikiPerson =
             firstParagraphMatch2 = true;
           }
         }
-        res.descriptionParts2 = cleanUp(descriptionParts2?.join(''));
+        res.descriptionParts = cleanUp(descriptionParts2?.join(''));
       }
-      response.send(res);
+      response.send({...res, ...infoBoxData});
     });
   });
 
@@ -184,7 +185,7 @@ export const scrapeWikiStreet =
           }
         }
       }
-      response.send({ history: cleanUp(history.join('')), nameOrigin: cleanUp(nameOrigin.join('')), nameOriginLinks, infoBoxData });
+      response.send({ history: cleanUp(history.join('')), nameOrigin: cleanUp(nameOrigin.join('')), nameOriginLinks, ...infoBoxData });
     });
   });
 
@@ -204,3 +205,4 @@ export const wikiSearch =
       }
     });
   });
+

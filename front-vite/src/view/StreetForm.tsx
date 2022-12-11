@@ -14,8 +14,11 @@ import {
 import StreetFormWikiHelper from './StreetFormWikiHelper';
 import MapStreetViewer from '../component/Map/MapStreetViewer';
 import { Street, STREET_FORM_DESC } from '../type/Street';
-import { MinimalStreetSub, SubItem, SUB_ITEM_MAP } from '../type/SubItem';
+import { MinimalSubItem, SUB_ITEM_MAP, TypeOfName } from '../type/SubItem';
 import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
+import SubItemSelector from '../component/SubItemSelector';
+import { getWikiPersonInfo, getWikiSearch, getWikiStreetInfo } from '../service/wiki.service';
+import Modal from '../component/Modal';
 
 interface StreetFormProp {
   streetId: string | null;
@@ -24,62 +27,66 @@ interface StreetFormProp {
 
 export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
   const [street, setStreet] = useState<Street | null>(null);
-  const [streetSubName, setStreetSubName] = useState<string>('');
-  const [streetSubItem, setStreetSubItem] = useState<SubItem | null>(null);
-  const [streetSubItems, setStreetSubItems] = useState<MinimalStreetSub[]>([]);
+  const [streetSubItems, setStreetSubItems] = useState<MinimalSubItem[]>([]);
+  const [streetWikiPages, setStreetWikiPages] = useState<any[]>([]);
+  const [displayParisDataInfo, setDisplayParisDataInfo] = useState<boolean>();
+
   useEffect(() => {
     (async () => {
       setStreet(null);
-      setStreetSubName('');
-      setStreetSubItem(null);
       setStreetSubItems([]);
       if (streetId) {
         const newStreet = await getStreetDoc(streetId);
         setStreet(newStreet);
-        if (newStreet.id) {
-          const newSubItem = await getStreetSubItemDoc(newStreet.id);
-          setStreetSubName(newSubItem.name.value);
-          setStreetSubItem(newSubItem);
-        }
+        setStreetWikiPages(await getWikiSearch(newStreet.name));
       }
+      const items = await getStreetSubItemsDocs();
+      setStreetSubItems(items);
     })();
   }, [streetId]);
-  useEffect(() => {
-    // TOTO: improve perf by checking that only type change
-    (async () => {
-      if (street) {
-        const items = await getStreetSubItemsDocs(street.typeOfName.value);
-        setStreetSubItems(items);
-        if (street.subId) {
-          const item = await getStreetSubItemDoc(street.subId);
-          setStreetSubItem(item);
-        }
-      }
-    })();
-  }, [street]);
   const save = async () => {
     if (!street) return;
     const newStreet = { ...street };
-    if (streetSubItem) {
-      const id = await setSubItemDoc(streetSubItem);
-      newStreet.subId = id;
-    }
+
+    newStreet.subIds = await Promise.all(
+      newStreet.subItems.map((subItem) => setSubItemDoc(subItem)),
+    );
+
     if (street) {
       setStreetDoc(newStreet);
       setStreet(newStreet);
     }
     onSaveStreet(newStreet);
   };
-  const detachSubObject = () => {
-    setStreetSubName('');
+
+  const detachSubItem = (itemIndex: number) => {
     if (street) {
       setStreet({
         ...street,
-        subId: null,
+        subIds: street.subIds.filter((_, index) => index !== itemIndex),
+        subItems: street.subItems.filter((_, index) => index !== itemIndex),
         lastUpdate: Timestamp.fromDate(new Date()),
       });
     }
-    setStreetSubItem(null);
+  };
+  const createSubItem = async (type: TypeOfName) => {
+    if (street) {
+      setStreet({
+        ...street,
+        subItems: [...street.subItems, { ...SUB_ITEM_MAP[type].default, type }],
+        lastUpdate: Timestamp.fromDate(new Date()),
+      });
+    }
+  };
+  const attachSubItem = async (itemId: string) => {
+    if (street) {
+      setStreet({
+        ...street,
+        subIds: [...street.subIds, itemId],
+        subItems: [...street.subItems, await getStreetSubItemDoc(itemId)],
+        lastUpdate: Timestamp.fromDate(new Date()),
+      });
+    }
   };
   const handleFormChange = (
     name: string,
@@ -87,7 +94,6 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
     source: string | null = null,
     isCopy: boolean = false,
   ) => {
-    if (name === 'typeOfName') detachSubObject();
     if (street) {
       const oldType = (street as any)[name].type;
       const oldSource = (street as any)[name].source;
@@ -129,13 +135,16 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
     }
   };
   const handleSubFormChange = (
+    subItemIndex: number,
     name: string,
     value: any,
     source: string | null = null,
     isCopy: boolean = false,
   ) => {
-    const oldType = (streetSubItem as any)[name].type;
-    const oldSource = (streetSubItem as any)[name].source;
+    if (!street) return;
+    const subItem = street.subItems[subItemIndex];
+    const oldType = (subItem as any)[name].type;
+    const oldSource = (subItem as any)[name].source;
     const computeType = () => {
       if (isCopy) return SourcedDataPropertyType.COPY;
       if (
@@ -147,105 +156,120 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
       return SourcedDataPropertyType.CUSTOM;
     };
     const type = computeType();
-    if (streetSubItem) {
-      setStreetSubItem({
-        ...streetSubItem,
+    if (subItem) {
+      const newSubItem = {
+        ...subItem,
         [name]: {
-          ...(streetSubItem as any)[name],
+          ...(subItem as any)[name],
           value,
           source: source || oldSource,
           type,
           lastUpdate: Timestamp.fromDate(new Date()),
         },
         lastUpdate: Timestamp.fromDate(new Date()),
+      };
+      setStreet({
+        ...street,
+        subItems: street.subItems.map((si, index) => (index === subItemIndex ? newSubItem : si)),
+        lastUpdate: Timestamp.fromDate(new Date()),
       });
     }
   };
-  const specificFormParam = SUB_ITEM_MAP[street?.typeOfName?.value || 'Autre'].form;
-  if (!specificFormParam) throw new Error(`Can't find the form of ${street?.typeOfName?.value}`);
-  const specificForm = (
-    <FormBuilder
-      form={specificFormParam}
-      values={streetSubItem as any}
-      onValueChange={handleSubFormChange}
-      onTypeChange={() => {}}
-    />
-  );
+  const subItemsForms = street?.subItems?.map((subItem, index) => (
+    <>
+      <div className="col-start-1">
+        <Button
+          color="bg-red-400"
+          text="Détacher l'object"
+          onClick={() => {
+            detachSubItem(index);
+          }}
+        />
+        <FormBuilder
+          form={SUB_ITEM_MAP[subItem.type].form}
+          values={subItem}
+          onValueChange={(propertyName, newValue) =>
+            handleSubFormChange(index, propertyName, newValue)
+          }
+          onTypeChange={() => {}}
+        />
+      </div>
+      <div className="col-start-2 p-4">
+        <StreetFormWikiHelper
+          form={SUB_ITEM_MAP[subItem.type].form}
+          listOfPage={streetWikiPages}
+          copyField={(propName, value, source) => {
+            handleSubFormChange(index, propName, value, source, true);
+          }}
+          fetchData={getWikiPersonInfo}
+        />
+      </div>
+      <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
+    </>
+  ));
 
   return (
-    <div className="flex w-full">
+    <div className="grid grid-cols-2 w-full full-view">
       {!street ? (
         <p>Loading...</p>
       ) : (
         <>
-          <div className="w-1/2 p-4 relative overflow-y-auto">
-            <div className="absolute right-4">
-              <Button color="bg-blue-500" textColor="text-white" text="SAVE" onClick={save} />
-            </div>
+          <div className="p-4 relative">
             <div className="flex items-center">
-              <div className="w-72 h-72">
+              <div className="w-64 h-40">
                 <MapStreetViewer coords={JSON.parse(street?.coords || '[[]]')} />
               </div>
               <h1 className="pl-5 text-3xl font-bold p-1">{street?.name}</h1>
             </div>
-            <div className="my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
-            <FormBuilder
-              form={STREET_FORM_DESC}
-              values={street}
-              onValueChange={handleFormChange}
-              onTypeChange={handleDataPropTypeFormChange}
-            />
-            <div className="my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
-            <div className="flex [&>*]:w-1/2 gap-2">
-              <BaseSelect
-                name="selectSubObject"
-                value={streetSubName}
-                values={streetSubItems.map((item) => item.name)}
-                withNoOption
-                onChange={(name, value) => {
-                  if (value === '') detachSubObject();
-                  else {
-                    setStreet({
-                      ...street,
-                      subId: streetSubItems.find((i) => i.name === value)?.id!,
-                      lastUpdate: Timestamp.fromDate(new Date()),
-                    });
-                    setStreetSubName(value);
-                  }
-                }}
-              />
-              {streetSubItem ? (
-                <Button
-                  color="bg-red-400"
-                  text="Détacher l'object"
-                  onClick={() => {
-                    detachSubObject();
-                  }}
-                />
-              ) : (
-                <Button
-                  color="bg-blue-500"
-                  textColor="text-white"
-                  text="Créé un nouvel object"
-                  onClick={() =>
-                    setStreetSubItem({
-                      ...SUB_ITEM_MAP[street.typeOfName.value].default,
-                      type: street.typeOfName.value as SourcedDataPropertyType,
-                    })
-                  }
-                />
-              )}
-            </div>
-            {streetSubItem ? specificForm : null}
           </div>
-          <div className="w-1/2 p-4 overflow-y-auto">
-            <StreetFormWikiHelper
-              streetName={street.name}
-              copyField={(type, propName, value, source) => {
-                if (type === 'main') handleFormChange(propName, value, source, true);
-                handleSubFormChange(propName, value, source, true);
-              }}
-            />
+          <div className="flex justify-center items-center">
+            <div className="absolute flex gap-2 right-4 top-4">
+              <Button text="INFO" onClick={() => setDisplayParisDataInfo(true)} />
+              <Button color="bg-blue-500" textColor="text-white" text="SAVE" onClick={save} />
+              {displayParisDataInfo ? (
+                <Modal title="info" onClose={() => setDisplayParisDataInfo(false)}>
+                  <>
+                    {Object.entries(street.parisDataInfo)
+                      .filter((e) => e[0] !== 'coords')
+                      .sort((e1, e2) => (e1[0] > e2[0] ? 1 : -1))
+                      .map(([st, el]) => (
+                        <div>{`${st}: ${el}`}</div>
+                      ))}
+                  </>
+                </Modal>
+              ) : null}
+            </div>
+            <h1 className="col-start-2 text-3xl font-bold">Wikipedia helper</h1>
+          </div>
+          <div className="col-span-2 grid grid-cols-2 w-full overflow-y-auto">
+            <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
+            <div className="col-start-1">
+              <FormBuilder
+                form={STREET_FORM_DESC}
+                values={street}
+                onValueChange={handleFormChange}
+                onTypeChange={handleDataPropTypeFormChange}
+              />
+            </div>
+            <div className="col-start-2 p-4">
+              <StreetFormWikiHelper
+                form={STREET_FORM_DESC}
+                listOfPage={streetWikiPages}
+                copyField={(propName, value, source) => {
+                  handleFormChange(propName, value, source, true);
+                }}
+                fetchData={getWikiStreetInfo}
+              />
+            </div>
+            <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
+            {subItemsForms}
+            <div className="col-span-2">
+              <SubItemSelector
+                subItems={streetSubItems}
+                attachSubItem={attachSubItem}
+                createSubItem={createSubItem}
+              />
+            </div>
           </div>
         </>
       )}

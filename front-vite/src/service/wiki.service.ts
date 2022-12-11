@@ -31,5 +31,5 @@ export async function getWikiSearch(searchString: string) {
     await axios.get(`${FIREBASE_URL}/wikiSearch`, {
       params: { searchStr: searchString },
     })
-  ).data;
+  ).data.query.search.map((e: any) => ({ key: e.title.replace(' ', '_'), displayName: e.title }));
 }

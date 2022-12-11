@@ -2,6 +2,7 @@
 import React from 'react';
 import { Activity } from '../type/Activity';
 import { InputDesc, InputOnChange } from '../type/Input';
+import { PoliticScale } from '../type/PoliticScale';
 import { SourcedDataProperty, SourcedDataPropertyType } from '../type/SourcedDataProperty';
 import ActivitySelector from './ActivitySelector';
 import BaseLabelInput from './BaseLabelInput';
@@ -9,6 +10,7 @@ import BaseSelect from './BaseSelect';
 import ButtonDataPropertyType from './ButtonDataPropertyType';
 import DateMomentAgo from './DateMomentAgo';
 import Link from './Link';
+import PoliticScaleSelector from './PoliticScaleSelector';
 import TextInput from './TextInput';
 
 interface SwitchInputProp {
@@ -29,6 +31,14 @@ function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchIn
         />
       );
       break;
+    case 'politicScale':
+      input = (
+        <PoliticScaleSelector
+          politicScale={value.value as PoliticScale[]}
+          onChange={(activities) => onValueChange(inputDesc.name, activities)}
+        />
+      );
+      break;
     case 'select':
       input = (
         <BaseSelect
@@ -40,6 +50,7 @@ function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchIn
       );
       break;
     case 'text':
+    case 'number':
     case 'textarea':
       input = (
         <TextInput

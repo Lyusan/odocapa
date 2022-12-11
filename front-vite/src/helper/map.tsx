@@ -2,6 +2,8 @@ import L from 'leaflet';
 import Arrondissements from '../data/arrondissements.json';
 import Streets from '../data/streets.json';
 import FullStreets from '../data/fullStreets.json';
+import ParisStreets from '../data/paris-open-data-streets.json';
+import ParisStreetsNames from '../data/paris-open-data-streets-names.json';
 
 export const HIGHWAYS_TYPES = [
   'motorway',
@@ -82,7 +84,8 @@ export function cleanUpStreets() {
       isAtLeastOneCoordInPolygons(
         street.geometry.coordinates as [number, number][],
         getArrondissements().map((a) => a.polygon),
-      ));
+      ),
+    );
   const resMap: Record<string, ToTo> = {};
   filteredStreets.forEach((street: any) => {
     const streetName = street.properties.name;
@@ -98,4 +101,26 @@ export function cleanUpStreets() {
       );
     }
   });
+}
+
+export function TEST() {
+  const parisStreets = (ParisStreets as any).map((e: any) => e.fields);
+  const parisStreetsNames = (ParisStreetsNames as any).map((e: any) => e.fields);
+  console.log(parisStreets);
+  console.log(parisStreetsNames);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.arrdt))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.longueur))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.largeur))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.historique))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.denomination))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.classement))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.observation))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.nivellement))]);
+  console.log([...new Set(parisStreetsNames.map((e: any) => e.assainissement))]);
+  const test = parisStreetsNames.map((e1: any) => {
+    const e2 = parisStreets.find((e2: any) => e2.c_voie_vp === e1.cvoie);
+    return { ...e1, linearCoords: e2?.geom };
+  });
+
+  // batchSetStreets2(test);
 }
