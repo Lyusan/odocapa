@@ -14,19 +14,21 @@ export default function CategorieSelector({
   onCategorieClick,
 }: ColorPickerProps) {
   return (
-    <div
-      className={classNames(
-        'px-3.5 py-1 m-2 rounded-full select-none transition-opacity duration-1000 border-2 border-black bg-white',
-        {
-          'font-normal opacity-60 cursor-pointer hover:opacity-100': !selected,
-        },
-        { 'font-semibold ': selected },
-      )}
-      onClick={() => {
-        if (!selected) onCategorieClick(categorie);
-      }}
-    >
-      {categorie.name}
+    <div style={{ width: 'fit-content' }}>
+      <div
+        className={classNames(
+          'px-3.5 py-1 mx-1 rounded-full select-none transition-all duration-500 border-2 border-black bg-white',
+          {
+            'text-xs font-normal opacity-60 cursor-pointer hover:opacity-100': !selected,
+          },
+          { 'font-semibold ': selected },
+        )}
+        onClick={() => {
+          if (!selected) onCategorieClick(categorie);
+        }}
+      >
+        {categorie.name}
+      </div>
     </div>
   );
 }

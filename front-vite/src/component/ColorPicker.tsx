@@ -20,8 +20,7 @@ export default function ColorPicker({ color, size, shape, scale, selected }: Col
     >
       <div
         className={classNames('w-full h-full transition-transform duration-300', {
-          'scale-0': !selected,
-          'scale-50': selected && scale === 'half',
+          'scale-[0.40]': !selected || scale === 'half',
           'rounded-full': shape === 'circle',
         })}
         style={{ backgroundColor: color }}

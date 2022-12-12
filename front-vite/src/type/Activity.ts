@@ -6,11 +6,13 @@ export interface Activity {
 
 export interface CatActivity extends Activity {
   color: string;
+  name: string;
 }
 
 export const DEFAULT_ACTIVITIES: CatActivity[] = [
   {
     value: 'ecclésiastique',
+    name: 'Ecclésiastique',
     color: '#EE6352',
     level: 0,
     subActivities: [
@@ -54,8 +56,9 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
   },
   {
     value: 'soft scientifique',
+    name: 'Scientifique SHS',
     level: 0,
-    color: '#111111',
+    color: '#00AA00',
     subActivities: [
       { value: 'historien', level: 0 },
       { value: 'sociologie', level: 0 },
@@ -68,8 +71,9 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
   },
   {
     value: 'scientifique',
+    name: 'Scientifique',
     level: 0,
-    color: '#111111',
+    color: '#0000AA',
     subActivities: [
       { value: 'médecin', level: 0 },
       { value: 'astronome', level: 0 },
@@ -85,33 +89,39 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
       { value: 'biologiste', level: 0 },
     ],
   },
-  {
-    value: 'haut fonctionnaire',
-    level: 0,
-    color: '#02182B',
-  },
-  {
-    value: 'industriel',
-    level: 0,
-    color: '#02182B',
-  },
+  // {
+  //   value: 'haut fonctionnaire',
+  //   name: 'Haut fonctionnaire',
+  //   level: 0,
+  //   color: '#02182B',
+  // },
+  // {
+  //   value: 'industriel',
+  //   name: 'Industriel',
+  //   level: 0,
+  //   color: '#02182B',
+  // },
   {
     value: 'artisant',
+    name: 'Artisan',
     level: 0,
     color: '#02182B',
   },
   {
     value: 'journaliste',
+    name: 'Journaliste',
     level: 0,
     color: '#68C5DB',
   },
   {
     value: 'police',
+    name: 'Police',
     level: 0,
     color: '#68C5DB',
   },
   {
     value: 'artiste',
+    name: 'Artiste',
     color: '#D7263D',
     level: 0,
     subActivities: [
@@ -162,17 +172,20 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
   },
   {
     value: 'sportif',
+    name: 'Sportif',
     color: '#DDCA7D',
     level: 0,
     subActivities: [{ value: 'escrimeur', level: 0 }],
   },
   {
     value: 'explorateur',
+    name: 'Explorateur',
     color: '#DDCA7D',
     level: 0,
   },
   {
     value: 'noble',
+    name: 'Noble',
     color: '#A27035',
     level: 0,
     subActivities: [
@@ -181,19 +194,22 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
       { value: 'comte', level: 0 },
     ],
   },
-  {
-    value: 'banquier',
-    color: '#242331',
-    level: 0,
-  },
+  // {
+  //   value: 'banquier',
+  //   name: 'Banquier',
+  //   color: '#242331',
+  //   level: 0,
+  // },
   {
     value: 'politicien',
+    name: 'Politicien',
     color: '#F76060',
     level: 0,
     subActivities: [{ value: 'syndicaliste', level: 0 }],
   },
   {
     value: 'militaire',
+    name: 'Militaire',
     color: '#3B73D4',
     level: 0,
     subActivities: [
@@ -208,22 +224,26 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
   },
   {
     value: 'résistant',
+    name: 'Résistant',
     color: '#4D5061',
     level: 0,
   },
   {
     value: 'justice',
+    name: 'Professionel de la justice',
     color: '#FF8D8D',
     level: 0,
     subActivities: [{ value: 'avocat', level: 0 }],
   },
   {
     value: 'marchand',
+    name: 'Marchand',
     color: '#FF8D8D',
     level: 0,
   },
   {
     value: 'propriétaire',
+    name: 'Propriétaire',
     color: '#E7E247',
     level: 0,
     subActivities: [

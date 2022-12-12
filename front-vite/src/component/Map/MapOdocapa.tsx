@@ -152,38 +152,7 @@ const MapOdocapa = forwardRef(
           });
           const currentCat = categorie.categorize(street)?.primary;
           if (!categoryValues.find((e) => e.name === currentCat?.name)) return;
-          if (!currentCat) {
-            if (!newSources.black) {
-              newSources.black = {
-                name: 'source-black',
-                source: {
-                  type: 'FeatureCollection',
-                  features: [] as any,
-                },
-              };
-              newLayers.black = {
-                id: 'layer-black',
-                type: 'line',
-                source: 'source-black',
-
-                layout: {
-                  'line-join': 'round',
-                  'line-cap': 'round',
-                },
-                paint: {
-                  // 'line-color': '#AAAAAA',
-                  'line-width': 1,
-                  'line-opacity': 0,
-                },
-              };
-            }
-            newSources.black.source.features.push({
-              type: 'Feature',
-              id: street.id,
-              properties: { ID: street.id },
-              geometry: JSON.parse(street.coords),
-            });
-          } else {
+          if (currentCat) {
             if (!newSources[currentCat.name]) {
               newSources[currentCat.name] = {
                 name: `source-${currentCat.name}`,
@@ -233,10 +202,10 @@ const MapOdocapa = forwardRef(
             geometry: JSON.parse(street.coords),
           });
           const categorizationResult = categorie.categorize(street);
-          let type: string;
+          let type: string | null;
           let opacity = 1;
           const categoryValue = categoryValues[0];
-          if (!categorizationResult) type = 'black';
+          if (!categorizationResult) type = null;
           else if (categorizationResult.primary?.name === categoryValue.name) {
             type = 'primary';
           } else if (categorizationResult.secondary.find((cv) => cv.name === categoryValue.name)) {
@@ -245,8 +214,8 @@ const MapOdocapa = forwardRef(
           } else if (categorizationResult.tertiary.find((cv) => cv.name === categoryValue.name)) {
             opacity = 0.15;
             type = 'tertiary';
-          } else type = 'black';
-
+          } else type = null;
+          if (!type) return;
           if (!newSources[type]) {
             newSources[type] = {
               name: `source-${type}`,
@@ -267,8 +236,8 @@ const MapOdocapa = forwardRef(
                 'line-cap': 'round',
               },
               paint: {
-                'line-color': type === 'black' ? null : categoryValue.color,
-                'line-width': type === 'black' ? 1 : lineWidth,
+                'line-color': categoryValue.color,
+                'line-width': lineWidth,
                 'line-opacity': opacity,
               },
             };
@@ -302,11 +271,13 @@ const MapOdocapa = forwardRef(
       if (hoverId) map.getCanvas().style.cursor = 'pointer';
       else map.getCanvas().style.cursor = '';
       if (isHover) {
-        map.removeLayer('layer-hover');
+        map.removeLayer('layer-plain-hover');
+        map.removeLayer('layer-border-hover');
         map.removeSource('source-hover');
       }
       const street = streets.find((s) => s.id === hoverId);
       if (street) {
+        const categoryValue = categorie.categorize(street);
         const source = {
           type: 'geojson',
           data: {
@@ -321,25 +292,38 @@ const MapOdocapa = forwardRef(
             ],
           },
         };
-        const layer = {
-          id: 'layer-hover',
+        const layerPlain = {
+          id: 'layer-border-hover',
           type: 'line',
           source: 'source-hover',
-          options: {
-            clickTolerance: 10,
-          },
           layout: {
             'line-join': 'round',
             'line-cap': 'round',
           },
           paint: {
-            'line-color': '#111111',
+            'line-color': categoryValue?.primary?.color || '#FFFFFF',
             'line-width': lineWidth * 1.5,
             'line-opacity': 1,
           },
         };
+        const layerBorder = {
+          id: 'layer-plain-hover',
+          type: 'line',
+          source: 'source-hover',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          paint: {
+            'line-color': '#777777',
+            'line-gap-width': lineWidth * 1.5,
+            'line-width': lineWidth * 1,
+            'line-opacity': 1,
+          },
+        };
         map.addSource('source-hover', source as any);
-        map.addLayer(layer as any);
+        map.addLayer(layerBorder as any);
+        map.addLayer(layerPlain as any);
         newIsHover = true;
       }
       if (isHover !== newIsHover) setIsHover(newIsHover);

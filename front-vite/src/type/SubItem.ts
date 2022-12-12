@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
-import { Activity } from './Activity';
+import { Activity, CatActivity } from './Activity';
 import { InputDesc } from './Input';
 import { PoliticScale } from './PoliticScale';
 import {
@@ -59,7 +59,7 @@ export interface SubItemPerson extends SubItem {
   gender: SourcedDataProperty<string>;
   lifeCentury: SourcedDataProperty<number>;
   politicScale: SourcedDataProperty<PoliticScale[]>;
-  activity: SourcedDataProperty<Activity[]>;
+  activity: SourcedDataProperty<CatActivity[]>;
 }
 
 export interface SubItemBattle extends SubItem {

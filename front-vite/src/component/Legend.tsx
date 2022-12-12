@@ -15,7 +15,8 @@ export default function Legend({
   selectedValueCategories,
 }: LegendProps) {
   const onsetSelectValueCategories = (cv: CategorieValue, isAlreadySelected: boolean) => {
-    if (categorie.select === 'single') return isAlreadySelected ? [] : [cv];
+    // if (categorie.select === 'single') return isAlreadySelected ? [] : [cv];
+    if (selectedValueCategories.length === categorie.values.length) return [cv];
     return isAlreadySelected
       ? selectedValueCategories.filter((scv) => scv.name !== cv.name)
       : selectedValueCategories.concat(cv);
@@ -27,7 +28,9 @@ export default function Legend({
         <div
           className="cursor-pointer pl-4"
           onClick={() => {
-            onSelectValueCategories(selectedValueCategories.length > 0 ? [] : categorie.values);
+            onSelectValueCategories(
+              selectedValueCategories.length === categorie.values.length ? [] : categorie.values,
+            );
           }}
         >
           <ColorPicker
@@ -58,7 +61,8 @@ export default function Legend({
               color={categoryValue.color}
               size={20}
               selected={isSelected}
-              shape={categorie.select === 'single' ? 'circle' : 'square'}
+              // shape={categorie.select === 'single' ? 'circle' : 'square'}
+              shape="square"
             />
             <div className="pl-2">{categoryValue.name}</div>
           </div>

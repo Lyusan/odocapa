@@ -1,3 +1,4 @@
+/* eslint-disable no-confusing-arrow */
 /* eslint-disable no-nested-ternary */
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
@@ -71,17 +72,21 @@ export default function SideCardStreet({ street }: StreetCardProp) {
         >
           Rue
         </button>
-        {street.subItems.map((subItem, subItemIndex) => (
-          <button
-            className={classNames('border-orange-500', {
-              'border-b-4 font-semibold': currentDisplay === subItemIndex,
-            })}
-            type="button"
-            onClick={() => setCurrentDisplay(subItemIndex)}
-          >
-            {subItem.name.value}
-          </button>
-        ))}
+        {street.subItems
+          .map((subItem, subItemIndex) =>
+            subItem.description.source ? (
+              <button
+                className={classNames('border-orange-500', {
+                  'border-b-4 font-semibold': currentDisplay === subItemIndex,
+                })}
+                type="button"
+                onClick={() => setCurrentDisplay(subItemIndex)}
+              >
+                {subItem.name.value}
+              </button>
+            ) : null,
+          )
+          .filter((item) => item !== null)}
         <button
           className={classNames('border-orange-500', {
             'border-b-4 font-semibold': currentDisplay === street.subItems.length,

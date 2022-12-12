@@ -27,7 +27,11 @@ const DEFAULT_RESULT = {
 };
 export type Categories = Categorie[];
 
-const CAT_ACTIVITY_LIST = DEFAULT_ACTIVITIES.map((e) => ({ name: e.value, color: e.color }));
+const CAT_ACTIVITY_LIST = DEFAULT_ACTIVITIES.map((e) => ({
+  name: e.name,
+  color: e.color,
+  value: e.value,
+})).sort((a, b) => a.name.localeCompare(b.name));
 
 const CAT_TYPE_DE = [
   {
@@ -35,76 +39,16 @@ const CAT_TYPE_DE = [
     color: '#E08C2B',
   },
   {
-    name: 'place',
-    color: '#BF3131',
-  },
-  {
-    name: 'allée',
-    color: '#BF3131',
-  },
-  {
-    name: 'carrefour',
-    color: '#BF3131',
+    name: 'route',
+    color: '#E08C2B',
   },
   {
     name: 'chemin',
-    color: '#BF3131',
+    color: '#E08C2B',
   },
   {
-    name: 'esplanade',
-    color: '#BF3131',
-  },
-  {
-    name: 'galerie',
-    color: '#BF3131',
-  },
-  {
-    name: 'pont',
-    color: '#BF3131',
-  },
-  {
-    name: 'port',
-    color: '#BF3131',
-  },
-  {
-    name: 'porte',
-    color: '#BF3131',
-  },
-  {
-    name: 'promenade',
-    color: '#BF3131',
-  },
-  {
-    name: 'quai',
-    color: '#BF3131',
-  },
-  {
-    name: 'square',
-    color: '#BF3131',
-  },
-  {
-    name: 'voie',
-    color: '#BF3131',
-  },
-  {
-    name: 'route',
-    color: '#BF3131',
-  },
-  {
-    name: 'impasse',
-    color: '#BF3131',
-  },
-  {
-    name: 'passage',
-    color: '#BF3131',
-  },
-  {
-    name: 'cité',
-    color: '#BF3131',
-  },
-  {
-    name: 'villa',
-    color: '#BF3131',
+    name: 'allée',
+    color: '#E08C2B',
   },
   {
     name: 'boulevard',
@@ -115,8 +59,71 @@ const CAT_TYPE_DE = [
     color: '#BF3131',
   },
   {
+    name: 'carrefour',
+    color: '#31DCC8',
+  },
+
+  {
     name: 'rond-point',
-    color: '#BF3131',
+    color: '#31DCC8',
+  },
+  {
+    name: 'place',
+    color: '#31DCC8',
+  },
+  {
+    name: 'porte',
+    color: '#31DCC8',
+  },
+
+  {
+    name: 'pont',
+    color: '#006CC8',
+  },
+  {
+    name: 'port',
+    color: '#006CC8',
+  },
+  {
+    name: 'quai',
+    color: '#006CC8',
+  },
+  {
+    name: 'promenade',
+    color: '#2CCB13',
+  },
+
+  {
+    name: 'square',
+    color: '#2CCB13',
+  },
+  {
+    name: 'impasse',
+    color: '#BFEDC1',
+  },
+  {
+    name: 'cité',
+    color: '#BFEDC1',
+  },
+  {
+    name: 'villa',
+    color: '#BFEDC1',
+  },
+  {
+    name: 'galerie',
+    color: '#BFEDC1',
+  },
+  {
+    name: 'esplanade',
+    color: '#805B90',
+  },
+  {
+    name: 'passage',
+    color: '#805B90',
+  },
+  {
+    name: 'voie',
+    color: '#805B90',
   },
   {
     name: 'other',
@@ -133,16 +140,16 @@ const CAT_GENDER_LIST = [
     name: 'Femme',
     color: '#BF3131',
   },
-  {
-    name: 'Inconnu',
-    color: '#805B90',
-  },
+  // {
+  //   name: 'Inconnu',
+  //   color: '#805B90',
+  // },
 ] as const;
 
 const CAT_CENTURIES_LIST = [
   {
     name: 'Inconnu',
-    color: '#432371',
+    color: '#3B73D4',
   },
   {
     name: 'Ie - Ve',
@@ -153,7 +160,7 @@ const CAT_CENTURIES_LIST = [
     color: '#6C4273',
   },
   {
-    name: 'Xe - XIVe',
+    name: 'XIe - XIVe',
     color: '#805174',
   },
   {
@@ -178,6 +185,49 @@ const CAT_CENTURIES_LIST = [
   },
   {
     name: 'XXe',
+    color: '#FAAE7B',
+  },
+] as const;
+
+const CAT_NAME_CENTURY = [
+  {
+    name: 'Inconnu',
+    color: '#3B73D4',
+  },
+  {
+    name: 'XIIIe',
+    color: '#573272',
+  },
+  {
+    name: 'XIVe',
+    color: '#6C4273',
+  },
+  {
+    name: 'XVe',
+    color: '#805174',
+  },
+  {
+    name: 'XVIe',
+    color: '#946175',
+  },
+  {
+    name: 'XVIIe',
+    color: '#A97077',
+  },
+  {
+    name: 'XVIIIe',
+    color: '#BD8078',
+  },
+  {
+    name: 'XIXe',
+    color: '#D18F79',
+  },
+  {
+    name: 'XXe',
+    color: '#E69F7A',
+  },
+  {
+    name: 'XXIe',
     color: '#FAAE7B',
   },
 ] as const;
@@ -255,25 +305,25 @@ export const CATEGORIES = [
     values: CAT_GENDER_LIST,
     categorize: (street: Street) => {
       const primary = CAT_GENDER_LIST.find(
-        (c) => c.name === (street.subItems?.[0] as any)?.gender?.value,
+        (c) => c.name === (street.subItems?.[0] as any)?.gender?.value ?? null,
       );
       return { ...DEFAULT_RESULT, primary };
     },
   },
   {
     name: 'Activité',
-    select: 'single',
+    select: 'multiple',
     values: CAT_ACTIVITY_LIST,
     categorize: (street: Street) => {
       if (street.subItems?.[0]?.type !== 'Personne') return null;
       const person = street.subItems?.[0] as SubItemPerson;
       const primaryActivity = person.activity.value.find((a) => a.level === 3);
-      const primary = CAT_ACTIVITY_LIST.find((c) => c.name === primaryActivity?.value);
+      const primary = CAT_ACTIVITY_LIST.find((c) => c.value === primaryActivity?.value);
       const secondary = CAT_ACTIVITY_LIST.filter(
-        (c) => !!person.activity?.value?.find((ps) => ps.level === 2 && c.name === ps.value),
+        (c) => !!person.activity?.value?.find((ps) => ps.level === 2 && c.value === ps.value),
       );
       const tertiary = CAT_ACTIVITY_LIST.filter(
-        (c) => !!person.activity?.value?.find((ps) => ps.level === 1 && c.name === ps.value),
+        (c) => !!person.activity?.value?.find((ps) => ps.level === 1 && c.value === ps.value),
       );
       return {
         primary,
@@ -342,6 +392,20 @@ export const CATEGORIES = [
       console.log(type);
       let primary = CAT_TYPE_DE.find((c) => c.name === type);
       if (!primary) primary = CAT_TYPE_DE.find((c) => c.name === 'other');
+      return {
+        ...DEFAULT_RESULT,
+        primary,
+      };
+    },
+  },
+  {
+    name: 'Siècle de dénomination',
+    values: CAT_NAME_CENTURY,
+    select: 'multiple',
+    categorize: (street: Street) => {
+      const century = street.parisDataInfo.century;
+      let primary: CategorieValue = CAT_NAME_CENTURY[0];
+      if (century) primary = CAT_NAME_CENTURY[century - 12];
       return {
         ...DEFAULT_RESULT,
         primary,
