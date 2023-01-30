@@ -1,3 +1,5 @@
+import { createClient } from '@supabase/supabase-js';
+
 export interface Activity {
   value: string;
   level: number;
@@ -252,3 +254,22 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
     ],
   },
 ];
+
+// const supabaseUrl = 'https://vyyllqxmvqemszxpcnow.supabase.co';
+// const supabaseKey = import.meta.env.VITE_SUPABASE_KEY!;
+// const supabase = createClient(supabaseUrl, supabaseKey);
+// async function insertActivities(activity: CatActivity[], parentActivityId?: string) {
+//   // eslint-disable-next-line no-restricted-syntax
+//   for (const act of activity) {
+//     // eslint-disable-next-line no-await-in-loop
+//     const res = await supabase
+//       .from('activity')
+//       .insert({ name: act.value, displayName: act.name, color: act.color, parentActivityId })
+//       .select();
+//     console.log(res);
+//     if (act.subActivities) {
+//       insertActivities(act.subActivities as CatActivity[], res.data[0].id);
+//     }
+//   }
+// }
+// insertActivities(DEFAULT_ACTIVITIES);

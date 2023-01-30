@@ -1,12 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Timestamp } from 'firebase/firestore';
 import DateMomentAgo from './DateMomentAgo';
 
 interface StreetProps {
   name: string;
   selected: boolean;
-  lastUpdateDate: Timestamp | null;
+  lastUpdateDate: Date | null;
   onSelectStreet: () => void;
 }
 

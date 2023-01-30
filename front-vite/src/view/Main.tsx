@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import Legend from '../component/Legend';
 import MapOdocapa from '../component/Map/MapOdocapa';
 import { CATEGORIES, CategorieValue } from '../type/Categorie';
@@ -10,6 +11,7 @@ import { formatStreetName } from '../helper/street';
 import AnalyticsButton from '../component/AnalyticsButton';
 import SideCard from '../component/SideCard';
 import SideCardStreet from '../component/SideCardStreet';
+import { getStreets } from '../service/supabase.service';
 
 const useMousePosition = () => {
   const [mousePosition, setMousePosition] = React.useState({ x: null, y: null });
@@ -49,7 +51,8 @@ export default function StreetsConfiguration() {
 
   useEffect(() => {
     (async () => {
-      const newStreets = await getStreetsDocs();
+      const newStreets = await getStreets();
+      console.log(newStreets);
       setStreets(newStreets);
     })();
   }, []);
@@ -134,10 +137,10 @@ export default function StreetsConfiguration() {
                   />
                 </svg>
 
-                <div className="text-sm -translate-y-11 z-20">
+                <div className="text-sm -translate-y-[2.6rem] z-20">
                   {hoverStreet.parisDataInfo.district[0].replace(/$0/, '')}
                 </div>
-                <div className=" w-fit h-fit p-4 -translate-y-11 bg-white border-black border-2 z-20 text-center transition-all duration-300 whitespace-nowrap">
+                <div className="shadow-lg rounded-lg min-w-[200px] w-fit h-fit p-2 -translate-y-10 bg-white border-black border-2 z-20 text-center transition-all duration-300 whitespace-nowrap text-sm">
                   {hoverStreet.parisDataInfo.type?.toUpperCase()}
                   <br />
                   {`${

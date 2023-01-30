@@ -5,7 +5,7 @@ import ProgressBar from '../component/ProgressBar';
 import StreetButton from '../component/StreetButton';
 
 import TextInput from '../component/TextInput';
-import { getStreetsDocs } from '../service/firestore.service';
+import { getMinimalStreets } from '../service/supabase.service';
 import { MinimalStreet } from '../type/Street';
 import StreetForm from './StreetForm';
 
@@ -17,7 +17,7 @@ export default function StreetsConfiguration() {
 
   useEffect(() => {
     (async () => {
-      setStreets(await getStreetsDocs());
+      setStreets(await getMinimalStreets());
     })();
   }, []);
 

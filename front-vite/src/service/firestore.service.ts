@@ -17,8 +17,18 @@ import {
 } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { DEFAULT_STREET, MinimalStreet, Street } from '../type/Street';
-import { MinimalSubItem, SubItem, SUB_ITEM_MAP, TypeOfName } from '../type/SubItem';
+import {
+  MinimalSubItem,
+  SubItem,
+  SubItemBattle,
+  SubItemPerson,
+  SubMonumentItem,
+  SUB_ITEM_MAP,
+  TypeOfName,
+} from '../type/SubItem';
 import { TtTt } from '../helper/map';
+import { createClient } from '@supabase/supabase-js';
+import { Activity, CatActivity } from '../type/Activity';
 
 const firebaseApp = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -212,11 +222,9 @@ export async function getStreetsDocs(): Promise<Street[]> {
     .sort((e1, e2) => (e1.parisDataInfo.nameStreet > e2.parisDataInfo.nameStreet ? 1 : -1));
 }
 
-export async function getStreetSubItemsDocs(): Promise<MinimalSubItem[]> {
+export async function getStreetSubItemsDocs(): Promise<SubItem[]> {
   const snapshot = await getDocs(
-    query(collection(db, 'streetSubItems'), limit(TOP)).withConverter(
-      new MinimalStreetSubConverter(),
-    ),
+    query(collection(db, 'streetSubItems'), limit(TOP)).withConverter(new StreetSubItemConverter()),
   );
   return snapshot.docs.map((d) => d.data()).sort((si1, si2) => (si1.name > si2.name ? 1 : -1));
 }

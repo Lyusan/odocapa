@@ -30,7 +30,7 @@ const streetInfoBoxMap = [
     frPropNames: ['ancien nom'],
     type: 'listSplitByComma',
   },
-];
+]
 
 const personInfoboxMap = [
   {

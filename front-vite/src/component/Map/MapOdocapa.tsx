@@ -47,7 +47,7 @@ const MapOdocapa = forwardRef(
     useImperativeHandle(ref, () => ({
       zoomOnStreet(street: Street) {
         if (!map || !mapLoaded) return;
-        const coords: any = JSON.parse(street.coords);
+        const { coords } = street;
         const coordinates = isArray(coords.coordinates[0][0])
           ? coords.coordinates.reduce((acc: any, curr: any) => [...acc, ...curr], [])
           : coords.coordinates;
@@ -148,7 +148,7 @@ const MapOdocapa = forwardRef(
             type: 'Feature',
             id: street.id,
             properties: { ID: street.id },
-            geometry: JSON.parse(street.coords),
+            geometry: street.coords,
           });
           const currentCat = categorie.categorize(street)?.primary;
           if (!categoryValues.find((e) => e.name === currentCat?.name)) return;
@@ -189,7 +189,7 @@ const MapOdocapa = forwardRef(
               type: 'Feature',
               id: street.id,
               properties: { ID: street.id },
-              geometry: JSON.parse(street.coords),
+              geometry: street.coords,
             });
           }
         });
@@ -199,7 +199,7 @@ const MapOdocapa = forwardRef(
             type: 'Feature',
             id: street.id,
             properties: { ID: street.id },
-            geometry: JSON.parse(street.coords),
+            geometry: street.coords,
           });
           const categorizationResult = categorie.categorize(street);
           let type: string | null;
@@ -246,7 +246,7 @@ const MapOdocapa = forwardRef(
             type: 'Feature',
             id: street.id,
             properties: { ID: street.id },
-            geometry: JSON.parse(street.coords),
+            geometry: street.coords,
           });
         });
       }
@@ -287,7 +287,7 @@ const MapOdocapa = forwardRef(
                 type: 'Feature',
                 id: street.id,
                 properties: { ID: street.id },
-                geometry: JSON.parse(street.coords),
+                geometry: street.coords,
               },
             ],
           },
@@ -348,7 +348,7 @@ const MapOdocapa = forwardRef(
                 type: 'Feature',
                 id: selectedStreet.id,
                 properties: { ID: selectedStreet.id },
-                geometry: JSON.parse(selectedStreet.coords),
+                geometry: selectedStreet.coords,
               },
             ],
           },

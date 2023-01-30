@@ -49,7 +49,7 @@ export interface SubItem {
   type: TypeOfName;
 
   name: SourcedDataProperty<string>;
-  description: SourcedDataProperty<string>;
+  wikipedia: SourcedDataProperty<string>;
 }
 
 export interface SubItemPerson extends SubItem {

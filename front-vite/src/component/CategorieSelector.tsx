@@ -17,9 +17,9 @@ export default function CategorieSelector({
     <div style={{ width: 'fit-content' }}>
       <div
         className={classNames(
-          'px-3.5 py-1 mx-1 rounded-full select-none transition-all duration-500 border-2 border-black bg-white',
+          'text-xs px-3.5 py-1 mx-1 rounded-full select-none transition-all duration-500 border-2 border-black bg-white',
           {
-            'text-xs font-normal opacity-60 cursor-pointer hover:opacity-100': !selected,
+            'font-normal opacity-60 cursor-pointer hover:opacity-100': !selected,
           },
           { 'font-semibold ': selected },
         )}

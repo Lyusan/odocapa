@@ -8,7 +8,7 @@ export enum SourcedDataPropertyType {
 
 export interface SourcedDataProperty<Type> {
   value: Type;
-  lastUpdate: Timestamp | null;
+  lastUpdate: Date | null;
   source: string | null;
   type: SourcedDataPropertyType | null;
 }

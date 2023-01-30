@@ -10,22 +10,21 @@ import { SubItem } from './SubItem';
 export interface MinimalStreet {
   id: string;
   name: string;
-  lastUpdate: Timestamp | null;
+  lastUpdate: Date | null;
 }
 
 export interface Street {
   id: string;
   name: string;
-  lastUpdate: Timestamp | null;
+  lastUpdate: Date | null;
   nameOrigin: SourcedDataProperty<string>;
-  nameDescription: SourcedDataProperty<string>;
+  history: SourcedDataProperty<string>;
   creationDate: SourcedDataProperty<string>;
   namingDate: SourcedDataProperty<string>;
   length: SourcedDataProperty<number | null>;
   width: SourcedDataProperty<number | null>;
-  coords: string;
+  coords: any;
   parisDataInfo: any;
-  subIds: string[];
   subItems: SubItem[];
 }
 

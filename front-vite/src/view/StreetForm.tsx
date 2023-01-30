@@ -5,7 +5,6 @@ import Button from '../component/Button';
 import FormBuilder from '../component/FormBuilder';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
-  getStreetDoc,
   getStreetSubItemDoc,
   getStreetSubItemsDocs,
   setStreetDoc,
@@ -19,6 +18,7 @@ import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
 import SubItemSelector from '../component/SubItemSelector';
 import { getWikiPersonInfo, getWikiSearch, getWikiStreetInfo } from '../service/wiki.service';
 import Modal from '../component/Modal';
+import { getStreet } from '../service/supabase.service';
 
 interface StreetFormProp {
   streetId: string | null;
@@ -36,7 +36,8 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
       setStreet(null);
       setStreetSubItems([]);
       if (streetId) {
-        const newStreet = await getStreetDoc(streetId);
+        const newStreet = await getStreet(streetId);
+        if (!newStreet) return;
         setStreet(newStreet);
         setStreetWikiPages(await getWikiSearch(newStreet.name));
       }

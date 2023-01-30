@@ -1,14 +1,13 @@
-import { Timestamp } from 'firebase/firestore';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 
-export default function DateMomentAgo({ date }: { date: Timestamp }) {
+export default function DateMomentAgo({ date }: { date: Date }) {
   if (!date) return null;
-  const [formatedDate, setFormatedDate] = useState(moment(date.toDate()).fromNow());
+  const [formatedDate, setFormatedDate] = useState(moment(date).fromNow());
   useEffect(() => {
-    setFormatedDate(moment(date.toDate()).fromNow());
+    setFormatedDate(moment(date).fromNow());
     const interval = setInterval(() => {
-      setFormatedDate(moment(date.toDate()).fromNow());
+      setFormatedDate(moment(date).fromNow());
     }, 15000);
     return () => clearInterval(interval);
   });
