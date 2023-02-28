@@ -1,0 +1,9 @@
+GET http://localhost:5001/odocapa-4a31f/us-central1/scrapeWikiPerson?page=https://fr.wikipedia.org/wiki/Alain_Ducasse HTTP/1.1
+
+###
+
+GET http://localhost:5001/odocapa-4a31f/us-central1/scrapeWikiStreet?page=https://fr.wikipedia.org/wiki/Rue_de_l'Industrie_(Paris) HTTP/1.1
+
+###
+
+GET http://localhost:5001/odocapa-4a31f/us-central1/wikiSearch?searchStr="Roger Federer" HTTP/1.1
