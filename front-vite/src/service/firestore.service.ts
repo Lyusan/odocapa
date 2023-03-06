@@ -15,10 +15,12 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
+import { getAuth, signInWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { DEFAULT_STREET, MinimalStreet, Street } from '../type/Street';
 import { MinimalSubItem, SubItem, SUB_ITEM_MAP, TypeOfName } from '../type/SubItem';
 import { TtTt } from '../helper/map';
+import { User } from '../type/User';
 
 const firebaseApp = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -29,6 +31,8 @@ const firebaseApp = initializeApp({
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 });
 const db = getFirestore(firebaseApp);
+export const firebaseAuth = getAuth(firebaseApp);
+
 const TOP = 7000;
 const STREET_COLLECTION = 'streets-3';
 async function hash(message: string) {
@@ -191,6 +195,7 @@ export async function getStreetsDocs(): Promise<Street[]> {
     query(
       collection(db, STREET_COLLECTION),
       // where('parisDataInfo.district', 'array-contains-any', ['01e', '16e', '19e']),
+      where('parisDataInfo.type', '==', 'boulevard'),
       limit(TOP),
     ).withConverter(new StreetConverter()),
   );
@@ -245,6 +250,7 @@ export async function getStreetSubDoc(id: string): Promise<SubItem> {
   );
   return snapshot.data()!;
 }
+
 export async function setStreetDoc(street: Street): Promise<void> {
   await setDoc(doc(db, STREET_COLLECTION, street.id).withConverter(new StreetConverter()), street);
 }
@@ -263,4 +269,47 @@ export async function setSubItemDoc(subItem: SubItem): Promise<string> {
       subItem,
     )
   ).id;
+}
+
+/* eslint-disable class-methods-use-this */
+export class UserCredentialConverter implements FirestoreDataConverter<User> {
+  toFirestore(user: User): DocumentData {
+    const data = { ...user } as any;
+    delete data.id;
+    return data;
+  }
+
+  fromFirestore(snapshot: QueryDocumentSnapshot): User {
+    const data = snapshot.data()!;
+    return { ...data, uid: snapshot.id } as User;
+  }
+}
+
+export async function getCurrentUserMeta(): Promise<any> {
+  console.log('currentUser', firebaseAuth.currentUser);
+  if (!firebaseAuth.currentUser) return null;
+  const snapshot = await getDoc(
+    doc(db, 'users', firebaseAuth.currentUser.uid).withConverter(new UserCredentialConverter()),
+  );
+  const metaInfo = snapshot.data() || {};
+  return { ...metaInfo, email: firebaseAuth.currentUser.email };
+}
+
+export async function signIn(email: string, password: string): Promise<User | null> {
+  try {
+    const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    console.log(userCredential);
+    return await getCurrentUserMeta();
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function signOut() {
+  firebaseSignOut(firebaseAuth);
+}
+
+export function getCurrentUser() {
+  return firebaseAuth.currentUser;
 }

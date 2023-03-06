@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Legend from '../component/Legend';
 import MapOdocapa from '../component/Map/MapOdocapa';
 import { CATEGORIES_DESC, CategoryValue } from '../type/Category';
@@ -10,9 +10,11 @@ import { formatStreetName } from '../helper/street';
 import AnalyticsButton from '../component/AnalyticsButton';
 import SideCard from '../component/SideCard';
 import SideCardStreet from '../component/SideCardStreet';
+import UserContext from '../context/UserContext';
 import MultiRangeSlider from '../component/MultiRangeSlider';
 
 export default function StreetsConfiguration() {
+  const { currentUser } = useContext(UserContext);
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES_DESC[0]);
   const [selectedSubCategories, setSelectedSubCategories] = useState<CategoryValue[]>(
     CATEGORIES_DESC[0].values,
@@ -72,6 +74,7 @@ export default function StreetsConfiguration() {
     );
   }, [borderDate]);
 
+  if (!currentUser) return <div>Not logged in</div>;
   return (
     <div className="w-full h-screen">
       <div className="grid grid-cols-12 grid-rows-layout z-10 h-full">
