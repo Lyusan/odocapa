@@ -2,7 +2,7 @@ import React, { useEffect, useState, forwardRef, useRef, useImperativeHandle } f
 import maplibregl, { LngLatBounds, Map, NavigationControl } from 'maplibre-gl';
 import { isArray } from 'lodash';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { Categorie, CategorieValue } from '../../type/Categorie';
+import { Category, CategoryValue } from '../../type/Category';
 import { Street } from '../../type/Street';
 
 function usePrevious<Type>(value: Type) {
@@ -25,8 +25,8 @@ const MapOdocapa = forwardRef(
     }: {
       streets: Street[];
       selectedStreet: Street | null;
-      categorie: Categorie;
-      categoryValues: CategorieValue[];
+      categorie: Category;
+      categoryValues: CategoryValue[];
       onStreetSelect: (streetId: string | null) => void;
       onStreetHover: (streetId: string | null) => void;
     },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ProgressBar from '../component/ProgressBar';
 
@@ -8,8 +8,11 @@ import TextInput from '../component/TextInput';
 import { getStreetsDocs } from '../service/firestore.service';
 import { MinimalStreet } from '../type/Street';
 import StreetForm from './StreetForm';
+import UserContext from '../context/UserContext';
 
 export default function StreetsConfiguration() {
+  const { currentUser } = useContext(UserContext);
+
   const [streets, setStreets] = useState<MinimalStreet[]>([]);
   const [searchStreetString, setSearchStreetString] = useState<string>('');
   const { streetId } = useParams();
@@ -21,6 +24,8 @@ export default function StreetsConfiguration() {
     })();
   }, []);
 
+  if (!currentUser) return <div>Not logged in</div>;
+  if (!currentUser.isAdmin) return <div>You should be an admin to access this page</div>;
   return (
     <div className="grid grid-cols-12 full-view">
       <div className="grid full-view col-span-3 w-full">

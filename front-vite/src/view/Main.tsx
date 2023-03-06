@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Legend from '../component/Legend';
 import MapOdocapa from '../component/Map/MapOdocapa';
-import { CATEGORIES, CategorieValue } from '../type/Categorie';
-import CategorieSelector from '../component/CategorieSelector';
+import { CATEGORIES_DESC, CategoryValue } from '../type/Category';
+import CategorySelector from '../component/CategorieSelector';
 import { getStreetDoc, getStreetsDocs } from '../service/firestore.service';
 import { Street } from '../type/Street';
 import StatModal from '../component/StatModal';
@@ -64,8 +64,8 @@ export default function StreetsConfiguration() {
     <div className="w-full h-screen">
       <div className="grid grid-cols-12 grid-rows-layout z-10 h-full">
         <div className="col-span-7 z-10 flex my-auto h-7 justify-center items-center">
-          {CATEGORIES.map((c) => (
-            <CategorieSelector
+          {CATEGORIES_DESC.map((c) => (
+            <CategorySelector
               categorie={c}
               selected={selectedCategory.name === c.name}
               onCategorieClick={(categorie) => {

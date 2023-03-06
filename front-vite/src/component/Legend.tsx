@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Categorie, CategorieValue } from '../type/Categorie';
+import { Category, CategoryValue } from '../type/Category';
 import ColorPicker from './ColorPicker';
 
 interface LegendProps {
-  categorie: Categorie;
-  onSelectValueCategories: (cv: CategorieValue[]) => void;
-  selectedValueCategories: CategorieValue[];
+  categorie: Category;
+  onSelectValueCategories: (cv: CategoryValue[]) => void;
+  selectedValueCategories: CategoryValue[];
 }
 
 export default function Legend({
@@ -14,7 +14,7 @@ export default function Legend({
   onSelectValueCategories,
   selectedValueCategories,
 }: LegendProps) {
-  const onsetSelectValueCategories = (cv: CategorieValue, isAlreadySelected: boolean) => {
+  const onsetSelectValueCategories = (cv: CategoryValue, isAlreadySelected: boolean) => {
     // if (categorie.select === 'single') return isAlreadySelected ? [] : [cv];
     if (selectedValueCategories.length === categorie.values.length) return [cv];
     return isAlreadySelected

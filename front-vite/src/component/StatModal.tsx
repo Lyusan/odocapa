@@ -2,14 +2,14 @@ import { ChartData } from 'chart.js';
 import 'chart.js/auto';
 import React, { useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Categorie } from '../type/Categorie';
+import { Category } from '../type/Category';
 import { Street } from '../type/Street';
 
 export default function StatModal({
   category,
   streets,
 }: {
-  category: Categorie;
+  category: Category;
   streets: Street[];
 }) {
   const options = {

@@ -4,19 +4,19 @@ import { CAT_POLITIC_SCALE_LIST } from './PoliticScale';
 import { Street } from './Street';
 import { CAT_TYPE_OF_NAME_LIST, CAT_TYPE_OTHER, SubItemPerson } from './SubItem';
 
-export interface CategorieValue {
+export interface CategoryValue {
   name: string;
   color: string;
 }
 
-export interface Categorie {
+export interface Category {
   name: string;
-  values: CategorieValue[];
+  values: CategoryValue[];
   select: 'multiple' | 'single';
   categorize: (street: Street) => {
-    primary: CategorieValue | null;
-    secondary: CategorieValue[];
-    tertiary: CategorieValue[];
+    primary: CategoryValue | null;
+    secondary: CategoryValue[];
+    tertiary: CategoryValue[];
   };
 }
 
@@ -25,7 +25,7 @@ const DEFAULT_RESULT = {
   secondary: [],
   tertiary: [],
 };
-export type Categories = Categorie[];
+export type Categories = Category[];
 
 const CAT_ACTIVITY_LIST = DEFAULT_ACTIVITIES.map((e) => ({
   name: e.name,
@@ -231,7 +231,8 @@ const CAT_NAME_CENTURY = [
     color: '#FAAE7B',
   },
 ] as const;
-export const CATEGORIES = [
+
+export const CATEGORIES_DESC = [
   {
     name: 'Type de nom',
     select: 'multiple',
@@ -375,7 +376,7 @@ export const CATEGORIES = [
           century = (street.subItems?.[0] as SubItemPerson).lifeCentury.value;
         } else return { ...DEFAULT_RESULT, primary: CAT_CENTURIES_LIST[0] };
       } else century = Math.floor((birthday + deathday) / 2 / 100);
-      let cat: CategorieValue;
+      let cat: CategoryValue;
       if (century < 6) cat = CAT_CENTURIES_LIST[1];
       else if (century < 11) cat = CAT_CENTURIES_LIST[2];
       else if (century < 15) cat = CAT_CENTURIES_LIST[3];
@@ -404,7 +405,7 @@ export const CATEGORIES = [
     select: 'multiple',
     categorize: (street: Street) => {
       const century = street.parisDataInfo.century;
-      let primary: CategorieValue = CAT_NAME_CENTURY[0];
+      let primary: CategoryValue = CAT_NAME_CENTURY[0];
       if (century) primary = CAT_NAME_CENTURY[century - 12];
       return {
         ...DEFAULT_RESULT,
@@ -412,4 +413,4 @@ export const CATEGORIES = [
       };
     },
   },
-] as Categorie[];
+] as Category[];

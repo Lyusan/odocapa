@@ -1,18 +1,18 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Categorie } from '../type/Categorie';
+import { Category } from '../type/Category';
 
-interface ColorPickerProps {
-  categorie: Categorie;
+interface CategorySelectorProps {
+  categorie: Category;
   selected: boolean;
-  onCategorieClick: (categorie: Categorie) => void;
+  onCategorieClick: (categorie: Category) => void;
 }
 
-export default function CategorieSelector({
+export default function CategorySelector({
   categorie,
   selected,
   onCategorieClick,
-}: ColorPickerProps) {
+}: CategorySelectorProps) {
   return (
     <div style={{ width: 'fit-content' }}>
       <div

@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import CategoryList from '../CategoryList';
+import CategoryList from './CategoryList';
 import { Street } from '../type/Street';
 
 interface StreetCardProp {
