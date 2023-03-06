@@ -10,32 +10,29 @@ import { formatStreetName } from '../helper/street';
 import AnalyticsButton from '../component/AnalyticsButton';
 import SideCard from '../component/SideCard';
 import SideCardStreet from '../component/SideCardStreet';
-
-const useMousePosition = () => {
-  const [mousePosition, setMousePosition] = React.useState({ x: null, y: null });
-  React.useEffect(() => {
-    const updateMousePosition = (ev: any) => {
-      setMousePosition({ x: ev.clientX, y: ev.clientY });
-    };
-    window.addEventListener('mousemove', updateMousePosition);
-    return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-    };
-  }, []);
-  return mousePosition;
-};
+import MultiRangeSlider from '../component/MultiRangeSlider';
 
 export default function StreetsConfiguration() {
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
-  const [selectedSubCategories, setSelectedSubCategories] = useState<CategorieValue[]>(
-    CATEGORIES[0].values,
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES_DESC[0]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<CategoryValue[]>(
+    CATEGORIES_DESC[0].values,
   );
   const [streets, setStreets] = useState<Street[]>([]);
+  const [filteredStreets, setFilteredStreets] = useState<Street[]>([]);
   const [searchString, setSearchString] = useState<string>('');
   const [selectedStreetId, setSelectedStreetId] = useState<string | null>(null);
   const [hoverStreet, setHoverStreet] = useState<Street | null>(null);
   const [selectedStreet, setSelectedStreet] = useState<Street | null>(null);
   const [displayStats, setDisplayStats] = useState(false);
+
+  const [borderDate, setBorderDate] = useState({
+    minValue: 1,
+    maxValue: 2023,
+    min: 1,
+    max: 2023,
+    minThumb: 0,
+    maxThumb: 0,
+  });
 
   useEffect(() => {
     if (selectedCategory) {
@@ -51,6 +48,7 @@ export default function StreetsConfiguration() {
     (async () => {
       const newStreets = await getStreetsDocs();
       setStreets(newStreets);
+      setFilteredStreets(newStreets);
     })();
   }, []);
   const mapRef = useRef(null);
@@ -60,6 +58,20 @@ export default function StreetsConfiguration() {
     else setSelectedStreet(await getStreetDoc(streetId));
     setDisplayStats(stat);
   };
+
+  useEffect(() => {
+    setFilteredStreets(
+      streets.filter((s) => {
+        const regexp = /[0-9]{4}/g;
+        if (!s.parisDataInfo.naming) return false;
+        const array = [...s.parisDataInfo.naming.matchAll(regexp)];
+        if (array.length === 0) return false;
+        const date = Number(array[array.length - 1]);
+        return borderDate.minValue <= date && date <= borderDate.maxValue;
+      }),
+    );
+  }, [borderDate]);
+
   return (
     <div className="w-full h-screen">
       <div className="grid grid-cols-12 grid-rows-layout z-10 h-full">
@@ -94,7 +106,7 @@ export default function StreetsConfiguration() {
             />
             {searchString ? (
               <ul className="w-full">
-                {streets
+                {filteredStreets
                   .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
                   .slice(0, 5)
                   .map((s) => (
@@ -162,7 +174,7 @@ export default function StreetsConfiguration() {
                 selectedStreet ? (
                   <SideCardStreet street={selectedStreet} />
                 ) : (
-                  <StatModal streets={streets} category={selectedCategory} />
+                  <StatModal streets={filteredStreets} category={selectedCategory} />
                 )
               }
             />
@@ -172,12 +184,12 @@ export default function StreetsConfiguration() {
       <div className="absolute left-0 top-0 bg-slate-100 h-full w-full">
         <MapOdocapa
           ref={mapRef}
-          streets={streets}
+          streets={filteredStreets}
           onStreetSelect={setDisplay}
           categorie={selectedCategory}
           categoryValues={selectedSubCategories}
           onStreetHover={(streetId) =>
-            setHoverStreet(streets.find((s) => s.id === streetId) ?? null)
+            setHoverStreet(filteredStreets.find((s) => s.id === streetId) ?? null)
           }
           selectedStreet={selectedStreet}
         />
@@ -188,6 +200,11 @@ export default function StreetsConfiguration() {
           selectedValueCategories={selectedSubCategories}
           onSelectValueCategories={setSelectedSubCategories}
         />
+      </div>
+      <div className="absolute w-1/2 left-[400px] bottom-5 py-2.5 px-5 bg-white rounded-lg shadow-2xl">
+        <div className="flex justify-center items-center">
+          <MultiRangeSlider range={borderDate} changeRange={setBorderDate} />
+        </div>
       </div>
     </div>
   );
