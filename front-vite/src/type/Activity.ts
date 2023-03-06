@@ -171,6 +171,12 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
     ],
   },
   {
+    value: 'homme d’affaire',
+    name: 'Homme d’affaire',
+    color: '#DDCA7D',
+    level: 0,
+  },
+  {
     value: 'sportif',
     name: 'Sportif',
     color: '#DDCA7D',
@@ -192,6 +198,8 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
       { value: 'roi', level: 0 },
       { value: 'duc', level: 0 },
       { value: 'comte', level: 0 },
+      { value: 'baron', level: 0 },
+      { value: 'marquis', level: 0 },
     ],
   },
   // {
@@ -220,6 +228,7 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
       { value: 'lieutenent-colonel', level: 0 },
       { value: 'lieutenent', level: 0 },
       { value: 'maréchal', level: 0 },
+      { value: "chef d'état-major", level: 0 },
     ],
   },
   {
