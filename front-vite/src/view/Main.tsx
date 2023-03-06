@@ -22,7 +22,6 @@ export default function StreetsConfiguration() {
   const [streets, setStreets] = useState<Street[]>([]);
   const [filteredStreets, setFilteredStreets] = useState<Street[]>([]);
   const [searchString, setSearchString] = useState<string>('');
-  const [selectedStreetId, setSelectedStreetId] = useState<string | null>(null);
   const [hoverStreet, setHoverStreet] = useState<Street | null>(null);
   const [selectedStreet, setSelectedStreet] = useState<Street | null>(null);
   const [displayStats, setDisplayStats] = useState(false);
@@ -55,7 +54,6 @@ export default function StreetsConfiguration() {
   }, []);
   const mapRef = useRef(null);
   const setDisplay = async (streetId: string | null, stat = false) => {
-    setSelectedStreetId(streetId);
     if (!streetId) setSelectedStreet(null);
     else setSelectedStreet(await getStreetDoc(streetId));
     setDisplayStats(stat);
