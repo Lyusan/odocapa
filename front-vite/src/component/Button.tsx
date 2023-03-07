@@ -20,18 +20,18 @@ export default function Button({ color, text, textColor, size, available, onClic
   let sizeClass;
   switch (size) {
     case 's':
-      sizeClass = 'px-1 py-0';
+      sizeClass = 'px-2 py-0.5 text-sm rounded-full';
       break;
     case 'lg':
-      sizeClass = 'px-6 py-2';
+      sizeClass = 'px-6 py-2 text-md';
       break;
     case 'md':
     default:
-      sizeClass = 'px-3 py-1';
+      sizeClass = 'px-3 py-0.5';
   }
   return (
     <button
-      className={classNames('block rounded-md', sizeClass, color, textColor, {
+      className={classNames('block rounded-full', sizeClass, color, textColor, {
         'opacity-70': !available,
         'cursor-default': !available,
       })}

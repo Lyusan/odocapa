@@ -225,8 +225,14 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
           </div>
           <div className="flex justify-center items-center">
             <div className="absolute flex gap-2 right-4 top-4">
-              <Button text="INFO" onClick={() => setDisplayParisDataInfo(true)} />
-              <Button color="bg-blue-500" textColor="text-white" text="SAVE" onClick={save} />
+              <Button size="md" text="info" onClick={() => setDisplayParisDataInfo(true)} />
+              <Button
+                size="md"
+                color="bg-main-blue"
+                textColor="text-white"
+                text="save"
+                onClick={save}
+              />
               {displayParisDataInfo ? (
                 <Modal title="info" onClose={() => setDisplayParisDataInfo(false)}>
                   <ul className="list-disc">
