@@ -23,10 +23,10 @@ export default function Legend({
   };
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between mb-2">
-        <strong className="">{categorie.name}</strong>
+      <div className="flex items-center justify-between mb-3">
+        <h1 className="text-main-blue">{categorie.name}</h1>
         <div
-          className="cursor-pointer pl-4"
+          className="cursor-pointer pl-6"
           onClick={() => {
             onSelectValueCategories(
               selectedValueCategories.length === categorie.values.length ? [] : categorie.values,
@@ -38,7 +38,7 @@ export default function Legend({
             size={20}
             selected={selectedValueCategories.length > 0}
             scale={selectedValueCategories.length === categorie.values.length ? 'full' : 'half'}
-            shape="square"
+            shape="circle"
           />
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function Legend({
         return (
           <div
             className={classNames([
-              'flex items-center cursor-pointer',
+              'flex items-center cursor-pointer mb-0.5',
 
               {
                 'opacity-50': !isSelected,
@@ -61,10 +61,9 @@ export default function Legend({
               color={categoryValue.color}
               size={20}
               selected={isSelected}
-              // shape={categorie.select === 'single' ? 'circle' : 'square'}
-              shape="square"
+              shape="circle"
             />
-            <div className="pl-2">{categoryValue.name}</div>
+            <div className="pl-2 text-main-blue">{categoryValue.name}</div>
           </div>
         );
       })}

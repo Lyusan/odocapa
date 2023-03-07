@@ -19,6 +19,7 @@ import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
 import SubItemSelector from '../component/SubItemSelector';
 import { getWikiPersonInfo, getWikiSearch, getWikiStreetInfo } from '../service/wiki.service';
 import Modal from '../component/Modal';
+import { formatStreetName } from '../helper/street';
 
 interface StreetFormProp {
   streetId: string | null;
@@ -216,10 +217,10 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
         <>
           <div className="p-4 relative">
             <div className="flex items-center">
-              <div className="w-64 h-40">
+              <div className="w-1/2 h-60">
                 <MapStreetViewer coords={JSON.parse(street?.coords || '[[]]')} />
               </div>
-              <h1 className="pl-5 text-3xl font-bold p-1">{street?.name}</h1>
+              <h1 className="pl-5 text-3xl font-bold p-1">{formatStreetName(street.name)}</h1>
             </div>
           </div>
           <div className="flex justify-center items-center">
@@ -228,14 +229,14 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
               <Button color="bg-blue-500" textColor="text-white" text="SAVE" onClick={save} />
               {displayParisDataInfo ? (
                 <Modal title="info" onClose={() => setDisplayParisDataInfo(false)}>
-                  <>
+                  <ul className="list-disc">
                     {Object.entries(street.parisDataInfo)
                       .filter((e) => e[0] !== 'coords')
                       .sort((e1, e2) => (e1[0] > e2[0] ? 1 : -1))
                       .map(([st, el]) => (
-                        <div>{`${st}: ${el}`}</div>
+                        <li>{`${st}: ${el}`}</li>
                       ))}
-                  </>
+                  </ul>
                 </Modal>
               ) : null}
             </div>

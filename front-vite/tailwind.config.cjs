@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       colors: {
         black: '#334155',
+        'main-blue': '#322783',
       },
       gridTemplateRows: {
         layout: '80px repeat(5, minmax(0, 1fr))',

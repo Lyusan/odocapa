@@ -36,6 +36,10 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
                 value: 'moine',
                 level: 0,
               },
+              {
+                value: 'abbé/abesse',
+                level: 0,
+              },
             ],
           },
           {
@@ -242,7 +246,10 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
     name: 'Professionel de la justice',
     color: '#FF8D8D',
     level: 0,
-    subActivities: [{ value: 'avocat', level: 0 }],
+    subActivities: [
+      { value: 'avocat', level: 0 },
+      { value: 'magistrat', level: 0 },
+    ],
   },
   {
     value: 'marchand',

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import Legend from '../component/Legend';
 import MapOdocapa from '../component/Map/MapOdocapa';
 import { CATEGORIES_DESC, CategoryValue } from '../type/Category';
-import CategorySelector from '../component/CategorieSelector';
+import SelectButton from '../component/SelectButton';
 import { getStreetDoc, getStreetsDocs } from '../service/firestore.service';
 import { Street } from '../type/Street';
 import StatModal from '../component/StatModal';
@@ -12,6 +12,7 @@ import SideCard from '../component/SideCard';
 import SideCardStreet from '../component/SideCardStreet';
 import UserContext from '../context/UserContext';
 import MultiRangeSlider from '../component/MultiRangeSlider';
+import SearchInput from '../component/SearchInput';
 
 export default function StreetsConfiguration() {
   const { currentUser } = useContext(UserContext);
@@ -76,56 +77,31 @@ export default function StreetsConfiguration() {
   return (
     <div className="w-full h-screen">
       <div className="grid grid-cols-12 grid-rows-layout z-10 h-full">
-        <div className="col-span-7 z-10 flex my-auto h-7 justify-center items-center">
+        <div className="col-span-7 z-10 flex my-auto h-7 justify-center items-center gap-3">
           {CATEGORIES_DESC.map((c) => (
-            <CategorySelector
-              categorie={c}
+            <SelectButton
+              name={c.name}
               selected={selectedCategory.name === c.name}
-              onCategorieClick={(categorie) => {
-                setSelectedCategory(categorie);
-                // setSelectedSubCategory(null);
+              onClick={() => {
+                setSelectedCategory(c);
               }}
               key={c.name}
             />
           ))}
         </div>
 
-        <div className="col-span-5 mx-4 z-10 h-fit mt-4 flex gap-2">
+        <div className="col-span-5 mx-4 z-10 gap-2 h-full flex items-center">
           <div className="w-18 h-18">
             <AnalyticsButton onAnalytics={() => setDisplay(null, true)} />
           </div>
           <div className="w-full">
-            <input
+            <SearchInput
               value={searchString}
-              onChange={(e) => {
-                if (e.target.value) setDisplay(null, false);
-                setSearchString(e.target.value);
+              onChange={(str) => {
+                if (str) setDisplay(null, false);
+                setSearchString(str);
               }}
-              type="string"
-              placeholder="Recherche une rue, une place..."
-              className="w-full px-3.5 py-1 rounded-full border-2 border-black shadow focus:outline-none focus:shadow-sm focus:shadow-slate-200 duration-100 shadow-gray-100"
             />
-            {searchString ? (
-              <ul className="w-full">
-                {filteredStreets
-                  .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
-                  .slice(0, 5)
-                  .map((s) => (
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                    <li
-                      key={s.id}
-                      className="w-full cursor-pointer text-gray-700 p-4 mt-2 bg-white"
-                      onClick={() => {
-                        (mapRef?.current as any).zoomOnStreet(s);
-                        setDisplay(s.id, false);
-                        setSearchString('');
-                      }}
-                    >
-                      {s.name}
-                    </li>
-                  ))}
-              </ul>
-            ) : null}
           </div>
         </div>
         <div className="col-span-7 z-10 p-2 text-xl relative m-auto">
@@ -161,26 +137,51 @@ export default function StreetsConfiguration() {
             </div>
           ) : null}
         </div>
-        {selectedStreet || displayStats ? (
+        {(searchString !== '' || selectedStreet || displayStats) && (
           <div
-            className="col-start-8 row-span-5 col-span-5 m-4 mt-0 max-h-full bg-white rounded-2xl border-2 border-black z-10"
-            style={{ maxHeight: 'calc(100% - 1rem)' }}
+            className="col-start-8 row-span-5 col-span-5 z-10 m-4 mt-0"
+            style={{ height: 'calc(100% - 1rem)' }}
           >
-            <SideCard
-              title={selectedStreet ? formatStreetName(selectedStreet.name) : 'Statistiques'}
-              onClose={() => {
-                setDisplay(null, false);
-              }}
-              child={
-                selectedStreet ? (
-                  <SideCardStreet street={selectedStreet} />
-                ) : (
-                  <StatModal streets={filteredStreets} category={selectedCategory} />
-                )
-              }
-            />
+            {searchString && (
+              <ul className="w-full">
+                {filteredStreets
+                  .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
+                  .slice(0, 5)
+                  .map((s) => (
+                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                    <li
+                      key={s.id}
+                      className="w-full cursor-pointer text-sm text-gray-700 p-4 mt-2 bg-white"
+                      onClick={() => {
+                        (mapRef?.current as any).zoomOnStreet(s);
+                        setDisplay(s.id, false);
+                        setSearchString('');
+                      }}
+                    >
+                      {s.name}
+                    </li>
+                  ))}
+              </ul>
+            )}
+            {(selectedStreet || displayStats) && (
+              <div className="h-full bg-white rounded-2xl overflow-auto p-6">
+                <SideCard
+                  title={selectedStreet ? formatStreetName(selectedStreet.name) : 'Statistiques'}
+                  onClose={() => {
+                    setDisplay(null, false);
+                  }}
+                  child={
+                    selectedStreet ? (
+                      <SideCardStreet street={selectedStreet} />
+                    ) : (
+                      <StatModal streets={filteredStreets} category={selectedCategory} />
+                    )
+                  }
+                />
+              </div>
+            )}
           </div>
-        ) : null}
+        )}
       </div>
       <div className="absolute left-0 top-0 bg-slate-100 h-full w-full">
         <MapOdocapa
@@ -195,14 +196,14 @@ export default function StreetsConfiguration() {
           selectedStreet={selectedStreet}
         />
       </div>
-      <div className="absolute left-5 bottom-5 py-2.5 px-5 bg-white rounded-lg shadow-2xl">
+      <div className="absolute left-5 bottom-5 py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-[75%] overflow-auto">
         <Legend
           categorie={selectedCategory}
           selectedValueCategories={selectedSubCategories}
           onSelectValueCategories={setSelectedSubCategories}
         />
       </div>
-      <div className="absolute w-1/2 left-[400px] bottom-5 py-2.5 px-5 bg-white rounded-lg shadow-2xl">
+      <div className="absolute w-1/3 left-[300px] bottom-5 py-2.5 px-5 bg-white rounded-lg shadow-2xl">
         <div className="flex justify-center items-center">
           <MultiRangeSlider range={borderDate} changeRange={setBorderDate} />
         </div>

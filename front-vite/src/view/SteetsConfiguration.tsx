@@ -4,11 +4,11 @@ import ProgressBar from '../component/ProgressBar';
 
 import StreetButton from '../component/StreetButton';
 
-import TextInput from '../component/TextInput';
 import { getStreetsDocs } from '../service/firestore.service';
 import { MinimalStreet } from '../type/Street';
 import StreetForm from './StreetForm';
 import UserContext from '../context/UserContext';
+import SearchInput from '../component/SearchInput';
 
 export default function StreetsConfiguration() {
   const { currentUser } = useContext(UserContext);
@@ -30,19 +30,16 @@ export default function StreetsConfiguration() {
     <div className="grid grid-cols-12 full-view">
       <div className="grid full-view col-span-3 w-full">
         <div className="flex flex-col p-1 w-full">
-          <h1 className="text-3xl font-bold text-center mb-1">Streets</h1>
+          <h1 className="text-3xl text-center mb-1">Streets</h1>
           <div className="my-2">
             <ProgressBar
               value={streets.filter((s) => !!s.lastUpdate).length}
               max={streets.length}
             />
           </div>
-          <TextInput
-            name="searchStreetByName"
-            id="searchStreetByNameInput"
-            placeholder="Search street"
+          <SearchInput
             value={searchStreetString}
-            onChange={(name, value) => setSearchStreetString(value as string)}
+            onChange={(newValue) => setSearchStreetString(newValue)}
           />
         </div>
         <div className="flex flex-col p-1 overflow-y-scroll">
@@ -79,7 +76,7 @@ export default function StreetsConfiguration() {
           />
         ) : (
           <div className="w-full h-full flex justify-center items-center">
-            <h1 className="text-3xl font-bold text-center ">Select a street</h1>
+            <h1 className="text-3xl text-center ">Select a street</h1>
           </div>
         )}
       </div>

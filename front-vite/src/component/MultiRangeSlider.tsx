@@ -41,7 +41,7 @@ export default function MultiRangeSlider({
   changeRange: (range: Range) => void;
 }) {
   return (
-    <div className="relative max-w-xl w-full">
+    <div className="relative  w-full">
       <div>
         <input
           type="range"
@@ -71,7 +71,7 @@ export default function MultiRangeSlider({
           <div className="absolute z-10 left-0 right-0 bottom-0 top-0 rounded-md bg-gray-200" />
 
           <div
-            className="absolute z-20 top-0 bottom-0 rounded-md bg-green-300"
+            className="absolute z-20 top-0 bottom-0 rounded-md bg-main-blue"
             style={{
               right: `${range.maxThumb}%`,
               left: `${range.minThumb}%`,
@@ -79,14 +79,14 @@ export default function MultiRangeSlider({
           />
 
           <div
-            className="absolute z-30 w-6 h-6 top-0 left-0 bg-green-300 rounded-full -mt-2 -ml-1"
+            className="absolute z-30 w-6 h-6 top-0 left-0 bg-main-blue rounded-full -mt-2 -ml-1"
             style={{
               left: `${range.minThumb}%`,
             }}
           />
 
           <div
-            className="absolute z-30 w-6 h-6 top-0 right-0 bg-green-300 rounded-full -mt-2 -mr-3"
+            className="absolute z-30 w-6 h-6 top-0 right-0 bg-main-blue rounded-full -mt-2 -mr-3"
             style={{
               right: `${range.maxThumb}%`,
             }}

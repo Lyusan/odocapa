@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Timestamp } from 'firebase/firestore';
 import DateMomentAgo from './DateMomentAgo';
+import { formatStreetName } from '../helper/street';
 
 interface StreetProps {
   name: string;
@@ -14,20 +15,18 @@ function StreetButton({ name, selected, lastUpdateDate, onSelectStreet }: Street
   return (
     <div
       className={classNames(
-        ['border', 'min-h-10', 'p-1', 'rounded-md', 'border-gray-600', 'cursor-pointer'],
-        lastUpdateDate ? 'bg-blue-300' : 'bg-slate-300',
+        ['border', 'min-h-10', 'p-1 px-4', 'rounded-2xl', 'cursor-pointer'],
+        lastUpdateDate ? 'bg-main-blue' : 'bg-main-blue bg-opacity-60',
         {
           'bg-opacity-80': !selected,
         },
       )}
       onClick={onSelectStreet}
     >
-      <b className="text-gray-800">{name}</b>
-      {lastUpdateDate ? (
-        <p className="text-gray-600">
-          <DateMomentAgo date={lastUpdateDate} />
-        </p>
-      ) : null}
+      <b className="text-white text-sm">{formatStreetName(name)}</b>
+      <p className="text-white text-sm">
+        {lastUpdateDate ? <DateMomentAgo date={lastUpdateDate} /> : 'No data'}
+      </p>
     </div>
   );
 }

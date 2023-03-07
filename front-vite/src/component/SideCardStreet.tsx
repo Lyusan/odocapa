@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import CategoryList from './CategoryList';
 import { Street } from '../type/Street';
+import SelectButton from './SelectButton';
 
 interface StreetCardProp {
   street: Street;
@@ -18,27 +19,31 @@ export default function SideCardStreet({ street }: StreetCardProp) {
   if (currentDisplay === -1) {
     page = (
       <div className={classNames({ 'animation-in': true }, '[&>*]:py-1 h-5/6')}>
-        <div className="flex [&>p]:w-1/2">
-          <p>
-            {`Longueur: ${street.length.value} m`}
+        <div className="flex text-sm mb-3">
+          <p className="pr-12">
+            <strong className="pr-1">Longueur:</strong>
+            {`${street.length.value} m`}
             <br />
-            {`Largeur: ${street.width.value} m`}
+            <strong className="pr-1">Largeur:</strong>
+            {`${street.width.value} m`}
           </p>
-          <p>
-            {`Date de création: ${street.creationDate.value}`}
+          <p className="pr-4">
+            <strong className="pr-1">Date de création:</strong>
+            {street.creationDate.value || 'inconnue'}
             <br />
-            {`Date de dénomination: ${street.namingDate.value}`}
+            <strong className="pr-1">Date de dénomination:</strong>
+            {street.namingDate.value || 'inconnue'}
           </p>
         </div>
 
-        <p>
-          <h2 className="font-semibold pb-1.5">Origine du nom</h2>
+        <p className="text-sm">
+          <h2 className="font-semibold pb-0.5">Origine du nom</h2>
           {street.nameOrigin.value.split('\n').map((line) => (
             <p className="py-1">{line}</p>
           ))}
         </p>
-        <p>
-          <h2 className="font-semibold pb-1.5">Histoire de la rue</h2>
+        <p className="text-sm">
+          <h2 className="font-semibold pb-0.5">Histoire de la rue</h2>
           {street.nameDescription.value.split('\n').map((line) => (
             <p className="py-0.5">{line}</p>
           ))}
@@ -61,49 +66,30 @@ export default function SideCardStreet({ street }: StreetCardProp) {
   }
   return (
     <>
-      <div className="flex border-b-2 gap-3">
-        <button
-          className={classNames(' border-orange-500', {
-            ' border-b-4 font-semibold': currentDisplay === -1,
-            'test-abc': currentDisplay !== -1,
-          })}
-          type="button"
+      <div className="flex gap-3 justify-center items-center mb-4">
+        <SelectButton
+          name="Rue"
+          selected={currentDisplay === -1}
           onClick={() => setCurrentDisplay(-1)}
-        >
-          Rue
-        </button>
+        />
         {street.subItems
           .map((subItem, subItemIndex) =>
             subItem.description.source ? (
-              <button
-                className={classNames('border-orange-500', {
-                  'border-b-4 font-semibold': currentDisplay === subItemIndex,
-                })}
-                type="button"
+              <SelectButton
+                name={subItem.name.value}
+                selected={currentDisplay === subItemIndex}
                 onClick={() => setCurrentDisplay(subItemIndex)}
-              >
-                {subItem.name.value}
-              </button>
+              />
             ) : null,
           )
           .filter((item) => item !== null)}
-        <button
-          className={classNames('border-orange-500', {
-            'border-b-4 font-semibold': currentDisplay === street.subItems.length,
-          })}
-          type="button"
+        <SelectButton
+          name="Categories"
+          selected={currentDisplay === street.subItems.length}
           onClick={() => setCurrentDisplay(street.subItems.length)}
-        >
-          Categories
-        </button>
+        />
       </div>
       <div className="overflow-auto max-h-full">{page}</div>
     </>
   );
-}
-
-interface Tree {
-  value: number;
-  left: Tree | null;
-  right: Tree | null;
 }
