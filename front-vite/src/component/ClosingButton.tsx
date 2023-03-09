@@ -1,16 +1,17 @@
 import React from 'react';
 
-export default function ClosingButton({ onClose }: { onClose: () => void }) {
+export default function ClosingButton({ onClose, size }: { onClose: () => void; size?: number }) {
   return (
     <button
       type="button"
-      className="text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+      className="bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
       data-modal-toggle="defaultModal"
       onClick={onClose}
     >
       <svg
         aria-hidden="true"
-        className="w-5 h-5"
+        width={size}
+        height={size}
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -25,3 +26,6 @@ export default function ClosingButton({ onClose }: { onClose: () => void }) {
     </button>
   );
 }
+ClosingButton.defaultProps = {
+  size: 15,
+};
