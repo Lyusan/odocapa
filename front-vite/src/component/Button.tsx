@@ -13,7 +13,7 @@ interface ButtonProp {
 const defaultProps = {
   size: 'md',
   color: 'bg-slate-100',
-  textColor: 'text-black',
+  textColor: 'text-main-blue',
   available: true,
 };
 export default function Button({ color, text, textColor, size, available, onClick }: ButtonProp) {
