@@ -16,9 +16,7 @@ export default function BaseLabelInput({
   return (
     <div className="flex flex-col">
       <div className="flex justify-between mb-1">
-        <label className="text-gray-600" htmlFor={inputId}>
-          {`${label}:`}
-        </label>
+        <label htmlFor={inputId}>{`${label} :`}</label>
         {componentRightLabel}
       </div>
       {children}
