@@ -1,10 +1,9 @@
 import classNames from 'classnames';
-import { has } from 'lodash';
 import React from 'react';
 
 interface ColorPickerProps {
-  color: string;
   size: number;
+  color?: string;
   shape?: 'circle' | 'square';
   scale?: 'full' | 'half';
   selected?: boolean;
@@ -32,5 +31,6 @@ export default function ColorPicker({ color, size, shape, scale, selected }: Col
 ColorPicker.defaultProps = {
   scale: 'full',
   shape: 'circle',
+  color: '#322783',
   selected: true,
 };
