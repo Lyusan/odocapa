@@ -218,7 +218,7 @@ export default function Main() {
             </div>
 
             {searchString && (
-              <div className="col-start-10 row-span-5 col-span-3 z-10 m-4 mt-0 max-h-full h-fit overflow-auto mb-20">
+              <div className="col-start-10 row-span-5 col-span-3 z-10 mr-5 mt-5 max-h-full h-fit overflow-auto">
                 <ul className="w-full h-full">
                   {filteredStreets
                     .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
@@ -240,11 +240,8 @@ export default function Main() {
               </div>
             )}
             {(selectedStreet || displayStats) && (
-              <div
-                className="col-start-8 row-span-5 col-span-5 z-10 m-4 mt-0"
-                style={{ height: 'calc(100% - 1rem)' }}
-              >
-                <div className="h-full bg-white rounded-2xl overflow-auto p-6">
+              <div className="col-start-8 row-span-5 col-span-5 z-10 mr-5 mb-5">
+                <div className="h-full bg-white rounded-2xl overflow-auto p-6 shadow-2xl">
                   <SideCard
                     title={selectedStreet ? formatStreetName(selectedStreet.name) : 'Statistiques'}
                     onClose={() => {
@@ -261,62 +258,69 @@ export default function Main() {
                 </div>
               </div>
             )}
-          </div>
-          <div className="absolute left-5 bottom-5 py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-[75%] z-10 overflow-auto">
-            <Legend
-              categorie={selectedCategory}
-              selectedValueCategories={selectedSubCategories}
-              onSelectValueCategories={setSelectedSubCategories}
-            />
-          </div>
-          {displayFilters ? (
-            <div className="absolute w-1/3 left-[300px] bottom-5 py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10">
-              <div className="flex justify-between pb-5">
-                <h1 className="text-lg">Filtres</h1>
-                <ClosingButton onClose={() => setDisplayFilters(false)} />
-              </div>
-              <ProgressBar max={streets.length} value={filteredStreets.length} />
-              <div className="flex pt-3 justify-between">
-                <h2 className="pb-3">Arrondissements:</h2>
-                <div className="cursor-pointer" onClick={() => setFilterDistrictAll()}>
-                  <ColorPicker selected={filters.district.every((d) => d.isSelected)} size={20} />
-                </div>
-              </div>
-              <div className="flex gap-4 pb-3 w-full flex-wrap ">
-                {filters.district.map((d) => (
-                  <Select
-                    name={d.label}
-                    size="sm"
-                    isSelected={d.isSelected}
-                    onSelect={() => setFilterDistrict(d)}
-                  />
-                ))}
-              </div>
-              <h2 className="pb-5">Date de dénomination:</h2>
-              <div className="flex flex-col gap-4">
-                <Select
-                  name="Inclure quand la date est inconnu"
-                  size="sm"
-                  isSelected={filters.includeIfNoDataForNamingDate}
-                  onSelect={() =>
-                    setFilters({
-                      ...filters,
-                      includeIfNoDataForNamingDate: !filters.includeIfNoDataForNamingDate,
-                    })
-                  }
+            <div className="col-start-1 row-span-4 col-span-2 mb-5 ml-5 flex flex-col justify-end">
+              <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-full z-10">
+                <Legend
+                  categorie={selectedCategory}
+                  selectedValueCategories={selectedSubCategories}
+                  onSelectValueCategories={setSelectedSubCategories}
                 />
-                <MultiRangeSlider range={borderDate} changeRange={setBorderDate} />
               </div>
             </div>
-          ) : (
-            <div
-              className="absolute w-1/3 left-[300px] bottom-5 py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 cursor-pointer flex gap-4"
-              onClick={() => setDisplayFilters(true)}
-            >
-              <h1>Filtres</h1>
-              <ProgressBar max={streets.length} value={filteredStreets.length} />
+            <div className="col-start-3 row-span-4 col-span-5 mb-5 mx-5 flex flex-col justify-end">
+              {displayFilters ? (
+                <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10">
+                  <div className="flex justify-between pb-5">
+                    <h1 className="text-lg">Filtres</h1>
+                    <ClosingButton onClose={() => setDisplayFilters(false)} />
+                  </div>
+                  <ProgressBar max={streets.length} value={filteredStreets.length} />
+                  <div className="flex pt-3 justify-between">
+                    <h2 className="pb-3">Arrondissements:</h2>
+                    <div className="cursor-pointer" onClick={() => setFilterDistrictAll()}>
+                      <ColorPicker
+                        selected={filters.district.every((d) => d.isSelected)}
+                        size={20}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-4 pb-3 w-full flex-wrap ">
+                    {filters.district.map((d) => (
+                      <Select
+                        name={d.label}
+                        size="sm"
+                        isSelected={d.isSelected}
+                        onSelect={() => setFilterDistrict(d)}
+                      />
+                    ))}
+                  </div>
+                  <h2 className="pb-5">Date de dénomination:</h2>
+                  <div className="flex flex-col gap-4">
+                    <Select
+                      name="Inclure quand la date est inconnu"
+                      size="sm"
+                      isSelected={filters.includeIfNoDataForNamingDate}
+                      onSelect={() =>
+                        setFilters({
+                          ...filters,
+                          includeIfNoDataForNamingDate: !filters.includeIfNoDataForNamingDate,
+                        })
+                      }
+                    />
+                    <MultiRangeSlider range={borderDate} changeRange={setBorderDate} />
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 cursor-pointer flex gap-4"
+                  onClick={() => setDisplayFilters(true)}
+                >
+                  <h1>Filtres</h1>
+                  <ProgressBar max={streets.length} value={filteredStreets.length} />
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       ) : (
         <div className="relative h-full w-full p-20 z-10">
