@@ -25,10 +25,12 @@ function SwitchInput({ inputDesc, value, onValueChange, onTypeChange }: SwitchIn
   switch (inputDesc.type) {
     case 'activity':
       input = (
-        <ActivitySelector
-          activities={value.value as Activity[]}
-          onChange={(activities) => onValueChange(inputDesc.name, activities)}
-        />
+        <div className="max-h-[300px] overflow-auto">
+          <ActivitySelector
+            activities={value.value as Activity[]}
+            onChange={(activities) => onValueChange(inputDesc.name, activities)}
+          />
+        </div>
       );
       break;
     case 'politicScale':
