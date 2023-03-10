@@ -1,17 +1,9 @@
-import React, { useEffect, useState, forwardRef, useRef, useImperativeHandle } from 'react';
-import maplibregl, { LngLatBounds, Map, NavigationControl } from 'maplibre-gl';
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import maplibregl, { LngLatBounds, Map } from 'maplibre-gl';
 import { isArray } from 'lodash';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Category, CategoryValue } from '../../type/Category';
 import { Street } from '../../type/Street';
-
-function usePrevious<Type>(value: Type) {
-  const ref = useRef<Type>();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-}
 
 const MapOdocapa = forwardRef(
   (
@@ -44,6 +36,7 @@ const MapOdocapa = forwardRef(
     const [lat] = useState(48.863833404882456);
     const [zoom, setZoom] = useState(12.2);
     const [lineWidth, setLineWidth] = useState(3);
+
     useImperativeHandle(ref, () => ({
       zoomOnStreet(street: Street) {
         if (!map || !mapLoaded) return;
@@ -59,6 +52,14 @@ const MapOdocapa = forwardRef(
           padding: 500,
           offset: [-250, 0],
         });
+      },
+      zoomOut() {
+        if (!map || !mapLoaded) return;
+        map.zoomOut();
+      },
+      zoomIn() {
+        if (!map || !mapLoaded) return;
+        map.zoomIn();
       },
     }));
 
@@ -103,7 +104,6 @@ const MapOdocapa = forwardRef(
       newMap.on('mouseleave', 'layer-all', () => {
         setHoverId(null);
       });
-      newMap.addControl(new NavigationControl({ visualizePitch: true }), 'top-left');
     }, [mapContainer]);
 
     useEffect(() => {
