@@ -31,7 +31,7 @@ export default function Main() {
   const [selectedStreet, setSelectedStreet] = useState<Street | null>(null);
   const [displayStats, setDisplayStats] = useState(false);
   const [displayMain, setDisplayMain] = useState(true);
-  const [displayFilters, setDisplayFilters] = useState(true);
+  const [displayFilters, setDisplayFilters] = useState(false);
   const [filters, setFilters] = useState({
     includeIfNoDataForNamingDate: true,
     district: CAT_DISTRICT.map((d) => ({
