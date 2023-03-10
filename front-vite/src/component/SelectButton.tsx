@@ -9,20 +9,18 @@ interface SelectButtonProps {
 
 export default function SelectButton({ name, selected, onClick }: SelectButtonProps) {
   return (
-    <div style={{ width: 'fit-content' }}>
-      <div
-        className={classNames(
-          'text-xs px-3.5 py-1 rounded-full select-none transition-all duration-500  bg-main-blue text-white',
-          {
-            'font-normal opacity-60 cursor-pointer hover:opacity-100 ': !selected,
-          },
-        )}
-        onClick={() => {
-          if (!selected) onClick();
-        }}
-      >
-        {name}
-      </div>
+    <div
+      className={classNames(
+        'text-xs px-3.5 py-1 rounded-full select-none transition-opacity duration-500  bg-main-blue text-white',
+        {
+          'font-normal opacity-60 cursor-pointer hover:opacity-100 ': !selected,
+        },
+      )}
+      onClick={() => {
+        if (!selected) onClick();
+      }}
+    >
+      {name}
     </div>
   );
 }
