@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import classNames from 'classnames';
 import Legend from '../component/Legend';
 import MapOdocapa from '../component/Map/MapOdocapa';
 import { CATEGORIES_DESC, CAT_DISTRICT, CategoryValue } from '../type/Category';
@@ -20,6 +21,18 @@ import ProgressBar from '../component/ProgressBar';
 import logo from '../assets/Odocapa_Logo_MAQ_01_Bleu.png';
 import ProjectPresentation from '../view/ProjectPresentation';
 
+const useMousePosition = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const updateMousePosition = (ev: MouseEvent) => {
+    setMousePosition({ x: ev.clientX, y: ev.clientY });
+  };
+  useEffect(() => {
+    window.addEventListener('mousemove', updateMousePosition);
+    return () => window.removeEventListener('mousemove', updateMousePosition);
+  }, []);
+  return mousePosition;
+};
+
 export default function Main() {
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES_DESC[0]);
   const [selectedSubCategories, setSelectedSubCategories] = useState<CategoryValue[]>(
@@ -33,6 +46,7 @@ export default function Main() {
   const [displayStats, setDisplayStats] = useState(false);
   const [displayMain, setDisplayMain] = useState(true);
   const [displayFilters, setDisplayFilters] = useState(false);
+  const mousePosition = useMousePosition();
   const [filters, setFilters] = useState({
     includeIfNoDataForNamingDate: true,
     district: CAT_DISTRICT.map((d) => ({
@@ -134,6 +148,8 @@ export default function Main() {
           : filters.district.map((d) => ({ ...d, isSelected: true })),
     });
   }
+  console.log(mousePosition);
+  console.log(window.innerHeight);
   return (
     <div className="w-full h-screen relative">
       {displayMain ? (
@@ -184,39 +200,6 @@ export default function Main() {
                 />
               </div>
             </div>
-            <div className="col-span-6 z-10 p-2 text-xl relative m-auto">
-              {hoverStreet ? (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="flex flex-col items-center">
-                    <svg
-                      width="90"
-                      height="49"
-                      viewBox="0 0 90 49"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M88 21V47H2V21H6.28205C9.17304 21 11.9595 19.9188 14.0939 17.9689L19.8045 12.7517C36.2886 -2.3078 62.0753 -0.273678 75.9943 17.1841C77.9169 19.5955 80.833 21 83.917 21H88Z"
-                        fill="white"
-                        stroke="#322783"
-                        strokeWidth="2"
-                      />
-                    </svg>
-
-                    <div className="text-sm -translate-y-11 z-20">
-                      {hoverStreet.parisDataInfo.district[0].replace(/$0/, '')}
-                    </div>
-                    <div className=" w-fit h-fit p-4 -translate-y-11 bg-white border-black border-2 z-20 text-center transition-all duration-300 whitespace-nowrap">
-                      {hoverStreet.parisDataInfo.type?.toUpperCase()}
-                      <br />
-                      {`${
-                        hoverStreet.parisDataInfo.prepositionStreet?.toUpperCase() || ''
-                      } ${hoverStreet.parisDataInfo.nameStreet?.toUpperCase()}`}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
 
             {searchString && (
               <div className="col-start-10 row-span-5 col-span-3 z-10 mr-5 mt-5 max-h-full h-fit overflow-auto">
@@ -259,6 +242,49 @@ export default function Main() {
                 </div>
               </div>
             )}
+            {/* TODO BETTER PLACEMENT BASE ON MOUSE POS */}
+            <div
+              className={classNames(
+                'col-span-2 row-span-1 z-10 relative m-auto',
+                'z-10 h-full w-full col-start-4',
+                {
+                  'row-start-2': mousePosition.y > window.innerHeight / 4,
+                  'row-start-3': mousePosition.y <= window.innerHeight / 4,
+                },
+              )}
+            >
+              {hoverStreet ? (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col items-center">
+                    <svg
+                      width="90"
+                      height="49"
+                      viewBox="0 0 90 49"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M88 21V47H2V21H6.28205C9.17304 21 11.9595 19.9188 14.0939 17.9689L19.8045 12.7517C36.2886 -2.3078 62.0753 -0.273678 75.9943 17.1841C77.9169 19.5955 80.833 21 83.917 21H88Z"
+                        fill="white"
+                        stroke="#322783"
+                        strokeWidth="2"
+                      />
+                    </svg>
+
+                    <div className="text-sm -translate-y-11 z-20">
+                      {hoverStreet.parisDataInfo.district[0].replace(/$0/, '')}
+                    </div>
+                    <div className=" w-fit h-fit p-4 -translate-y-11 bg-white border-black border-2 z-20 text-center transition-all duration-300 whitespace-nowrap">
+                      {hoverStreet.parisDataInfo.type?.toUpperCase()}
+                      <br />
+                      {`${
+                        hoverStreet.parisDataInfo.prepositionStreet?.toUpperCase() || ''
+                      } ${hoverStreet.parisDataInfo.nameStreet?.toUpperCase()}`}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
             <div className="col-start-1 row-span-4 col-span-2 mb-5 ml-5 flex flex-col justify-end">
               <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-full z-10">
                 <Legend
@@ -270,7 +296,7 @@ export default function Main() {
             </div>
             <div className="col-start-3 row-span-4 col-span-5 mb-5 mx-5 flex flex-col justify-end">
               {displayFilters ? (
-                <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10">
+                <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 overflow-auto">
                   <div className="flex justify-between pb-5">
                     <h1 className="text-lg">Filtres</h1>
                     <ClosingButton onClose={() => setDisplayFilters(false)} />
