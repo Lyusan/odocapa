@@ -18,7 +18,7 @@ export default function SideCardStreet({ street }: StreetCardProp) {
   let page = null;
   if (currentDisplay === -1) {
     page = (
-      <div className={classNames({ 'animation-in': true }, '[&>*]:py-1 h-5/6')}>
+      <div className={classNames('[&>*]:py-1 h-5/6')}>
         <div className="flex text-sm mb-3">
           <p className="pr-12">
             <strong className="pr-1">Longueur:</strong>
@@ -54,7 +54,7 @@ export default function SideCardStreet({ street }: StreetCardProp) {
     page = <CategoryList street={street} />;
   } else {
     page = street.subItems[currentDisplay].description.source ? (
-      <div className={classNames({ 'animation-in': true }, '[&>*]:py-1 h-full')}>
+      <div className={classNames('[&>*]:py-1 h-full')}>
         <iframe
           title="Wikipedia"
           height="100%"
