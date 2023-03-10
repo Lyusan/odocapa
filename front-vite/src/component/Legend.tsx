@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
 import { Category, CategoryValue } from '../type/Category';
 import ColorPicker from './ColorPicker';
+import Select from './Select';
 
 interface LegendProps {
   categorie: Category;
@@ -22,7 +22,7 @@ export default function Legend({
       : selectedValueCategories.concat(cv);
   };
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 h-full">
       <div className="flex items-center justify-between mb-3">
         <h1 className="text-main-blue">{categorie.name}</h1>
         <div
@@ -34,7 +34,7 @@ export default function Legend({
           }}
         >
           <ColorPicker
-            color="#334155"
+            color="#322783"
             size={20}
             selected={selectedValueCategories.length > 0}
             scale={selectedValueCategories.length === categorie.values.length ? 'full' : 'half'}
@@ -42,31 +42,23 @@ export default function Legend({
           />
         </div>
       </div>
-      {categorie.values.map((categoryValue) => {
-        const isSelected = !!selectedValueCategories.find((scv) => scv.name === categoryValue.name);
-        return (
-          <div
-            className={classNames([
-              'flex items-center cursor-pointer mb-0.5',
-
-              {
-                'opacity-50': !isSelected,
-              },
-            ])}
-            onClick={() =>
-              onSelectValueCategories(onsetSelectValueCategories(categoryValue, isSelected))
-            }
-          >
-            <ColorPicker
+      <div className="flex flex-col gap-2 overflow-auto">
+        {categorie.values.map((categoryValue) => {
+          const isSelected = !!selectedValueCategories.find(
+            (scv) => scv.name === categoryValue.name,
+          );
+          return (
+            <Select
+              isSelected={isSelected}
+              name={categoryValue.name}
               color={categoryValue.color}
-              size={20}
-              selected={isSelected}
-              shape="circle"
+              onSelect={() =>
+                onSelectValueCategories(onsetSelectValueCategories(categoryValue, isSelected))
+              }
             />
-            <div className="pl-2 text-main-blue">{categoryValue.name}</div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
