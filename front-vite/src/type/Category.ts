@@ -6,13 +6,13 @@ import { CAT_TYPE_OF_NAME_LIST, CAT_TYPE_OTHER, SubItemPerson } from './SubItem'
 
 export interface CategoryValue {
   name: string;
-  color: string;
+  color?: string;
 }
 
 export interface Category {
   name: string;
   values: CategoryValue[];
-  select: 'multiple' | 'single';
+  secondary?: boolean;
   categorize: (street: Street) => {
     primary: CategoryValue | null;
     secondary: CategoryValue[];
@@ -32,6 +32,30 @@ const CAT_ACTIVITY_LIST = DEFAULT_ACTIVITIES.map((e) => ({
   color: e.color,
   value: e.value,
 })).sort((a, b) => a.name.localeCompare(b.name));
+
+export const CAT_DISTRICT = [
+  { name: '1e' },
+  { name: '2e' },
+  { name: '3e' },
+  { name: '4e' },
+  { name: '5e' },
+  { name: '6e' },
+  { name: '7e' },
+  { name: '8e' },
+  { name: '9e' },
+  { name: '10e' },
+  { name: '11e' },
+  { name: '12e' },
+  { name: '13e' },
+  { name: '14e' },
+  { name: '15e' },
+  { name: '16e' },
+  { name: '17e' },
+  { name: '18e' },
+  { name: '19e' },
+  { name: '20e' },
+  { name: 'Hors Paris' },
+] as const;
 
 const CAT_TYPE_DE = [
   {
@@ -134,11 +158,11 @@ const CAT_TYPE_DE = [
 const CAT_GENDER_LIST = [
   {
     name: 'Homme',
-    color: '#E08C2B',
+    color: '#805B90',
   },
   {
     name: 'Femme',
-    color: '#BF3131',
+    color: '#2CCB13',
   },
   // {
   //   name: 'Inconnu',
@@ -235,7 +259,6 @@ const CAT_NAME_CENTURY = [
 export const CATEGORIES_DESC = [
   {
     name: 'Type de nom',
-    select: 'multiple',
     values: CAT_TYPE_OF_NAME_LIST,
     categorize: (street: Street) => {
       const primary =
@@ -244,65 +267,14 @@ export const CATEGORIES_DESC = [
       return { ...DEFAULT_RESULT, primary };
     },
   },
-  // {
-  //   name: 'Arr',
-  //   values: [
-  //     {
-  //       name: 'once',
-  //       color: '#ff001c',
-  //     },
-  //     {
-  //       name: 'multiple',
-  //       color: '#000000',
-  //     },
-  //   ],
-  // categorize: (street: Street) => {
-  //   const primary =
-  //     (street as any)?.parisDataInfo?.district?.length < 2
-  //       ? {
-  //           name: 'once',
-  //           color: '#000000',
-  //         }
-  //       : {
-  //           name: 'multiple',
-  //           color: '#ff001c',
-  //         };
-  //   return { ...DEFAULT_RESULT, primary };
-  //   },
-  // },
-  // {
-  //   name: 'Nationalité',
-  //   values: [
-  //     {
-  //       name: 'Français',
-  //       color: '#000000',
-  //     },
-  //     {
-  //       name: 'Européen (Non français)',
-  //       color: '#ffffff',
-  //     },
-  //     {
-  //       name: 'Américain',
-  //       color: '#ff0000',
-  //     },
-  //     {
-  //       name: 'Africain',
-  //       color: '#00ff00',
-  //     },
-  //     {
-  //       name: 'Asiatique',
-  //       color: '#0000ff',
-  //     },
-  //     {
-  //       name: 'Océanien',
-  //       color: '#ff00ff',
-  //     },
-  //   ],
-  //   categorize: () => null,
-  // },
+  {
+    name: 'Arrondissement',
+    values: CAT_DISTRICT,
+    secondary: true,
+    categorize: () => ({ ...DEFAULT_RESULT }),
+  },
   {
     name: 'Genre',
-    select: 'multiple',
     values: CAT_GENDER_LIST,
     categorize: (street: Street) => {
       const primary = CAT_GENDER_LIST.find(
@@ -313,7 +285,6 @@ export const CATEGORIES_DESC = [
   },
   {
     name: 'Activité',
-    select: 'multiple',
     values: CAT_ACTIVITY_LIST,
     categorize: (street: Street) => {
       if (street.subItems?.[0]?.type !== 'Personne') return null;
@@ -359,7 +330,6 @@ export const CATEGORIES_DESC = [
   },
   {
     name: 'Siècle',
-    select: 'multiple',
     values: CAT_CENTURIES_LIST,
     categorize: (street: Street) => {
       if (street.subItems?.[0]?.type !== 'Personne') return null;
@@ -387,7 +357,6 @@ export const CATEGORIES_DESC = [
   {
     name: 'Type de voie',
     values: CAT_TYPE_DE,
-    select: 'multiple',
     categorize: (street: Street) => {
       const type = street.parisDataInfo.type;
       console.log(type);
@@ -402,7 +371,6 @@ export const CATEGORIES_DESC = [
   {
     name: 'Siècle de dénomination',
     values: CAT_NAME_CENTURY,
-    select: 'multiple',
     categorize: (street: Street) => {
       const century = street.parisDataInfo.century;
       let primary: CategoryValue = CAT_NAME_CENTURY[0];
