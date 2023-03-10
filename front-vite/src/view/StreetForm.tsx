@@ -205,7 +205,7 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
           fetchData={getWikiPersonInfo}
         />
       </div>
-      <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
+      <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-main-blue" />
     </>
   ));
 
@@ -220,7 +220,7 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
               <div className="w-1/2 h-60">
                 <MapStreetViewer coords={JSON.parse(street?.coords || '[[]]')} />
               </div>
-              <h1 className="pl-5 text-3xl font-bold p-1">{formatStreetName(street.name)}</h1>
+              <h1 className="pl-5 text-3xl p-1">{formatStreetName(street.name)}</h1>
             </div>
           </div>
           <div className="flex justify-center items-center">
@@ -246,10 +246,10 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
                 </Modal>
               ) : null}
             </div>
-            <h1 className="col-start-2 text-3xl font-bold">Wikipedia helper</h1>
+            <h1 className="col-start-2 text-3xl">Wikipedia helper</h1>
           </div>
           <div className="col-span-2 grid grid-cols-2 w-full overflow-y-auto">
-            <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
+            <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-main-blue" />
             <div className="col-start-1">
               <FormBuilder
                 form={STREET_FORM_DESC}
@@ -268,7 +268,7 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
                 fetchData={getWikiStreetInfo}
               />
             </div>
-            <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-blue-500" />
+            <div className="col-span-2 my-8 mx-auto w-3/4 h-1 rounded-md bg-main-blue" />
             {subItemsForms}
             <div className="col-span-2">
               <SubItemSelector
