@@ -17,19 +17,19 @@ function CategoryValuesPerLevel({
 }) {
   return (
     <p>
-      <b>{`${level}:`}</b>
+      <b className="text-sm">{`${level}:`}</b>
       {categories instanceof Array ? (
-        <ul className="pl-2 flex flex-col justify-center gap-2">
+        <ul className="pl-5 flex flex-col justify-center gap-2">
           {categories.map((category) => (
-            <li className="flex items-center gap-2">
-              <ColorPicker color={category.color || ''} size={15} />
+            <li className="flex items-center gap-2 text-sm">
+              <ColorPicker color={category.color} size={COLOR_PICKER_SIZE} />
               {category.name}
             </li>
           ))}
         </ul>
       ) : (
-        <span className="pl-2 flex items-center gap-2">
-          <ColorPicker color={categories.color || ''} size={COLOR_PICKER_SIZE} />
+        <span className="pl-5 flex items-center gap-2 text-sm">
+          <ColorPicker color={categories.color} size={COLOR_PICKER_SIZE} />
           {categories.name}
         </span>
       )}
@@ -49,21 +49,22 @@ export default function CategoryListItem({ street, categoryDesc }: CategoryListI
   const category = categoryDesc.categorize(street);
   return (
     <div>
-      <h2 className="text-xl font-bold">{categoryDesc.name}</h2>
-      {!category ? (
-        <div>Pas de catégorie trouvée...</div>
+      <h2 className="text-l font-bold">{categoryDesc.name}</h2>
+      {!category ||
+      (!category.primary && category.secondary.length === 0 && category.tertiary.length === 0) ? (
+        <div className="pl-5">Pas de catégorie trouvée...</div>
       ) : (
-        <>
+        <div className="pl-5">
           {category.primary && (
-            <CategoryValuesPerLevel level="Primary" categories={category.primary} />
+            <CategoryValuesPerLevel level="Primaire" categories={category.primary} />
           )}
           {category.secondary?.length > 0 ? (
-            <CategoryValuesPerLevel level="Secondary" categories={category.secondary} />
+            <CategoryValuesPerLevel level="Secondaire" categories={category.secondary} />
           ) : null}
           {category.tertiary?.length > 0 ? (
-            <CategoryValuesPerLevel level="Tertiary" categories={category.tertiary} />
+            <CategoryValuesPerLevel level="Tertiaire" categories={category.tertiary} />
           ) : null}
-        </>
+        </div>
       )}
     </div>
   );

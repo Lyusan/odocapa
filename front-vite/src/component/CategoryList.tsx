@@ -10,7 +10,7 @@ import { Street } from '../type/Street';
  */
 export default function CategoryList({ street }: { street: Street }) {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {CATEGORIES_DESC.map((categoryDesc) => (
         <CategoryListItem street={street} categoryDesc={categoryDesc} />
       ))}

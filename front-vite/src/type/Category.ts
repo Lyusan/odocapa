@@ -164,10 +164,10 @@ const CAT_GENDER_LIST = [
     name: 'Femme',
     color: '#2CCB13',
   },
-  // {
-  //   name: 'Inconnu',
-  //   color: '#805B90',
-  // },
+  {
+    name: 'Inconnu',
+    color: '#3B73D4',
+  },
 ] as const;
 
 const CAT_CENTURIES_LIST = [
@@ -271,15 +271,22 @@ export const CATEGORIES_DESC = [
     name: 'Arrondissement',
     values: CAT_DISTRICT,
     secondary: true,
-    categorize: () => ({ ...DEFAULT_RESULT }),
+    categorize: (street: Street) => {
+      const secondary = street.parisDataInfo.district.map(
+        (d: string) => CAT_DISTRICT.find((c) => c.name === (d[0] === '0' ? d.slice(1) : d)) as any,
+      );
+      return { ...DEFAULT_RESULT, secondary };
+    },
   },
   {
     name: 'Genre',
     values: CAT_GENDER_LIST,
     categorize: (street: Street) => {
-      const primary = CAT_GENDER_LIST.find(
-        (c) => c.name === (street.subItems?.[0] as any)?.gender?.value ?? null,
-      );
+      const primary = CAT_GENDER_LIST.find((c) => {
+        const streetSubItemGender = (street.subItems?.[0] as any)?.gender?.value;
+        if (streetSubItemGender === '' && c.name === 'Inconnu') return true;
+        return c.name === streetSubItemGender ?? null;
+      });
       return { ...DEFAULT_RESULT, primary };
     },
   },

@@ -37,13 +37,13 @@ export default function SideCardStreet({ street }: StreetCardProp) {
         </div>
 
         <p className="text-sm">
-          <h2 className="font-semibold pb-0.5">Origine du nom</h2>
+          <h2 className="font-bold pb-0.5">Origine du nom</h2>
           {street.nameOrigin.value.split('\n').map((line) => (
             <p className="py-1">{line}</p>
           ))}
         </p>
         <p className="text-sm">
-          <h2 className="font-semibold pb-0.5">Histoire de la rue</h2>
+          <h2 className="font-bold pb-0.5">Histoire de la rue</h2>
           {street.nameDescription.value.split('\n').map((line) => (
             <p className="py-0.5">{line}</p>
           ))}
