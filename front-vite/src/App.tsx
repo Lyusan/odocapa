@@ -2,9 +2,9 @@ import './App.css';
 import React, { useCallback, useMemo, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
-import StreetsConfiguration from './view/SteetsConfiguration';
-import Main from './view/Main';
-import Login from './view/Login';
+import Admin from './page/Admin';
+import Main from './page/Main';
+import Login from './page/Login';
 import UserContext from './context/UserContext';
 import { firebaseAuth, getCurrentUserMeta } from './service/firestore.service';
 
@@ -20,13 +20,13 @@ const router = createBrowserRouter([
     errorElement: <div>Error 404</div>,
   },
   {
-    path: '/config',
-    element: <StreetsConfiguration />,
+    path: '/admin',
+    element: <Admin />,
     errorElement: <div>Error 404</div>,
   },
   {
-    path: '/config/:streetId',
-    element: <StreetsConfiguration />,
+    path: '/admin/:streetId',
+    element: <Admin />,
     errorElement: <div>Error 404</div>,
   },
 ]);

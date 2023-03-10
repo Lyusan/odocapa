@@ -6,11 +6,11 @@ import StreetButton from '../component/StreetButton';
 
 import { getStreetsDocs } from '../service/firestore.service';
 import { MinimalStreet } from '../type/Street';
-import StreetForm from './StreetForm';
+import StreetForm from '../view/StreetForm';
 import UserContext from '../context/UserContext';
 import SearchInput from '../component/SearchInput';
 
-export default function StreetsConfiguration() {
+export default function Admin() {
   const { currentUser } = useContext(UserContext);
 
   const [streets, setStreets] = useState<MinimalStreet[]>([]);
@@ -52,7 +52,7 @@ export default function StreetsConfiguration() {
                   lastUpdateDate={s.lastUpdate}
                   selected={s.id === streetId}
                   onSelectStreet={() => {
-                    navigate(`/config/${s.id}`);
+                    navigate(`/admin/${s.id}`);
                   }}
                 />
               </div>
