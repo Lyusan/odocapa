@@ -15,25 +15,25 @@ function StreetButton({ name, selected, lastUpdateDate, onSelectStreet }: Street
   return (
     <div
       className={classNames(
-        ['border', 'min-h-10', 'p-1 px-4', 'rounded-2xl', 'cursor-pointer'],
-        lastUpdateDate ? 'bg-main-blue' : 'bg-main-blue bg-opacity-40',
+        ['border', 'min-h-10', 'p-1 px-4', 'rounded-2xl', 'cursor-pointer bg-main-blue'],
         {
-          'bg-opacity-80': !selected,
+          'bg-opacity-40': !lastUpdateDate,
+          'bg-opacity-100': selected,
         },
       )}
       onClick={onSelectStreet}
     >
       <b className="text-white text-sm">{formatStreetName(name)}</b>
-      <p className="text-white text-sm">
+      <div className="text-white text-sm flex">
         {lastUpdateDate ? (
           <>
-            Last modification
+            <p className="pr-1 text-white">Last modification:</p>
             <DateMomentAgo date={lastUpdateDate} />
           </>
         ) : (
           'No data'
         )}
-      </p>
+      </div>
     </div>
   );
 }
