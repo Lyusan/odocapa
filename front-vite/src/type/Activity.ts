@@ -232,6 +232,7 @@ export const DEFAULT_ACTIVITIES: CatActivity[] = [
       { value: 'lieutenent-colonel', level: 0 },
       { value: 'lieutenent', level: 0 },
       { value: 'maréchal', level: 0 },
+      { value: 'capitaine', level: 0 },
       { value: "chef d'état-major", level: 0 },
     ],
   },
