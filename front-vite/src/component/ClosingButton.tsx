@@ -4,7 +4,7 @@ export default function ClosingButton({ onClose, size }: { onClose: () => void; 
   return (
     <button
       type="button"
-      className="bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+      className="bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-1.5 ml-auto inline-flex items-center"
       data-modal-toggle="defaultModal"
       onClick={onClose}
     >
