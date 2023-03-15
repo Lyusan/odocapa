@@ -1,47 +1,41 @@
 import React from 'react';
+import InfoButton from '../../component/InfoButton';
+import Link from '../../component/Link';
 
 export default function SourcesPage() {
   return (
     <>
-      Sources Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi id mi laoreet, mollis
-      neque id, condimentum leo. Sed lobortis mi a aliquet interdum. Ut interdum hendrerit pharetra.
-      In enim nulla, rhoncus sed erat nec, viverra placerat tortor. Pellentesque bibendum gravida
-      sollicitudin. Morbi sed sollicitudin est. Maecenas mollis pharetra metus sed porta. Quisque a
-      semper nunc, sed gravida nulla. Quisque euismod, sapien ac venenatis efficitur, sapien quam
-      volutpat quam, non tempor elit mauris sed mauris.
-      <br />
-      <br />
-      Proin in elit viverra, viverra dui et, maximus augue. Praesent ac pharetra nunc. Proin et elit
-      nec enim aliquam euismod. Etiam tempus in ipsum vitae efficitur. Interdum et malesuada fames
-      ac ante ipsum primis in faucibus. Etiam rhoncus sed nibh hendrerit facilisis. Integer
-      elementum consectetur nisl, sit amet mattis risus eleifend ut.
-      <br />
-      <br />
-      Proin in elit viverra, viverra dui et, maximus augue. Praesent ac pharetra nunc. Proin Quisque
-      scelerisque varius dui, ut placerat justo pellentesque eu. Suspendisse dapibus felis lacinia
-      eros volutpat, eu aliquet turpis suscipit. Phasellus eget tempor dui, sit amet malesuada
-      lorem. Phasellus ipsum tellus, euismod nec lorem nec, porta pharetra magna. Duis blandit, ante
-      id sodales vestibulum, felis mauris egestas nisi, id facilisis quam ex egestas sapien. Aenean
-      vel eros felis. Suspendisse nec orci tortor. Vivamus sit amet eros cursus, facilisis eros vel,
-      placerat nulla. Nullam feugiat diam neque. Donec tellus mauris, eleifend ut erat vel, posuere
-      condimentum tortor. Etiam vitae justo ac ex porta gravida sit amet et urna. Ut accumsan nunc
-      sem, vitae dictum diam faucibus id. Donec ac suscipit orci. Aliquam id est sit amet odio
-      pretium pellentesque a id leo. Sed egestas mi condimentum ipsum dictum, sed tristique velit
-      finibus. Morbi ex neque, rhoncus id faucibus sit amet, auctor in quam. Nunc elementum
-      tincidunt erat, id consequat velit aliquet vel. Curabitur at erat vulputate velit rutrum
-      lacinia sed nec neque. Nam scelerisque, lectus a tempor tempor, justo mauris tincidunt tellus,
-      gravida malesuada ex velit eget purus. In at mi eros.
-      <br />
-      <br />
-      Proin eu posuere nunc, vel bibendum sem. Nunc nisi arcu, facilisis non sagittis pharetra,
-      lacinia quis elit. Curabitur rhoncus commodo nibh, ut malesuada odio tincidunt venenatis. Cras
-      consectetur, lacus ut maximus commodo, nulla justo consequat lectus, eu molestie sem risus ac
-      augue. Aenean ut sollicitudin purus, id viverra ipsum. Nam porttitor nisi non nunc ultricies,
-      sit amet mattis lorem ullamcorper. Morbi ullamcorper suscipit finibus. Pellentesque in tortor
-      ante. Maecenas nulla justo, lacinia sed nibh ac, condimentum tristique est. Sed porta suscipit
-      ipsum, eu condimentum lorem maximus et. Maecenas nec vestibulum tortor. Aliquam ut erat
-      porttitor, posuere mauris vitae, luctus eros. Integer aliquam turpis vel nibh dignissim
-      sagittis.
+      <h2 className="font-bold pb-4">Open Data Paris</h2>
+      <p className="pl-2">
+        {
+          '- Dénominations des emprises des voies actuelles - Mairie de Paris, 21/11/2022, sous licence ODbL '
+        }
+        <Link
+          text="(lien)"
+          link="https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/information/"
+        />
+        <br />
+        {'- Linéaires des Voies - Mairie de Paris, 21/11/2022, sous licence ODbL '}
+        <Link text="(lien)" link="https://opendata.paris.fr/explore/dataset/voie/information/" />
+        <br />
+        <br />
+        {'Licence : '}
+        <Link
+          text="ODbL : Open Database License"
+          link="https://opendatacommons.org/licenses/odbl/"
+        />
+        <br />
+      </p>
+      <h2 className="font-bold py-4">Wikipedia</h2>
+      {`Une grande partie du contenu textuelle du projet est tiré de Wikipedia. Pour chacune des rues vous
+      trouverez les articles utilisés en cliquant sur `}
+      <InfoButton size={16} onInfo={() => null} />
+      {` dans la page de la rue. L'ensemble des
+      textes de Wikipedia est sous la licence : `}
+      <Link
+        text="CC BY-SA 3.0 Unported"
+        link="https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Licence_Creative_Commons_Paternit%C3%A9-Partage_des_Conditions_Initiales_%C3%A0_l%27Identique_3.0_non_transpos%C3%A9"
+      />
     </>
   );
 }
