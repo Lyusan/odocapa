@@ -9,7 +9,7 @@ module.exports = {
       },
       gridTemplateRows: {
         layout: '80px repeat(5, minmax(0, 1fr))',
-        card: 'min-content min-content',
+        card: 'min-content 1fr',
       },
     },
   },
