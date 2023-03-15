@@ -3,45 +3,33 @@ import React from 'react';
 export default function ProjectPage() {
   return (
     <>
-      Projet Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi id mi laoreet, mollis
-      neque id, condimentum leo. Sed lobortis mi a aliquet interdum. Ut interdum hendrerit pharetra.
-      In enim nulla, rhoncus sed erat nec, viverra placerat tortor. Pellentesque bibendum gravida
-      sollicitudin. Morbi sed sollicitudin est. Maecenas mollis pharetra metus sed porta. Quisque a
-      semper nunc, sed gravida nulla. Quisque euismod, sapien ac venenatis efficitur, sapien quam
-      volutpat quam, non tempor elit mauris sed mauris.
-      <br />
-      <br />
-      Proin in elit viverra, viverra dui et, maximus augue. Praesent ac pharetra nunc. Proin et elit
-      nec enim aliquam euismod. Etiam tempus in ipsum vitae efficitur. Interdum et malesuada fames
-      ac ante ipsum primis in faucibus. Etiam rhoncus sed nibh hendrerit facilisis. Integer
-      elementum consectetur nisl, sit amet mattis risus eleifend ut.
-      <br />
-      <br />
-      Proin in elit viverra, viverra dui et, maximus augue. Praesent ac pharetra nunc. Proin Quisque
-      scelerisque varius dui, ut placerat justo pellentesque eu. Suspendisse dapibus felis lacinia
-      eros volutpat, eu aliquet turpis suscipit. Phasellus eget tempor dui, sit amet malesuada
-      lorem. Phasellus ipsum tellus, euismod nec lorem nec, porta pharetra magna. Duis blandit, ante
-      id sodales vestibulum, felis mauris egestas nisi, id facilisis quam ex egestas sapien. Aenean
-      vel eros felis. Suspendisse nec orci tortor. Vivamus sit amet eros cursus, facilisis eros vel,
-      placerat nulla. Nullam feugiat diam neque. Donec tellus mauris, eleifend ut erat vel, posuere
-      condimentum tortor. Etiam vitae justo ac ex porta gravida sit amet et urna. Ut accumsan nunc
-      sem, vitae dictum diam faucibus id. Donec ac suscipit orci. Aliquam id est sit amet odio
-      pretium pellentesque a id leo. Sed egestas mi condimentum ipsum dictum, sed tristique velit
-      finibus. Morbi ex neque, rhoncus id faucibus sit amet, auctor in quam. Nunc elementum
-      tincidunt erat, id consequat velit aliquet vel. Curabitur at erat vulputate velit rutrum
-      lacinia sed nec neque. Nam scelerisque, lectus a tempor tempor, justo mauris tincidunt tellus,
-      gravida malesuada ex velit eget purus. In at mi eros.
-      <br />
-      <br />
-      Proin eu posuere nunc, vel bibendum sem. Nunc nisi arcu, facilisis non sagittis pharetra,
-      lacinia quis elit. Curabitur rhoncus commodo nibh, ut malesuada odio tincidunt venenatis. Cras
-      consectetur, lacus ut maximus commodo, nulla justo consequat lectus, eu molestie sem risus ac
-      augue. Aenean ut sollicitudin purus, id viverra ipsum. Nam porttitor nisi non nunc ultricies,
-      sit amet mattis lorem ullamcorper. Morbi ullamcorper suscipit finibus. Pellentesque in tortor
-      ante. Maecenas nulla justo, lacinia sed nibh ac, condimentum tristique est. Sed porta suscipit
-      ipsum, eu condimentum lorem maximus et. Maecenas nec vestibulum tortor. Aliquam ut erat
-      porttitor, posuere mauris vitae, luctus eros. Integer aliquam turpis vel nibh dignissim
-      sagittis.
+      <strong>{'Odocapa '}</strong>
+      est un projet d'étude de la toponymie de Paris. Il a pour objectif d'inviter à une réflexion
+      et d'informer.
+      <span className="font-semibold">
+        {' '}
+        Le projet est encore en cours de développement, son contenu doit donc être considéré avec
+        prudence.
+      </span>
+      <h2 className="font-bold py-4">Interroger les noms des rues de Paris</h2>
+      Les noms des rues font partie de notre quotidien, ils sont omniprésents dans notre vie, se
+      c'est un outil indispensable pour se repérer dans l'espace. Cependant le choi de leur nom ne
+      relève pas d'une logique pratique mais d'une logique politique. Les noms des rues sont le
+      reflet de l'histoire de la ville, ils sont le témoignage de l'histoire de Paris. Pour étudier
+      répartition géographique des toponymes, les rues sont colorées en fonction de catégories
+      telles que le type de nom, le genre ou l’activité exercée par le toponyme. La carte ainsi
+      colorée permet de visualiser de manière intuitive la distribution dans l'espace des toponymes.
+      <h2 className="font-bold py-4">Informer sur l’histoire de la rue et de son toponyme</h2>
+      Le second objectif passe principalement par l’écran qui s’affiche lorsque l’on clique sur une
+      rue. Ce dernier comprend trois pages. Ici seulement les deux premières nous intéressent, la
+      première contient des informations liées à la rue: - ses dimensions (longueur et largeur), -
+      ses dates clés (création, dénomination), - un texte sur l’origine du nom (généralement tiré de
+      Wikipédia), - un texte sur l’histoire de la rue (également souvent tiré de Wikipédia). La
+      seconde page comprend une incorporation de la page Wikipédia liée au nom propre associé à la
+      rue. Par exemple pour l’axe Rue de Rivoli, la page Wikipédia associée est celle de la bataille
+      de Rivoli de 1797 pendant la première campagne d'Italie. L’incorporation directe de la page
+      permet d'exploiter l’ensemble du contenu (texte, images, lien) sans avoir à quitter le site,
+      fluidifiant ainsi la navigation entre les différentes rues.
     </>
   );
 }

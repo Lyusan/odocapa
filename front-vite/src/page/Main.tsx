@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Legend from '../component/Legend';
@@ -6,7 +7,7 @@ import { CATEGORIES_DESC, CAT_DISTRICT, CategoryValue } from '../type/Category';
 import SelectButton from '../component/SelectButton';
 import { getStreetDoc, getStreetsDocs } from '../service/firestore.service';
 import { Street } from '../type/Street';
-import StatModal from '../component/StatModal';
+import StatCard from '../component/StatCard';
 import { formatStreetName } from '../helper/street';
 import AnalyticsButton from '../component/AnalyticsButton';
 import SideCard from '../component/SideCard';
@@ -20,6 +21,7 @@ import Select from '../component/Select';
 import ProgressBar from '../component/ProgressBar';
 import logo from '../assets/Odocapa_Logo_MAQ_01_Bleu.png';
 import ProjectPresentation from '../view/ProjectPresentation';
+import SearchingButton from '../component/SearchingButton';
 
 const useMousePosition = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -32,6 +34,34 @@ const useMousePosition = () => {
   }, []);
   return mousePosition;
 };
+
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+    size: 'unknown',
+  });
+  useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        size: window.innerWidth > 1024 ? 'large' : 'small',
+      });
+    }
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+}
 
 export default function Main() {
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES_DESC[0]);
@@ -46,7 +76,9 @@ export default function Main() {
   const [displayStats, setDisplayStats] = useState(false);
   const [displayMain, setDisplayMain] = useState(true);
   const [displayFilters, setDisplayFilters] = useState(false);
+  const [displaySearch, setDisplaySearch] = useState(false);
   const mousePosition = useMousePosition();
+  const windowSize = useWindowSize();
   const [filters, setFilters] = useState({
     includeIfNoDataForNamingDate: true,
     district: CAT_DISTRICT.map((d) => ({
@@ -148,84 +180,223 @@ export default function Main() {
           : filters.district.map((d) => ({ ...d, isSelected: true })),
     });
   }
-  console.log(mousePosition);
-  console.log(window.innerHeight);
   return (
-    <div className="w-full h-screen relative">
-      {displayMain ? (
-        <div className="w-full h-screen relative">
-          <div className="grid grid-cols-12 grid-rows-layout z-10 h-full">
-            <div
-              className="col-span-1 z-10 p-3 flex my-auto h-full justify-center items-center gap-3 cursor-pointer"
-              onClick={() => setDisplayMain(false)}
-            >
-              <img className="max-h-full max-w-full" src={logo} alt="odocapa logo" />
-            </div>
-            <div className="col-span-8 z-10 flex my-auto h-7 justify-center items-center gap-3">
-              {CATEGORIES_DESC.filter((c) => !c.secondary).map((c) => (
-                <SelectButton
-                  name={c.name}
-                  selected={selectedCategory.name === c.name}
-                  onClick={() => {
-                    setSelectedCategory(c);
-                  }}
-                  key={c.name}
-                />
-              ))}
-            </div>
+    <div className="w-full relative" style={{ height: '100svh' }}>
+      {windowSize.size === 'large' ? (
+        displayMain ? (
+          <div className="w-full h-screen relative">
+            <div className="grid grid-cols-12 grid-rows-layout z-10 h-full">
+              <div
+                className="col-span-1 z-10 p-3 flex my-auto h-full justify-center items-center gap-3 cursor-pointer"
+                onClick={() => setDisplayMain(false)}
+              >
+                <img className="max-h-full max-w-full" src={logo} alt="odocapa logo" />
+              </div>
+              <div className="col-span-8 z-10 flex my-auto h-7 justify-center items-center gap-3">
+                {CATEGORIES_DESC.filter((c) => !c.secondary).map((c) => (
+                  <SelectButton
+                    name={c.name}
+                    selected={selectedCategory.name === c.name}
+                    onClick={() => {
+                      setSelectedCategory(c);
+                    }}
+                    key={c.name}
+                  />
+                ))}
+              </div>
 
-            <div className="col-span-3 mx-4 z-10 gap-2 h-full flex items-center">
-              <div className="w-18 h-18">
-                <AnalyticsButton onAnalytics={() => setDisplay(null, true)} />
+              <div className="col-span-3 mx-4 z-10 gap-2 h-full flex items-center">
+                <div className="w-18 h-18">
+                  <AnalyticsButton onAnalytics={() => setDisplay(null, true)} />
+                </div>
+                <div className="w-full">
+                  <SearchInput
+                    value={searchString}
+                    onChange={(str) => {
+                      if (str) setDisplay(null, false);
+                      setSearchString(str);
+                    }}
+                  />
+                </div>
               </div>
-              <div className="w-full">
-                <SearchInput
-                  value={searchString}
-                  onChange={(str) => {
-                    if (str) setDisplay(null, false);
-                    setSearchString(str);
-                  }}
-                />
+              <div className="col-span-1 p-2 text-xl relative">
+                <div className="absolute left-5 z-10">
+                  <NavigationControl
+                    zoomIn={() => {
+                      (mapRef?.current as any).zoomIn();
+                    }}
+                    zoomOut={() => {
+                      (mapRef?.current as any).zoomOut();
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="col-span-1 p-2 text-xl relative">
-              <div className="absolute left-5 z-10">
-                <NavigationControl
-                  zoomIn={() => {
-                    (mapRef?.current as any).zoomIn();
-                  }}
-                  zoomOut={() => {
-                    (mapRef?.current as any).zoomOut();
-                  }}
-                />
-              </div>
-            </div>
 
-            {searchString && (
-              <div className="col-start-10 row-span-5 col-span-3 z-10 mr-5 mt-5 max-h-full h-fit overflow-auto">
-                <ul className="w-full h-full">
-                  {filteredStreets
-                    .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
-                    .map((s) => (
-                      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                      <li
-                        key={s.id}
-                        className="w-full cursor-pointer text-sm  px-2 py-1 mt-2 bg-white border border-main-blue rounded-full"
-                        onClick={() => {
-                          (mapRef?.current as any).zoomOnStreet(s);
-                          setDisplay(s.id, false);
-                          setSearchString('');
-                        }}
+              {searchString && (
+                <div className="col-start-10 row-span-5 col-span-3 z-10 mr-5 mt-5 max-h-full h-fit overflow-auto">
+                  <ul className="w-full h-full">
+                    {filteredStreets
+                      .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
+                      .map((s) => (
+                        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                        <li
+                          key={s.id}
+                          className="w-full cursor-pointer text-sm  px-2 py-1 mt-2 bg-white border border-main-blue rounded-full"
+                          onClick={() => {
+                            (mapRef?.current as any).zoomOnStreet(s);
+                            setDisplay(s.id, false);
+                            setSearchString('');
+                          }}
+                        >
+                          {formatStreetName(s.name)}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+              {(selectedStreet || displayStats) && (
+                <div className="col-start-8 row-span-5 col-span-5 z-10 mr-5 mb-5">
+                  <div className="h-full bg-white rounded-2xl p-6 shadow-2xl">
+                    <SideCard
+                      title={
+                        selectedStreet ? formatStreetName(selectedStreet.name) : 'Statistiques'
+                      }
+                      onClose={() => {
+                        setDisplay(null, false);
+                      }}
+                      child={
+                        selectedStreet ? (
+                          <SideCardStreet street={selectedStreet} />
+                        ) : (
+                          <StatCard streets={filteredStreets} category={selectedCategory} />
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+              {/* TODO BETTER PLACEMENT BASE ON MOUSE POS */}
+              <div
+                className={classNames(
+                  'col-span-2 row-span-1 z-10 relative m-auto',
+                  'z-10 h-full w-full col-start-4',
+                  {
+                    'row-start-2': mousePosition.y > window.innerHeight / 4,
+                    'row-start-3': mousePosition.y <= window.innerHeight / 4,
+                  },
+                )}
+              >
+                {hoverStreet ? (
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div className="flex flex-col items-center">
+                      <svg
+                        width="90"
+                        height="49"
+                        viewBox="0 0 90 49"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        {formatStreetName(s.name)}
-                      </li>
-                    ))}
-                </ul>
+                        <path
+                          d="M88 21V47H2V21H6.28205C9.17304 21 11.9595 19.9188 14.0939 17.9689L19.8045 12.7517C36.2886 -2.3078 62.0753 -0.273678 75.9943 17.1841C77.9169 19.5955 80.833 21 83.917 21H88Z"
+                          fill="white"
+                          stroke="#322783"
+                          strokeWidth="2"
+                        />
+                      </svg>
+
+                      <div className="text-sm -translate-y-11 z-20">
+                        {hoverStreet.parisDataInfo.district[0].replace(/$0/, '')}
+                      </div>
+                      <div className=" w-fit h-fit p-4 -translate-y-11 bg-white border-black border-2 z-20 text-center transition-all duration-300 whitespace-nowrap">
+                        {hoverStreet.parisDataInfo.type?.toUpperCase()}
+                        <br />
+                        {`${
+                          hoverStreet.parisDataInfo.prepositionStreet?.toUpperCase() || ''
+                        } ${hoverStreet.parisDataInfo.nameStreet?.toUpperCase()}`}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
               </div>
-            )}
-            {(selectedStreet || displayStats) && (
-              <div className="col-start-8 row-span-5 col-span-5 z-10 mr-5 mb-5">
-                <div className="h-full bg-white rounded-2xl overflow-auto p-6 shadow-2xl">
+              <div className="col-start-1 row-span-4 col-span-2 mb-5 ml-5 flex flex-col justify-end">
+                <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-full z-10">
+                  <Legend
+                    categorie={selectedCategory}
+                    selectedValueCategories={selectedSubCategories}
+                    onSelectValueCategories={setSelectedSubCategories}
+                  />
+                </div>
+              </div>
+              <div className="col-start-3 row-span-4 col-span-5 mb-5 mx-5 flex flex-col justify-end">
+                {displayFilters ? (
+                  <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 overflow-auto">
+                    <div className="flex justify-between pb-5">
+                      <h1 className="text-lg">Filtres</h1>
+                      <ClosingButton onClose={() => setDisplayFilters(false)} />
+                    </div>
+                    <ProgressBar max={streets.length} value={filteredStreets.length} />
+                    <div className="flex pt-3 justify-between">
+                      <h2 className="pb-3">Arrondissements:</h2>
+                      <div className="cursor-pointer" onClick={() => setFilterDistrictAll()}>
+                        <ColorPicker
+                          selected={filters.district.every((d) => d.isSelected)}
+                          size={20}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-4 pb-3 w-full flex-wrap ">
+                      {filters.district.map((d) => (
+                        <Select
+                          name={d.label}
+                          size="sm"
+                          isSelected={d.isSelected}
+                          onSelect={() => setFilterDistrict(d)}
+                        />
+                      ))}
+                    </div>
+                    <h2 className="pb-5">Date de dénomination:</h2>
+                    <div className="flex flex-col gap-4">
+                      <Select
+                        name="Inclure quand la date est inconnu"
+                        size="sm"
+                        isSelected={filters.includeIfNoDataForNamingDate}
+                        onSelect={() =>
+                          setFilters({
+                            ...filters,
+                            includeIfNoDataForNamingDate: !filters.includeIfNoDataForNamingDate,
+                          })
+                        }
+                      />
+                      <MultiRangeSlider range={borderDate} changeRange={setBorderDate} />
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 cursor-pointer flex gap-4"
+                    onClick={() => setDisplayFilters(true)}
+                  >
+                    <h1>Filtres</h1>
+                    <ProgressBar max={streets.length} value={filteredStreets.length} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="relative h-full w-full p-20 z-10">
+            <ProjectPresentation version="std" onClose={() => setDisplayMain(true)} />
+          </div>
+        )
+      ) : (
+        <div className="grid grid-cols-12 grid-rows-layout h-full w-full z-10">
+          {!displayMain || selectedStreet || displayStats ? (
+            !displayMain ? (
+              <div className="col-span-12 row-span-6 relative h-full w-full p-4 z-10">
+                <ProjectPresentation version="mobile" onClose={() => setDisplayMain(true)} />
+              </div>
+            ) : (
+              <div className="col-start-1 row-start-1 row-span-6 col-span-12 m-2 relative z-10">
+                <div className="h-full bg-white rounded-lg  shadow-xl ">
                   <SideCard
                     title={selectedStreet ? formatStreetName(selectedStreet.name) : 'Statistiques'}
                     onClose={() => {
@@ -235,126 +406,123 @@ export default function Main() {
                       selectedStreet ? (
                         <SideCardStreet street={selectedStreet} />
                       ) : (
-                        <StatModal streets={filteredStreets} category={selectedCategory} />
+                        <StatCard streets={filteredStreets} category={selectedCategory} />
                       )
                     }
                   />
                 </div>
               </div>
-            )}
-            {/* TODO BETTER PLACEMENT BASE ON MOUSE POS */}
-            <div
-              className={classNames(
-                'col-span-2 row-span-1 z-10 relative m-auto',
-                'z-10 h-full w-full col-start-4',
-                {
-                  'row-start-2': mousePosition.y > window.innerHeight / 4,
-                  'row-start-3': mousePosition.y <= window.innerHeight / 4,
-                },
-              )}
-            >
-              {hoverStreet ? (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="flex flex-col items-center">
-                    <svg
-                      width="90"
-                      height="49"
-                      viewBox="0 0 90 49"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M88 21V47H2V21H6.28205C9.17304 21 11.9595 19.9188 14.0939 17.9689L19.8045 12.7517C36.2886 -2.3078 62.0753 -0.273678 75.9943 17.1841C77.9169 19.5955 80.833 21 83.917 21H88Z"
-                        fill="white"
-                        stroke="#322783"
-                        strokeWidth="2"
-                      />
-                    </svg>
-
-                    <div className="text-sm -translate-y-11 z-20">
-                      {hoverStreet.parisDataInfo.district[0].replace(/$0/, '')}
-                    </div>
-                    <div className=" w-fit h-fit p-4 -translate-y-11 bg-white border-black border-2 z-20 text-center transition-all duration-300 whitespace-nowrap">
-                      {hoverStreet.parisDataInfo.type?.toUpperCase()}
-                      <br />
-                      {`${
-                        hoverStreet.parisDataInfo.prepositionStreet?.toUpperCase() || ''
-                      } ${hoverStreet.parisDataInfo.nameStreet?.toUpperCase()}`}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="col-start-1 row-span-4 col-span-2 mb-5 ml-5 flex flex-col justify-end">
-              <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-full z-10">
-                <Legend
-                  categorie={selectedCategory}
-                  selectedValueCategories={selectedSubCategories}
-                  onSelectValueCategories={setSelectedSubCategories}
-                />
+            )
+          ) : (
+            <>
+              <div
+                className="col-span-2 z-10 p-3 flex my-auto h-full justify-center items-center gap-3 cursor-pointer"
+                onClick={() => setDisplayMain(false)}
+              >
+                <img className="max-h-full max-w-full" src={logo} alt="odocapa logo" />
               </div>
-            </div>
-            <div className="col-start-3 row-span-4 col-span-5 mb-5 mx-5 flex flex-col justify-end">
-              {displayFilters ? (
-                <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 overflow-auto">
-                  <div className="flex justify-between pb-5">
-                    <h1 className="text-lg">Filtres</h1>
-                    <ClosingButton onClose={() => setDisplayFilters(false)} />
-                  </div>
-                  <ProgressBar max={streets.length} value={filteredStreets.length} />
-                  <div className="flex pt-3 justify-between">
-                    <h2 className="pb-3">Arrondissements:</h2>
-                    <div className="cursor-pointer" onClick={() => setFilterDistrictAll()}>
-                      <ColorPicker
-                        selected={filters.district.every((d) => d.isSelected)}
-                        size={20}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-4 pb-3 w-full flex-wrap ">
-                    {filters.district.map((d) => (
-                      <Select
-                        name={d.label}
-                        size="sm"
-                        isSelected={d.isSelected}
-                        onSelect={() => setFilterDistrict(d)}
-                      />
-                    ))}
-                  </div>
-                  <h2 className="pb-5">Date de dénomination:</h2>
-                  <div className="flex flex-col gap-4">
-                    <Select
-                      name="Inclure quand la date est inconnu"
-                      size="sm"
-                      isSelected={filters.includeIfNoDataForNamingDate}
-                      onSelect={() =>
-                        setFilters({
-                          ...filters,
-                          includeIfNoDataForNamingDate: !filters.includeIfNoDataForNamingDate,
-                        })
-                      }
+              <div className="col-span-8 z-10 flex my-auto h-7 justify-center items-center gap-3 p-6">
+                {!displaySearch ? (
+                  <>
+                    <SelectButton
+                      name="<"
+                      selected={false}
+                      onClick={() => {
+                        const newIndex =
+                          CATEGORIES_DESC.findIndex(
+                            (category) => category.name === selectedCategory.name,
+                          ) - 1;
+                        setSelectedCategory(
+                          CATEGORIES_DESC[newIndex < 0 ? CATEGORIES_DESC.length - 1 : newIndex],
+                        );
+                      }}
                     />
-                    <MultiRangeSlider range={borderDate} changeRange={setBorderDate} />
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl z-10 cursor-pointer flex gap-4"
-                  onClick={() => setDisplayFilters(true)}
-                >
-                  <h1>Filtres</h1>
-                  <ProgressBar max={streets.length} value={filteredStreets.length} />
+                    {CATEGORIES_DESC.filter((c) => selectedCategory.name === c.name).map((c) => (
+                      <SelectButton name={c.name} minWidth="8rem" selected onClick={() => {}} />
+                    ))}
+                    <SelectButton
+                      name=">"
+                      selected={false}
+                      onClick={() => {
+                        setSelectedCategory(
+                          CATEGORIES_DESC[
+                            (CATEGORIES_DESC.findIndex(
+                              (category) => category.name === selectedCategory.name,
+                            ) +
+                              1) %
+                              (CATEGORIES_DESC.length - 1)
+                          ],
+                        );
+                      }}
+                    />
+                  </>
+                ) : (
+                  <SearchInput
+                    value={searchString}
+                    onChange={(str) => {
+                      if (str) setDisplay(null, false);
+                      setSearchString(str);
+                    }}
+                  />
+                )}
+              </div>
+              {searchString && (
+                <div className="col-span-10 row-span-2 row-start-2 z-10 mx-5 max-h-full h-fit overflow-auto">
+                  <ul className="w-full h-full">
+                    {filteredStreets
+                      .filter((s) => s.name.toLowerCase().includes(searchString.toLowerCase()))
+                      .map((s) => (
+                        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+                        <li
+                          key={s.id}
+                          className="w-full cursor-pointer text-sm  px-2 py-1 mt-2 bg-white border border-main-blue rounded-full"
+                          onClick={() => {
+                            (mapRef?.current as any).zoomOnStreet(s);
+                            setDisplay(s.id, false);
+                            setSearchString('');
+                          }}
+                        >
+                          {formatStreetName(s.name)}
+                        </li>
+                      ))}
+                  </ul>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="relative h-full w-full p-20 z-10">
-          <ProjectPresentation onClose={() => setDisplayMain(true)} />
+              <div className="col-start-1 row-start-2 col-span-1 p-2 text-xl relative">
+                <div className="absolute left-5 z-10">
+                  <NavigationControl
+                    zoomIn={() => {
+                      (mapRef?.current as any).zoomIn();
+                    }}
+                    zoomOut={() => {
+                      (mapRef?.current as any).zoomOut();
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="col-span-2 z-10 mr-5 mt-5 flex flex-col my-auto h-full justify-center items-center gap-3 cursor-pointer">
+                {displaySearch ? (
+                  <ClosingButton size={22} onClose={() => setDisplaySearch(!displaySearch)} />
+                ) : (
+                  <SearchingButton size={22} onClick={() => setDisplaySearch(!displaySearch)} />
+                )}
+                <AnalyticsButton onAnalytics={() => setDisplay(null, true)} />
+              </div>
+              <div className="col-start-1 row-start-5 row-span-2 col-span-12 mx-5 mb-5 ml-5 flex flex-col justify-end">
+                <div className="py-2.5 px-5 bg-white rounded-2xl shadow-2xl max-h-full z-10">
+                  <Legend
+                    categorie={selectedCategory}
+                    selectedValueCategories={selectedSubCategories}
+                    onSelectValueCategories={setSelectedSubCategories}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
-      <div className="absolute left-0 top-0 bg-slate-100 h-full w-full">
+      <div className="absolute left-0 top-0 bg-slate-100 w-screen" style={{ height: '100svh' }}>
         <MapOdocapa
           ref={mapRef}
           streets={filteredStreets}

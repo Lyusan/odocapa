@@ -3,13 +3,17 @@ import { MinimalSubItem, TypeOfName, TYPE_OF_NAME_LIST } from '../type/SubItem';
 import BaseSelect from './BaseSelect';
 import Button from './Button';
 
-interface LinkProp {
+interface SubItemSelectorProp {
   subItems: MinimalSubItem[];
   createSubItem: (type: TypeOfName) => void;
   attachSubItem: (id: string) => void;
 }
 
-export default function SubItemSelector({ subItems, createSubItem, attachSubItem }: LinkProp) {
+export default function SubItemSelector({
+  subItems,
+  createSubItem,
+  attachSubItem,
+}: SubItemSelectorProp) {
   const [type, setType] = useState<TypeOfName>(TYPE_OF_NAME_LIST[0]);
   const [itemId, setItemId] = useState<string | null>(subItems?.[0]?.id);
   return (

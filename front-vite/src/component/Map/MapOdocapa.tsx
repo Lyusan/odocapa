@@ -265,7 +265,6 @@ const MapOdocapa = forwardRef(
     }, [streets, categorie, categoryValues, lineWidth, mapLoaded]);
 
     useEffect(() => {
-      // console.log(mouseHoverInfo);
       let newIsHover = false;
       if (!map) return;
       if (hoverId) map.getCanvas().style.cursor = 'pointer';
@@ -394,7 +393,8 @@ const MapOdocapa = forwardRef(
         ref={(el) => {
           setMapContainer(el);
         }}
-        className="w-full h-screen"
+        className="w-full"
+        style={{ height: '100svh' }}
       />
     );
   },
