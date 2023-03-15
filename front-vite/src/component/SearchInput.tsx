@@ -31,7 +31,7 @@ export default function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         type="search"
         placeholder="Recherche une rue, une place..."
-        className="w-full pl-10 pr-4 rounded-full border-2 border-main-blue shadow focus:outline-none focus:shadow-slate-200 duration-100 shadow-gray-100 text-sm py-0.5 text-main-blue placeholder:text-main-blue placeholder:opacity-80"
+        className="w-full pl-10 pr-4 rounded-full border-2 border-main-blue shadow focus:outline-none focus:shadow-slate-200 duration-100 shadow-gray-100 text-base py-0.5 text-main-blue placeholder:text-main-blue placeholder:opacity-80"
       />
     </div>
   );
