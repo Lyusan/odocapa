@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Activity, DEFAULT_ACTIVITIES } from '../type/Activity';
-import Button from './Button';
+import TextButton from './TextButton';
 
 // TODO: refactor activities with subActivitities -> Record<string, Activitities>
 // better perfomance no need to use find()
@@ -53,7 +53,7 @@ const formatTableContent = (
     const newKeys = [...currKeys, activity.value];
     const td = (
       <td className="[&>*]:w-full">
-        <Button
+        <TextButton
           text={activity.value}
           color={['bg-slate-100', 'bg-blue-100', 'bg-blue-300', 'bg-blue-500'][activity.level]}
           textColor={activity.level > 2 ? 'text-white' : undefined}
