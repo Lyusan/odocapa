@@ -11,7 +11,7 @@ import {
   setSubItemDoc,
 } from '../service/firestore.service';
 import StreetFormWikiHelper from './StreetFormWikiHelper';
-import MapStreetViewer from '../component/Map/MapStreetViewer';
+import MapStreetViewer from '../component/map/MapStreetViewer';
 import { Street, STREET_FORM_DESC } from '../type/Street';
 import { MinimalSubItem, SUB_ITEM_MAP, TypeOfName } from '../type/SubItem';
 import { SourcedDataPropertyType } from '../type/SourcedDataProperty';

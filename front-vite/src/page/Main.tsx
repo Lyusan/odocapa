@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import Legend from '../component/Legend';
-import MapOdocapa from '../component/Map/MapOdocapa';
+import MapOdocapa from '../component/map/MapOdocapa';
 import { CATEGORIES_DESC, CAT_DISTRICT, CategoryValue } from '../type/Category';
 import SelectButton from '../component/SelectButton';
 import { getStreetDoc, getStreetsDocs } from '../service/firestore.service';
@@ -16,7 +16,7 @@ import MultiRangeSlider from '../component/MultiRangeSlider';
 import SearchInput from '../component/SearchInput';
 import ClosingButton from '../component/ClosingButton';
 import ColorPicker from '../component/ColorPicker';
-import NavigationControl from '../component/Map/NavigationControl';
+import NavigationControl from '../component/map/NavigationControl';
 import Select from '../component/Select';
 import ProgressBar from '../component/ProgressBar';
 import logo from '../assets/Odocapa_Logo_MAQ_01_Bleu.png';
