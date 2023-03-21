@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import Button from '../component/Button';
+import TextButton from '../component/TextButton';
 import CopyField from '../component/CopyField';
 import Link from '../component/Link';
 import SelectScrapWiki from '../component/SelectScrapWiki';
@@ -34,7 +34,7 @@ export default function StreetFormWikiHelper({
         <>
           <Link link={`https://fr.wikipedia.org/wiki/${path}`} />
           <div className="border-slate-900 border-2">
-            <Button text="Hide/Show" onClick={() => setDisplayIframe(!displayIframe)} />
+            <TextButton text="Hide/Show" onClick={() => setDisplayIframe(!displayIframe)} />
             {displayIframe ? (
               <iframe
                 name="viewport"

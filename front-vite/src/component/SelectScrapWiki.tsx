@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import BaseSelect from './BaseSelect';
-import Button from './Button';
+import TextButton from './TextButton';
 import TextInput from './TextInput';
 
 interface SelectScrapWikiProp {
@@ -21,7 +21,11 @@ export default function SelectScrapWiki({ values, onSearch }: SelectScrapWikiPro
           values={values}
           onChange={(name, value) => setSelectValue(value as string)}
         />
-        <Button text="search" available={!!selectValue} onClick={() => onSearch(selectValue!)} />
+        <TextButton
+          text="search"
+          available={!!selectValue}
+          onClick={() => onSearch(selectValue!)}
+        />
       </div>
       <div className="w-1/2 gap-1" style={{ display: 'flex', flexDirection: 'column' }}>
         <TextInput
@@ -30,7 +34,7 @@ export default function SelectScrapWiki({ values, onSearch }: SelectScrapWikiPro
           value={inputValue}
           onChange={(name, value) => setInputValue(value as string)}
         />
-        <Button text="search" onClick={() => onSearch(inputValue)} />
+        <TextButton text="search" onClick={() => onSearch(inputValue)} />
       </div>
     </div>
   );

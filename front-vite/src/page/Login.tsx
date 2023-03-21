@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import BaseLabelInput from '../component/BaseLabelInput';
 import TextInput from '../component/TextInput';
-import Button from '../component/Button';
+import TextButton from '../component/TextButton';
 import { signIn, signOut } from '../service/firestore.service';
 import UserContext from '../context/UserContext';
 
@@ -15,7 +15,7 @@ export default function Login() {
         {currentUser ? (
           <>
             <p className="self-center">{`You are already login with email: ${currentUser.email}`}</p>
-            <Button
+            <TextButton
               text="Logout"
               color="bg-blue-500"
               textColor="text-white"
@@ -46,7 +46,7 @@ export default function Login() {
                 onChange={(name, value) => setPassword(value as string)}
               />
             </BaseLabelInput>
-            <Button
+            <TextButton
               text="Login"
               color="bg-blue-500"
               textColor="text-white"

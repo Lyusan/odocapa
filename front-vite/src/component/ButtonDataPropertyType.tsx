@@ -1,6 +1,6 @@
 import React from 'react';
 import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
-import Button from './Button';
+import TextButton from './TextButton';
 
 interface ButtonProp {
   type: SourcedDataPropertyType;
@@ -16,7 +16,7 @@ const types = Object.values(SourcedDataPropertyType);
 
 export default function ButtonDataPropertyType({ type, onClick }: ButtonProp) {
   return (
-    <Button
+    <TextButton
       text={type}
       textColor="text-white"
       color={config[type].textColor}

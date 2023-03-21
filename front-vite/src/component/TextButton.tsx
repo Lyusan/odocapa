@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
-interface ButtonProp {
+interface TextButtonProp {
   color?: string;
   textColor?: string;
   size?: 's' | 'md' | 'lg';
@@ -16,7 +16,15 @@ const defaultProps = {
   textColor: 'text-main-blue',
   available: true,
 };
-export default function Button({ color, text, textColor, size, available, onClick }: ButtonProp) {
+
+export default function TextButton({
+  color,
+  text,
+  textColor,
+  size,
+  available,
+  onClick,
+}: TextButtonProp) {
   let sizeClass;
   switch (size) {
     case 's':
@@ -45,4 +53,4 @@ export default function Button({ color, text, textColor, size, available, onClic
   );
 }
 
-Button.defaultProps = defaultProps;
+TextButton.defaultProps = defaultProps;

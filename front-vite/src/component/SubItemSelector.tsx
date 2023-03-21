@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MinimalSubItem, TypeOfName, TYPE_OF_NAME_LIST } from '../type/SubItem';
 import BaseSelect from './BaseSelect';
-import Button from './Button';
+import TextButton from './TextButton';
 
 interface SubItemSelectorProp {
   subItems: MinimalSubItem[];
@@ -37,14 +37,14 @@ export default function SubItemSelector({
         />
       </div>
       <div className="flex [&>*]:w-1/2 gap-2">
-        <Button
+        <TextButton
           color="bg-blue-500"
           textColor="text-white"
           text="Attach an existing object"
           available={!!itemId}
           onClick={() => attachSubItem(itemId!)}
         />
-        <Button
+        <TextButton
           color="bg-blue-500"
           textColor="text-white"
           text="Create new object"

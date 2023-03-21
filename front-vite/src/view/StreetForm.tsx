@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Timestamp } from 'firebase/firestore';
-import BaseSelect from '../component/BaseSelect';
-import Button from '../component/Button';
+import TextButton from '../component/TextButton';
 import FormBuilder from '../component/FormBuilder';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
@@ -179,7 +178,7 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
   const subItemsForms = street?.subItems?.map((subItem, index) => (
     <>
       <div className="col-start-1">
-        <Button
+        <TextButton
           color="bg-red-400"
           text="Détacher l'object"
           onClick={() => {
@@ -225,8 +224,8 @@ export default function StreetForm({ streetId, onSaveStreet }: StreetFormProp) {
           </div>
           <div className="flex justify-center items-center">
             <div className="absolute flex gap-2 right-4 top-4">
-              <Button size="md" text="info" onClick={() => setDisplayParisDataInfo(true)} />
-              <Button
+              <TextButton size="md" text="info" onClick={() => setDisplayParisDataInfo(true)} />
+              <TextButton
                 size="md"
                 color="bg-main-blue"
                 textColor="text-white"
