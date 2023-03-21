@@ -195,7 +195,8 @@ export async function getStreetsDocs(): Promise<Street[]> {
     query(
       collection(db, STREET_COLLECTION),
       // where('parisDataInfo.district', 'array-contains-any', ['01e', '16e', '19e']),
-      where('parisDataInfo.type', '==', 'boulevard'),
+      // where('parisDataInfo.type', 'in', ['boulevard', 'avenue']),
+      where('lastUpdate', '!=', null),
       limit(TOP),
     ).withConverter(new StreetConverter()),
   );
@@ -286,7 +287,6 @@ export class UserCredentialConverter implements FirestoreDataConverter<User> {
 }
 
 export async function getCurrentUserMeta(): Promise<any> {
-  console.log('currentUser', firebaseAuth.currentUser);
   if (!firebaseAuth.currentUser) return null;
   const snapshot = await getDoc(
     doc(db, 'users', firebaseAuth.currentUser.uid).withConverter(new UserCredentialConverter()),
