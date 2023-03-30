@@ -13,31 +13,16 @@ Work in progress link to the project development version: https://odocapa-4a31f.
 
 ## Features
 
-<figure>
-    <img src="md-pic/map.png"
-     style="float: left; margin-right: 10px;" />
-    <figcaption style="width: 100%; text-align: center;">The map</figcaption>
-</figure>
-<figure>
-    <img src="md-pic/selectedStreet.png"
-     style="float: left; margin-right: 10px;" />
-    <figcaption style="width: 100%; text-align: center;">Info about the selected street panel</figcaption>
-</figure>
-<figure>
-    <img src="md-pic/stats.png"
-     style="float: left; margin-right: 10px;" />
-    <figcaption style="width: 100%; text-align: center;">Stats</figcaption>
-</figure>
-<figure>
-    <img src="md-pic/filters.png"
-     style="float: left; margin-right: 10px;" />
-    <figcaption style="width: 100%; text-align: center;">Street filters</figcaption>
-</figure>
-<figure>
-    <img src="md-pic/admin.png"
-     style="float: left; margin-right: 10px;" />
-    <figcaption style="width: 100%; text-align: center;">Admin interface to configurate streets</figcaption>
-</figure>
+*The odocapa interface*
+![](md-pic/map.png)
+*Panel info about the selected street*
+![](md-pic/selectedStreet.png)
+*Stats*
+![](md-pic/stats.png)
+*Street filters*
+![](md-pic/filters.png)
+*Admin interface to configurate streets*
+![](md-pic/admin.png)
 
 ## Project structure
 
