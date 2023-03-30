@@ -5,6 +5,10 @@
     },
     {
       "path": "front-vite"
+    },
+    {
+      "path": ".",
+      "name": "root"
     }
   ],
   "settings": {

@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+# ODOCAPA
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ODOCAPA is a web project about Paris street toponymy. It allow users to learn more about the **history** of Paris streets, streets naming and those whose streets took their name from.
 
-## Available Scripts
+Work in progress link to the project development version: https://odocapa-4a31f.web.app/
 
-In the project directory, you can run:
+## Data sources
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [Dénominations des emprises des voies actuelle](https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/information/) - Mairie de Paris, 21/11/2022, under license [ODbL : Open Database License](https://opendatacommons.org/licenses/odbl/)
+- [Linéaires des Voies](https://opendata.paris.fr/explore/dataset/voie/information/) - Mairie de Paris, 21/11/2022, under license [ODbL : Open Database License](https://opendatacommons.org/licenses/odbl/)
+- A big part of project content is from Wikipedia under license [CC BY-SA 3.0 Unported](https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Licence_Creative_Commons_Paternit%C3%A9-Partage_des_Conditions_Initiales_%C3%A0_l%27Identique_3.0_non_transpos%C3%A9)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Features
 
-### `npm test`
+<figure>
+    <img src="md-pic/map.png"
+     style="float: left; margin-right: 10px;" />
+    <figcaption style="width: 100%; text-align: center;">The map</figcaption>
+</figure>
+<figure>
+    <img src="md-pic/selectedStreet.png"
+     style="float: left; margin-right: 10px;" />
+    <figcaption style="width: 100%; text-align: center;">Info about the selected street panel</figcaption>
+</figure>
+<figure>
+    <img src="md-pic/stats.png"
+     style="float: left; margin-right: 10px;" />
+    <figcaption style="width: 100%; text-align: center;">Stats</figcaption>
+</figure>
+<figure>
+    <img src="md-pic/filters.png"
+     style="float: left; margin-right: 10px;" />
+    <figcaption style="width: 100%; text-align: center;">Street filters</figcaption>
+</figure>
+<figure>
+    <img src="md-pic/admin.png"
+     style="float: left; margin-right: 10px;" />
+    <figcaption style="width: 100%; text-align: center;">Admin interface to configurate streets</figcaption>
+</figure>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Project structure
 
-### `npm run build`
+- [/firebase](/firebase): firebases function to handle 
+- [/front-vite](/front-vite): react application
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## License
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[GNU General Public License v3.0](/gpl-v3.0.txt)
