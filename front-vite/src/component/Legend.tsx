@@ -1,7 +1,7 @@
 import React from 'react';
 import { Category, CategoryValue } from '../type/Category';
-import ColorPicker from './ColorPicker';
-import Select from './Select';
+import ColorPicker from './base/ColoredCheckAndRadio';
+import InputColoredCheckAndRadio from './base/InputColoredCheckAndRadio';
 
 interface LegendProps {
   categorie: Category;
@@ -48,7 +48,7 @@ export default function Legend({
             (scv) => scv.name === categoryValue.name,
           );
           return (
-            <Select
+            <InputColoredCheckAndRadio
               isSelected={isSelected}
               name={categoryValue.name}
               color={categoryValue.color}

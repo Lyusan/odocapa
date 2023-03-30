@@ -15,9 +15,9 @@ import SideCardStreet from '../component/SideCardStreet';
 import MultiRangeSlider from '../component/MultiRangeSlider';
 import SearchInput from '../component/SearchInput';
 import ClosingButton from '../component/ClosingButton';
-import ColorPicker from '../component/ColorPicker';
+import ColorPicker from '../component/base/ColoredCheckAndRadio';
 import NavigationControl from '../component/map/NavigationControl';
-import Select from '../component/Select';
+import InputColoredCheckAndRadio from '../component/base/InputColoredCheckAndRadio';
 import ProgressBar from '../component/ProgressBar';
 import logo from '../assets/Odocapa_Logo_MAQ_01_Bleu.png';
 import ProjectPresentation from '../view/ProjectPresentation';
@@ -346,7 +346,7 @@ export default function Main() {
                     </div>
                     <div className="flex gap-4 pb-3 w-full flex-wrap ">
                       {filters.district.map((d) => (
-                        <Select
+                        <InputColoredCheckAndRadio
                           name={d.label}
                           size="sm"
                           isSelected={d.isSelected}
@@ -356,7 +356,7 @@ export default function Main() {
                     </div>
                     <h2 className="pb-5">Date de dénomination:</h2>
                     <div className="flex flex-col gap-4">
-                      <Select
+                      <InputColoredCheckAndRadio
                         name="Inclure quand la date est inconnu"
                         size="sm"
                         isSelected={filters.includeIfNoDataForNamingDate}

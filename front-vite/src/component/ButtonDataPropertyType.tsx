@@ -1,6 +1,6 @@
 import React from 'react';
 import { SourcedDataPropertyType } from '../type/SourcedDataProperty';
-import TextButton from './TextButton';
+import TextButton from './base/TextButton';
 
 interface ButtonProp {
   type: SourcedDataPropertyType;

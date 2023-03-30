@@ -11,7 +11,7 @@ import ButtonDataPropertyType from './ButtonDataPropertyType';
 import DateMomentAgo from './DateMomentAgo';
 import Link from './Link';
 import PoliticScaleSelector from './PoliticScaleSelector';
-import TextInput from './TextInput';
+import TextInput from './base/TextInput';
 
 interface SwitchInputProp {
   inputDesc: InputDesc;

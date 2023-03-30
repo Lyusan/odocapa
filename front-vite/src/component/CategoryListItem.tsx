@@ -1,5 +1,5 @@
 import React from 'react';
-import ColorPicker from './ColorPicker';
+import ColorPicker from './base/ColoredCheckAndRadio';
 import { CategoryValue, Category } from '../type/Category';
 import { Street } from '../type/Street';
 

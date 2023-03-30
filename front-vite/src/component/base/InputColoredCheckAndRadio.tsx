@@ -1,8 +1,8 @@
-import classNames from 'classnames';
 import React from 'react';
-import ColorPicker from './ColorPicker';
+import classNames from 'classnames';
+import ColorPicker from './ColoredCheckAndRadio';
 
-interface SelectProps {
+interface InputColoredCheckAndRadioProps {
   name: string;
   isSelected?: boolean;
   size?: 'md' | 'sm';
@@ -10,12 +10,17 @@ interface SelectProps {
   onSelect: () => void;
 }
 
-export default function Select({ name, color, size, isSelected, onSelect }: SelectProps) {
+export default function InputColoredCheckAndRadio({
+  name,
+  color,
+  size,
+  isSelected,
+  onSelect,
+}: InputColoredCheckAndRadioProps) {
   return (
     <div
       className={classNames([
         'flex items-center cursor-pointer mb-0.5',
-
         {
           'text-sm': size === 'sm',
           'opacity-50': !isSelected,
@@ -34,7 +39,7 @@ export default function Select({ name, color, size, isSelected, onSelect }: Sele
   );
 }
 
-Select.defaultProps = {
+InputColoredCheckAndRadio.defaultProps = {
   isSelected: false,
   size: 'md',
   color: '#322783',

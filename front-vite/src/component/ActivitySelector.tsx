@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Activity, DEFAULT_ACTIVITIES } from '../type/Activity';
-import TextButton from './TextButton';
+import TextButton from './base/TextButton';
 
 // TODO: refactor activities with subActivitities -> Record<string, Activitities>
 // better perfomance no need to use find()

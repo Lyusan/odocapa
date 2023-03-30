@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
+import classNames from 'classnames';
 
-interface ColorPickerProps {
+interface ColoredCheckAndRadioProps {
   size: number;
   color?: string;
   shape?: 'circle' | 'square';
@@ -9,7 +9,13 @@ interface ColorPickerProps {
   selected?: boolean;
 }
 
-export default function ColorPicker({ color, size, shape, scale, selected }: ColorPickerProps) {
+export default function ColoredCheckAndRadio({
+  color,
+  size,
+  shape,
+  scale,
+  selected,
+}: ColoredCheckAndRadioProps) {
   return (
     <div
       className={classNames('bg-slate-200', {
@@ -28,7 +34,7 @@ export default function ColorPicker({ color, size, shape, scale, selected }: Col
   );
 }
 
-ColorPicker.defaultProps = {
+ColoredCheckAndRadio.defaultProps = {
   scale: 'full',
   shape: 'circle',
   color: '#322783',

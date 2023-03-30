@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BaseSelect from './BaseSelect';
-import TextButton from './TextButton';
-import TextInput from './TextInput';
+import TextButton from './base/TextButton';
+import TextInput from './base/TextInput';
 
 interface SelectScrapWikiProp {
   values: { key: string; displayName: string }[];

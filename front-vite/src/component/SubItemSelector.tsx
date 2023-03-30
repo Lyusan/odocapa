@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MinimalSubItem, TypeOfName, TYPE_OF_NAME_LIST } from '../type/SubItem';
 import BaseSelect from './BaseSelect';
-import TextButton from './TextButton';
+import TextButton from './base/TextButton';
 
 interface SubItemSelectorProp {
   subItems: MinimalSubItem[];

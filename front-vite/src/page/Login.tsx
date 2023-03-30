@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import BaseLabelInput from '../component/BaseLabelInput';
-import TextInput from '../component/TextInput';
-import TextButton from '../component/TextButton';
+import TextInput from '../component/base/TextInput';
+import TextButton from '../component/base/TextButton';
 import { signIn, signOut } from '../service/firestore.service';
 import UserContext from '../context/UserContext';
 

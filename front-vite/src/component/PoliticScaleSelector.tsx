@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { PoliticScale, POLITIC_SCALE_LIST } from '../type/PoliticScale';
-import TextInput from './TextInput';
+import TextInput from './base/TextInput';
 
 export default function PoliticScaleSelector({
   politicScale,

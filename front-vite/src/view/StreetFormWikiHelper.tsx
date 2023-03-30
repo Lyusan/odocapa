@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
-import TextButton from '../component/TextButton';
+import TextButton from '../component/base/TextButton';
 import CopyField from '../component/CopyField';
 import Link from '../component/Link';
 import SelectScrapWiki from '../component/SelectScrapWiki';

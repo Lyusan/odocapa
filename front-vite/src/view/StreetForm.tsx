@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Timestamp } from 'firebase/firestore';
-import TextButton from '../component/TextButton';
+import TextButton from '../component/base/TextButton';
 import FormBuilder from '../component/FormBuilder';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
